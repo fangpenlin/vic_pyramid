@@ -49,7 +49,7 @@ def main(global_config, **settings):
     # setup modules
     config.include('.modules')
     # add static view
-    config.add_static_view('static', '{{project}}:static')
+    config.add_static_view('static', '{{package}}:static')
     # scan modules
     config.scan()
     return config.make_wsgi_app()

@@ -4,8 +4,8 @@ class TestUserModel(unittest.TestCase):
     
     def setUp(self):
         import datetime
-        from {{project}}.tests.helper import create_session
-        from {{project}}.models import tables
+        from {{package}}.tests.helper import create_session
+        from {{package}}.models import tables
         tables.set_now_func(datetime.datetime.utcnow)
         self.session = create_session(zope_transaction=True)
         
@@ -13,7 +13,7 @@ class TestUserModel(unittest.TestCase):
         self.session.remove()
         
     def make_one(self):
-        from {{project}}.models.user import UserModel
+        from {{package}}.models.user import UserModel
         return UserModel(self.session)
     
     def test_create_user(self):
@@ -88,8 +88,8 @@ class TestUserModel(unittest.TestCase):
         self.assertEqual(result, user_3)
         
         # cases should not pass
-        from {{project}}.models.user import BadPassword
-        from {{project}}.models.user import UserNotExist
+        from {{package}}.models.user import BadPassword
+        from {{package}}.models.user import UserNotExist
         
         with self.assertRaises(BadPassword):
             model.authenticate_user(u'tester@now.in', u'First_pass')

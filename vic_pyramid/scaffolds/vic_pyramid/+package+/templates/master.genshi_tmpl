@@ -11,7 +11,7 @@
 
     <link 
         rel="stylesheet" 
-        href="${ request.static_url('{{project}}:static/css/style.css') }" 
+        href="${ request.static_url('{{package}}:static/css/style.css') }" 
         type="text/css" 
         media="screen" 
         charset="utf-8" 
@@ -23,7 +23,7 @@
 
 <?python
 
-from {{project}} import flash
+from {{package}} import flash
 
 msgs = request.session.pop_flash()
 flash_msgs = []

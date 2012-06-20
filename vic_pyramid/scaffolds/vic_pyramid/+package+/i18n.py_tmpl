@@ -1,8 +1,8 @@
 from pyramid.i18n import TranslationStringFactory
 
-_ = TranslationStringFactory('{{project}}')
+_ = TranslationStringFactory('{{package}}')
 
-default_domain = '{{project}}'
+default_domain = '{{package}}'
 
 def normalize_locale_name(locale_name):
     """Normalize locale name, for example, zh_tw will be normalized as
