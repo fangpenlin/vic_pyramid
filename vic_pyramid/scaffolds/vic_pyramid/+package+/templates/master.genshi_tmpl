@@ -21,7 +21,46 @@
 
 <body py:match="body" py:attrs="select('@*')">
 
+<?python
+
+from {{project}} import flash
+
+msgs = request.session.pop_flash()
+flash_msgs = []
+for msg in msgs:
+    type_ = flash.DEFAULT_TYPE
+    content = msg
+    
+    for t in flash.MSG_TYPES:
+        if msg.startswith(t + ' '):
+            type_ = t
+            content = msg[len(t)+1:]
+            break
+        
+    flash_msgs.append((type_, content))
+
+?>
+
+    <div id="login-frame">
+        <py:if test="request.user_id is None">
+            <a href="${ request.route_url('account.login') }">Login</a>
+        </py:if>
+        <py:if test="request.user_id is not None">
+            Current user: ${ request.user.display_name or request.user.user_name } |
+            <a href="${ request.route_url('account.logout') }">Logout</a>
+        </py:if>
+    </div>
+    
     <div id="container">
+    
+        <div id="flash-msgs" py:if="flash_msgs">
+            <div 
+                py:for="type_, msg in flash_msgs" py:attrs="{'class': type_}"
+            >
+                ${ msg }
+            </div>
+        </div>
+        
         <div py:replace="select('*|text()')"/>
     </div>
 

@@ -8,7 +8,6 @@ def setup_database(global_config, **settings):
     """Setup database
     
     """
-
     if 'read_engine' not in settings:
         settings['read_engine'] = \
             engine_from_config(settings, 'sqlalchemy.read.')
@@ -28,4 +27,11 @@ def setup_database(global_config, **settings):
             extension=ZopeTransactionExtension(),
             bind=settings['write_engine']
         ))
+    # SQLite does not support utc_timestamp function, therefore, we need to
+    # replace it with utcnow of datetime here
+    if settings['read_engine'].name == 'sqlite':
+        import datetime
+        from . import tables
+        tables.set_now_func(datetime.datetime.utcnow)
+        
     return settings

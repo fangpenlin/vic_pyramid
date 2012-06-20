@@ -1,5 +1,0 @@
-import unittest
-
-class TestMyView(unittest.TestCase):
-    pass
-    # TODO:
