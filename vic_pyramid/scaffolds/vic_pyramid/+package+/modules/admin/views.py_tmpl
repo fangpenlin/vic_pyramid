@@ -33,7 +33,8 @@ def home(request):
     return dict()
 
 @view_config(route_name='admin.user_list', 
-             renderer='templates/user_list.genshi')
+             renderer='templates/user_list.genshi',
+             permission='admin')
 def user_list(request):
     user_model = UserModel(request.read_session)
     users = user_model.get_users()
@@ -172,7 +173,8 @@ def group_list(request):
     return dict(groups=groups)
 
 @view_config(route_name='admin.group_create', 
-             renderer='templates/group_create.genshi')
+             renderer='templates/group_create.genshi',
+             permission='admin')
 def group_create(request):
     _ = get_localizer(request)
     
