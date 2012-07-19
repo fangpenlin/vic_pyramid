@@ -65,6 +65,13 @@ class UserModel(object):
             .filter(User.user_id.in_(user_ids))
         return users
     
+    def get_users(self):
+        """Get users
+        
+        """
+        query = self.session.query(tables.User)
+        return query
+    
     def query_user(self, user_id=None, user_name=None, email=None):
         """Query user by different conditions
         
@@ -206,3 +213,14 @@ class UserModel(object):
         if 'email' in kwargs:
             user.email = kwargs['email']
         self.session.add(user)
+    
+    def update_groups(self, user_id, group_ids):
+        """Update groups of this user
+        
+        """
+        user = self.get_user_by_id(user_id)
+        new_groups = self.session \
+            .query(tables.Group) \
+            .filter(tables.Group.group_id.in_(group_ids))
+        user.groups = new_groups.all()
+        self.session.flush()

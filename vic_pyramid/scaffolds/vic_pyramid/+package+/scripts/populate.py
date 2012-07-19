@@ -20,6 +20,8 @@ def main(argv=sys.argv):
     import getpass
     import transaction
     from ..models.user import UserModel
+    from ..models.group import GroupModel
+    from ..models.permission import PermissionModel
     
     if len(argv) != 2:
         usage(argv)
@@ -33,10 +35,12 @@ def main(argv=sys.argv):
     tables.DeclarativeBase.metadata.create_all(engine)
     
     session = settings['write_session_maker']()
-    model = UserModel(session)
+    user_model = UserModel(session)
+    group_model = GroupModel(session)
+    permission_model = PermissionModel(session)
     
     with transaction.manager:
-        admin = model.get_user_by_name('admin')
+        admin = user_model.get_user_by_name('admin')
         if admin is None:
             print 'Create admin account'
             
@@ -48,60 +52,39 @@ def main(argv=sys.argv):
                 print 'Password not match'
                 return
         
-            user_id = model.create_user(
+            user_id = user_model.create_user(
                 user_name='admin',
                 display_name='Administrator',
                 email=email,
                 password=password
             )
-            admin = model.get_user_by_id(user_id)
+            admin = user_model.get_user_by_id(user_id)
             session.flush()
             print 'Created admin, user_id=%s' % admin.user_id
             
-        permission = session.query(tables.Permission) \
-            .filter_by(permission_name='admin') \
-            .first()
+        permission = permission_model.get_permission_by_name('admin')
         if permission is None:
             print 'Create admin permission ...'
-            permission = tables.Permission(
+            permission_model.create_permission(
                 permission_name='admin',
                 description='Administrate',
             )
-            session.add(permission)
+            permission = permission_model.get_permission_by_name('admin')
             
-        group = session.query(tables.Group) \
-            .filter_by(group_name='admin') \
-            .first()
+        group = group_model.get_group_by_name('admin')
         if group is None:
             print 'Create admin group ...'
-            session.flush()
-            group = tables.Group(
+            group_model.create_group(
                 group_name='admin',
                 display_name='Administrators',
-                created=tables.now_func()
             )
-            session.add(group)
+            group = group_model.get_group_by_name('admin')
             
-        group_permission = session.query(tables.group_permission_table) \
-            .filter_by(group_id=group.group_id) \
-            .filter_by(permission_id=permission.permission_id) \
-            .first()
-        if group_permission is None:
-            print 'Add admin permission to admin group'
-            session.flush()
-            session.execute(tables.group_permission_table.insert(), dict(
-                group_id=group.group_id,
-                permission_id=permission.permission_id,
-            ))
-            
+        print 'Add admin permission to admin group'
+        group_model.update_permissions(group.group_id, [permission.permission_id])
         session.flush()
-        user_group = session.query(tables.user_group_table) \
-            .filter_by(user_id=admin.user_id) \
-            .filter_by(group_id=group.group_id) \
-            .first()
-        if user_group is None:
-            print 'Add admin to admin group'
-            session.execute(tables.user_group_table.insert(), dict(
-                user_id=admin.user_id,
-                group_id=group.group_id,
-            ))
+            
+        print 'Add admin to admin group'
+        user_model.update_groups(user_id, [group.group_id])
+        session.flush()
+            

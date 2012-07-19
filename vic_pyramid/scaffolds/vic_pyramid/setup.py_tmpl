@@ -23,6 +23,7 @@ requires = [
     'scss_tools',
     'PyYAML',
     'nose',
+    'wtforms'
 ]
 
 setup(name='{{project}}',

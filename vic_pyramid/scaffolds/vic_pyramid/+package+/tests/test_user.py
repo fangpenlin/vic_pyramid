@@ -4,8 +4,8 @@ class TestUserModel(unittest.TestCase):
     
     def setUp(self):
         import datetime
-        from {{package}}.tests.helper import create_session
-        from {{package}}.models import tables
+        from .helper import create_session
+        from ..models import tables
         tables.set_now_func(datetime.datetime.utcnow)
         self.session = create_session(zope_transaction=True)
         
@@ -13,8 +13,12 @@ class TestUserModel(unittest.TestCase):
         self.session.remove()
         
     def make_one(self):
-        from {{package}}.models.user import UserModel
+        from ..models.user import UserModel
         return UserModel(self.session)
+    
+    def make_group_model(self):
+        from ..models.group import GroupModel
+        return GroupModel(self.session)
     
     def test_create_user(self):
         import transaction
@@ -88,8 +92,8 @@ class TestUserModel(unittest.TestCase):
         self.assertEqual(result, user_3)
         
         # cases should not pass
-        from {{package}}.models.user import BadPassword
-        from {{package}}.models.user import UserNotExist
+        from ..models.user import BadPassword
+        from ..models.user import UserNotExist
         
         with self.assertRaises(BadPassword):
             model.authenticate_user(u'tester@now.in', u'First_pass')
@@ -149,6 +153,45 @@ class TestUserModel(unittest.TestCase):
         
         user = model.get_user_by_email('user2@example.com')
         self.assertEqual(user.user_id, user_id2)
+        
+    def test_update_groups(self):
+        import transaction
+        model = self.make_one()
+        group_model = self.make_group_model()
+        
+        user_name = 'victorlin'
+        email = 'bornstub@gmail.com'
+        display_name = user_name
+        password = 'thepass'
+        
+        with transaction.manager:
+            user_id = model.create_user(
+                user_name=user_name,
+                email=email,
+                display_name=display_name,
+                password=password,
+            )
+            gid1 = group_model.create_group('g1')
+            gid2 = group_model.create_group('g2')
+            gid3 = group_model.create_group('g3')
+            
+        user = model.get_user_by_id(user_id)
+        gids = set([g.group_id for g in user.groups])
+        self.assertEqual(gids, set([]))
+        
+        def assert_update(new_groups):
+            with transaction.manager:
+                model.update_groups(user_id, new_groups)
+            user = model.get_user_by_id(user_id)
+            gids = set([g.group_id for g in user.groups])
+            self.assertEqual(gids, set(new_groups))
+            
+        assert_update([gid1])
+        assert_update([gid1, gid2])
+        assert_update([gid1, gid2, gid3])
+        assert_update([gid1, gid3])
+        assert_update([gid3])
+        assert_update([])
     
 def suite():
     suite = unittest.TestSuite()

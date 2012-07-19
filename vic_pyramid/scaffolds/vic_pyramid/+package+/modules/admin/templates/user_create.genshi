@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:py="http://genshi.edgewall.org/"
+      xmlns:xi="http://www.w3.org/2001/XInclude">
+      
+    <xi:include href="master.genshi" />
+
+<head>
+    <meta content="text/html; charset=UTF-8" http-equiv="content-type" py:replace="''"/>
+    <title>Create user</title>
+</head>
+
+<body>
+
+<h2>Create user</h2>
+
+<a href="${ request.route_url('admin.user_list') }">Back to user list</a>
+
+<form class="table-form" action="${ request.route_url('admin.user_create') }" method="POST">
+    <table>
+        <tbody>
+            <tr>
+                <td>${ form.user_name.label }</td>
+                <td>
+                    ${ form.user_name() }
+                    <span class="field_error" py:for="error in form.user_name.errors">
+                        ${ error }
+                    </span>
+                </td> 
+            </tr>
+            
+            <tr>
+                <td>${ form.password.label }</td>
+                <td>
+                    ${ form.password() }
+                    <span class="field_error" py:for="error in form.password.errors">
+                        ${ error }
+                    </span>
+                </td>  
+            </tr>
+            
+            <tr>
+                <td>${ form.display_name.label }</td>
+                <td>
+                    ${ form.display_name() }
+                    <span class="field_error" py:for="error in form.display_name.errors">
+                        ${ error }
+                    </span>
+                </td>  
+            </tr>
+            
+            <tr>
+                <td>${ form.email.label }</td>
+                <td>
+                    ${ form.email() }
+                    <span class="field_error" py:for="error in form.email.errors">
+                        ${ error }
+                    </span>
+                </td>  
+            </tr>
+            
+            <tr>
+                <td>${ form.groups.label }</td>
+                <td>
+                    ${ form.groups() }
+                    <span class="field_error" py:for="error in form.groups.errors">
+                        ${ error }
+                    </span>
+                </td>  
+            </tr>
+
+            <tr>
+                <td></td>
+                <td>
+                    <input name="submit" type="submit" value="${_('Create')}" />
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <input type="hidden" name="csrf_token" value="${ request.session.get_csrf_token() }" />
+</form>
+
+
+</body>
+</html>
