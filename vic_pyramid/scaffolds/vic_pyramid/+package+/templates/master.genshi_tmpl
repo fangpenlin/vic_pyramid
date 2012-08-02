@@ -9,14 +9,14 @@
     
     <link 
         rel="stylesheet" 
-        href="${ request.static_url('helloworld:static/bootstrap/css/bootstrap.min.css') }" 
+        href="${ request.static_url('{{package}}:static/bootstrap/css/bootstrap.min.css') }" 
         type="text/css" 
     />
     
     <!-- Font Awesome - http://fortawesome.github.com/Font-Awesome -->
     <link 
         rel="stylesheet" 
-        href="${ request.static_url('helloworld:static/font-awesome/css/font-awesome.css') }" 
+        href="${ request.static_url('{{package}}:static/font-awesome/css/font-awesome.css') }" 
         type="text/css" 
     />  
 
@@ -30,7 +30,7 @@
 
     <link 
         rel="stylesheet" 
-        href="${ request.static_url('helloworld:static/css/style.css') }" 
+        href="${ request.static_url('{{package}}:static/css/style.css') }" 
         type="text/css" 
     />
 
@@ -45,7 +45,7 @@
 from pyramid.i18n import get_locale_name
 from pyramid.security import effective_principals
 
-from helloworld import flash
+from {{package}} import flash
 
 msgs = request.session.pop_flash()
 flash_msgs = []
@@ -68,7 +68,7 @@ for msg in msgs:
     >
         <div class="navbar-inner">
             <div class="container">
-                <a class="brand" href="${ request.route_url('front.home') }">Helloworld</a>
+                <a class="brand" href="${ request.route_url('front.home') }">{{package}}</a>
                 <ul class="nav">
                     <li>
                         <a href="#"><i class="icon-star"></i> Item1</a>
@@ -129,7 +129,7 @@ for msg in msgs:
                        current_lang=get_locale_name(request)"
             >
               Language: 
-              <select name="lang_menu" id="lang_menu" onchange="jump_menu(this)">
+              <select name="lang_menu" id="lang_menu" onchange="window.location = this.options[this.selectedIndex].value;">
                 <option 
                   py:for="lang, lang_name in langs" 
                   value="${ request.route_url('front.set_lang', lang=lang) }" 

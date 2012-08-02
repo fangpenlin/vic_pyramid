@@ -1,4 +1,4 @@
----
+ï»¿---
 
 # authentication secret key
 auth_secret_key: "{{random_string}}"
@@ -6,6 +6,6 @@ auth_secret_key: "{{random_string}}"
 # available languages 
 available_langs:
     - [en_us, English]
-    - [zh_tw, ÁcÅé¤¤¤å]
+    - [zh_tw, ç¹é«”ä¸­æ–‡]
 
 ...

@@ -3,12 +3,13 @@ from pyramid.decorator import reify
 from pyramid.events import subscriber
 from pyramid.events import NewRequest
 
+from {{package}}.i18n import normalize_locale_name
+
 @subscriber(NewRequest)
 def select_lanuage(event):
     """Select language from accept-languages header of request
     
     """
-    from helloworld.i18n import normalize_locale_name
     request = event.request
     if request.cookies.get('_LOCALE_'):
         return
