@@ -17,6 +17,8 @@ sqlalchemy.write.url = sqlite:///%(here)s/{{project}}.db
 sqlalchemy.write.pool_recycle = 3600
 sqlalchemy.read_write_same = true
 
+genshi.default_domain = {{package}}
+
 [server:main]
 use = egg:waitress#main
 host = 0.0.0.0

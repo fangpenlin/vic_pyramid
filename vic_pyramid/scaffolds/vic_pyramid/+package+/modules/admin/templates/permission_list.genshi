@@ -13,9 +13,12 @@
 
 <h2>Permission list</h2>
 
-<a href="${ request.route_url('admin.permission_create') }">Create permission</a>
+<a class="btn" href="${ request.route_url('admin.permission_create') }">
+    <i class="icon-plus"></i>
+    Create permission
+</a>
 
-<table class="data">
+<table class="table">
     <thead><tr>
         <td>Action</td>
         <td>ID</td>
@@ -26,7 +29,7 @@
     <tbody>
         <tr py:for="permission in permissions">
             <td>
-                <a href="${ request.route_url('admin.permission_edit', permission_name=permission.permission_name) }">Edit</a>
+                <a class="btn" href="${ request.route_url('admin.permission_edit', permission_name=permission.permission_name) }">Edit</a>
             </td>
             <td>${ permission.permission_id }</td>
             <td>${ permission.permission_name }</td>

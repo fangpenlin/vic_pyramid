@@ -23,7 +23,8 @@ requires = [
     'scss_tools',
     'PyYAML',
     'nose',
-    'wtforms'
+    'wtforms',
+	'babel',
 ]
 
 setup(name='{{project}}',
@@ -49,6 +50,11 @@ setup(name='{{project}}',
         'webtest'
     ],
     install_requires = requires,
+    message_extractors={'{{package}}': [
+        ('**.py', 'python', None),
+        ('**.genshi', 'genshi', None),
+        ('static/**', 'ignore', None)]
+    }, 
     entry_points = """\
     [paste.app_factory]
     main = {{package}}:main

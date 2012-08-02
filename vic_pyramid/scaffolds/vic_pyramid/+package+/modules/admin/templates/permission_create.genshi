@@ -3,6 +3,7 @@
       xmlns:xi="http://www.w3.org/2001/XInclude">
       
     <xi:include href="master.genshi" />
+    <xi:include href="../../../templates/widgets/form.genshi" />
 
 <head>
     <meta content="text/html; charset=UTF-8" http-equiv="content-type" py:replace="''"/>
@@ -13,42 +14,13 @@
 
 <h2>Create permission</h2>
 
-<a href="${ request.route_url('admin.permission_list') }">Back to permission list</a>
+<a class="btn" href="${ request.route_url('admin.permission_list') }">Back to permission list</a>
 
-<form class="table-form" action="${ request.route_url('admin.permission_create') }" method="POST">
-    <table>
-        <tbody>
-            <tr>
-                <td>${ form.permission_name.label }</td>
-                <td>
-                    ${ form.permission_name() }
-                    <span class="field_error" py:for="error in form.permission_name.errors">
-                        ${ error }
-                    </span>
-                </td> 
-            </tr>
-            
-            <tr>
-                <td>${ form.description.label }</td>
-                <td>
-                    ${ form.description() }
-                    <span class="field_error" py:for="error in form.description.errors">
-                        ${ error }
-                    </span>
-                </td>  
-            </tr>
-          
-            <tr>
-                <td></td>
-                <td>
-                    <input name="submit" type="submit" value="${_('Create')}" />
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <input type="hidden" name="csrf_token" value="${ request.session.get_csrf_token() }" />
-</form>
-
+${ standard_form(
+    form=form, 
+    action=request.route_url('admin.permission_create'), 
+    submit=_('Create')
+) }
 
 </body>
 </html>

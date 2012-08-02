@@ -1,5 +1,26 @@
 from pyramid.request import Request
 from pyramid.decorator import reify
+from pyramid.events import subscriber
+from pyramid.events import NewRequest
+
+@subscriber(NewRequest)
+def select_lanuage(event):
+    """Select language from accept-languages header of request
+    
+    """
+    from helloworld.i18n import normalize_locale_name
+    request = event.request
+    if request.cookies.get('_LOCALE_'):
+        return
+    settings = request.registry.settings
+    offers = [lang.replace('_', '-').lower() 
+              for lang, _ in settings['available_langs']]
+    accept = request.accept_language
+    match = accept.best_match(offers, settings['default_locale_name'])
+    match = match.replace('-', '_')
+    match = normalize_locale_name(match)
+    request._LOCALE_ = match
+    request.response.set_cookie('_LOCALE_', match)
 
 class WebRequest(Request):
     

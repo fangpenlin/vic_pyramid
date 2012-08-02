@@ -44,6 +44,8 @@ def main(global_config, **settings):
                           authorization_policy=authorization_policy,
                           session_factory=session_factory,
                           request_factory=WebRequest)
+    # activate translation
+    config.add_translation_dirs('{{package}}:locale/')
     # add Genshi renderer
     config.include('pyramid_genshi')
     # setup modules

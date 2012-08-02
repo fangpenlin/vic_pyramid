@@ -1,6 +1,5 @@
 from wtforms import Form
 from wtforms import TextField
-from wtforms import SelectField
 from wtforms import PasswordField
 from wtforms import SelectMultipleField
 from wtforms import ValidationError
@@ -81,7 +80,7 @@ class CheckboxList(object):
         if selected:
             options['checked'] = True
         return HTMLString(
-            u'<li><input %s></input><label for="%s">%s</label></li>' % 
+            u'<li class="checkbox"><input %s></input><label for="%s">%s</label></li>' % 
             (html_params(**options), options['id'], escape(unicode(label)))
         )
 

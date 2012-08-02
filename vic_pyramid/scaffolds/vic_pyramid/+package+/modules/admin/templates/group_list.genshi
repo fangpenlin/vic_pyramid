@@ -13,9 +13,12 @@
 
 <h2>Group list</h2>
 
-<a href="${ request.route_url('admin.group_create') }">Create group</a>
+<a class="btn" href="${ request.route_url('admin.group_create') }">
+    <i class="icon-plus"></i>
+    Create group
+</a>
 
-<table class="data">
+<table class="table">
     <thead><tr>
         <td>Action</td>
         <td>ID</td>
@@ -27,7 +30,7 @@
     <tbody>
         <tr py:for="group in groups">
             <td>
-                <a href="${ request.route_url('admin.group_edit', group_name=group.group_name) }">Edit</a>
+                <a class="btn" href="${ request.route_url('admin.group_edit', group_name=group.group_name) }">Edit</a>
             </td>
             <td>${ group.group_id }</td>
             <td>${ group.group_name }</td>
