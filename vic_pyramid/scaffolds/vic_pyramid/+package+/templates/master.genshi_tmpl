@@ -84,7 +84,7 @@ for msg in msgs:
                 <ul id="login" class="nav pull-right">
                     <py:if test="request.user_id is None">
                         <li py:attrs="{'class': 'active'} if route_name == 'account.login' else {}">
-                            <a href="${ request.route_url('account.login') }"><i class="icon-key"></i> Login</a>
+                            <a href="${ request.route_url('account.login') }"><i class="icon-signin"></i> Login</a>
                         </li>
                     </py:if>
                     <py:if test="request.user_id is not None">
@@ -97,7 +97,7 @@ for msg in msgs:
                             <a href="${ request.route_url('admin.home') }"><i class="icon-lock"></i> Admin</a>
                         </li>
                         <li>
-                            <a href="${ request.route_url('account.logout') }"><i class="icon-off"></i> Logout</a>
+                            <a href="${ request.route_url('account.logout') }"><i class="icon-signout"></i> Logout</a>
                         </li>
                     </py:if>
                 </ul>
