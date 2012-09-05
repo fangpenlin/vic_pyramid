@@ -88,16 +88,13 @@ for msg in msgs:
                         </li>
                     </py:if>
                     <py:if test="request.user_id is not None">
-                        <li>
-                            <p class="navbar-text">Current user: ${ request.user.display_name or request.user.user_name } </p>
-                        </li>
                         <li py:if="'permission:admin' in effective_principals(request)"
                             py:attrs="{'class': 'active'} if route_name.startswith('admin') else {}"
                         >
                             <a href="${ request.route_url('admin.home') }"><i class="icon-lock"></i> Admin</a>
                         </li>
                         <li>
-                            <a href="${ request.route_url('account.logout') }"><i class="icon-signout"></i> Logout</a>
+                            <a href="${ request.route_url('account.logout') }"><i class="icon-signout"></i> Logout ${ request.user.display_name or request.user.user_name }</a>
                         </li>
                     </py:if>
                 </ul>
