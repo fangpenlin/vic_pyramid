@@ -31,7 +31,9 @@
     <tbody>
         <tr py:for="user in users">
             <td>
-                <a class="btn" href="${ request.route_url('admin.user_edit', user_name=user.user_name) }">Edit</a>
+                <a class="btn" href="${ request.route_url('admin.user_edit', user_name=user.user_name) }">
+                    <i class="icon-edit"></i> Edit
+                </a>
             </td>
             <td>${ user.user_id }</td>
             <td>${ user.user_name }</td>

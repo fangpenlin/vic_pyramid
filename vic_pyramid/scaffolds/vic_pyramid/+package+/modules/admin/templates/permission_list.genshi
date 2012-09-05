@@ -29,7 +29,9 @@
     <tbody>
         <tr py:for="permission in permissions">
             <td>
-                <a class="btn" href="${ request.route_url('admin.permission_edit', permission_name=permission.permission_name) }">Edit</a>
+                <a class="btn" href="${ request.route_url('admin.permission_edit', permission_name=permission.permission_name) }">
+                    <i class="icon-edit"></i> Edit
+                </a>
             </td>
             <td>${ permission.permission_id }</td>
             <td>${ permission.permission_name }</td>

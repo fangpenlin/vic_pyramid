@@ -30,7 +30,9 @@
     <tbody>
         <tr py:for="group in groups">
             <td>
-                <a class="btn" href="${ request.route_url('admin.group_edit', group_name=group.group_name) }">Edit</a>
+                <a class="btn" href="${ request.route_url('admin.group_edit', group_name=group.group_name) }">
+                    <i class="icon-edit"></i> Edit
+                </a>
             </td>
             <td>${ group.group_id }</td>
             <td>${ group.group_name }</td>

@@ -14,7 +14,9 @@
 
 <h2>Create user</h2>
 
-<a class="btn" href="${ request.route_url('admin.user_list') }">Back to user list</a>
+<a class="btn" href="${ request.route_url('admin.user_list') }">
+    <i class=" icon-chevron-left"></i> Back to user list
+</a>
 
 ${ standard_form(
     form=form, 
