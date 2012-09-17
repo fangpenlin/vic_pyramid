@@ -85,6 +85,6 @@ def main(argv=sys.argv):
         session.flush()
             
         print 'Add admin to admin group'
-        user_model.update_groups(user_id, [group.group_id])
+        user_model.update_groups(admin.user_id, [group.group_id])
         session.flush()
             
