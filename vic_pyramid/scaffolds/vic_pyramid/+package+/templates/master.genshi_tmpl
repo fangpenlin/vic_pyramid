@@ -20,14 +20,20 @@
         type="text/css" 
     />  
 
-<!--[if IE 7]>
+<?python
+
+from genshi import HTML
+_tmpl = """<!--[if IE 7]>
     <link 
         rel="stylesheet" 
-        href="${ request.static_url('ez_comet.web:static/font-awesome/css/font-awesome-ie7.css') }" 
+        href="%s" 
         type="text/css" 
     />  
-<![endif]--> 
+<![endif]--> """ % request.static_url('{{package}}:static/font-awesome/css/font-awesome-ie7.css')
 
+?>
+    <span py:replace="HTML(_tmpl)" />
+    
     <link 
         rel="stylesheet" 
         href="${ request.static_url('{{package}}:static/css/style.css') }" 
