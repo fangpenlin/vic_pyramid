@@ -5,7 +5,7 @@ use_setuptools()
 
 from setuptools import setup, find_packages
 
-version = '0.1.3'
+version = '0.1.4'
 
 here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.rst')).read()
@@ -25,7 +25,7 @@ setup(
     include_package_data=True,
     packages=find_packages(),
     install_requires=[
-        'pyramid>1.2',
+        'pyramid>=1.4',
     ], 
     entry_points = """\
     [paste.paster_create_template]
