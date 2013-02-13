@@ -8,3 +8,4 @@ env/
 vic_pyramid.egg-info/
 dist/
 build/
+test_folder/

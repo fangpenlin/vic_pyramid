@@ -5,15 +5,14 @@ use_setuptools()
 
 from setuptools import setup, find_packages
 
-version = '0.1.4'
-
 here = os.path.abspath(os.path.dirname(__file__))
+VERSION = '0.1.5'
 README = open(os.path.join(here, 'README.rst')).read()
 CHANGES = open(os.path.join(here, 'CHANGES.rst')).read()
 
 setup(
     name='vic_pyramid',
-    version=version,
+    version=VERSION,
     author='Victor Lin',
     author_email='bornstub@gmail.com',
     description="Victor's Pyramid Scaffold",
@@ -25,8 +24,11 @@ setup(
     include_package_data=True,
     packages=find_packages(),
     install_requires=[
-        'pyramid>=1.4',
+        'pyramid',
     ], 
+    tests_require=[
+        'nose-cov',
+    ],
     entry_points = """\
     [paste.paster_create_template]
     vic_pyramid=vic_pyramid.scaffolds:VictorPyramidTemplate
