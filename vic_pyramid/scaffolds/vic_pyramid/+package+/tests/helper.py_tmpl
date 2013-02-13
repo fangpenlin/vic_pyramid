@@ -16,6 +16,7 @@ def create_session(echo=False, zope_transaction=True):
         DBSession.configure(extension=ZopeTransactionExtension())
     return DBSession
 
+
 def set_db_settings(settings):
     from sqlalchemy import engine_from_config
     from sqlalchemy.orm import scoped_session
@@ -32,21 +33,26 @@ def set_db_settings(settings):
     ))
     
     zt = ZopeTransactionExtension()
+
     def before_commit(session):
         assert False, "Read session cannot be wrote"
+
     zt.before_commit = before_commit
     read_maker = sessionmaker(
         extension=zt,
         bind=settings['read_engine']
     )
+    read_session = scoped_session(read_maker)
+
     def stop_write(self):
         assert False, "Read session cannot be wrote"
-    read_maker._old_flush = read_maker.flush
-    read_maker.commit = stop_write
-    read_session = scoped_session(read_maker)
+
+    read_session._old_flush = read_session.flush
+    read_session.commit = stop_write
      
     settings['read_session_maker'] = read_session
     settings['write_session_maker'] = write_session
+
 
 def init_testing_env(settings):
     from webtest import TestApp

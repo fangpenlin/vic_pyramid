@@ -12,8 +12,10 @@ class TestScaffolds(unittest.TestCase):
         self.version = open(os.path.join(self.pkg_dir, 'VERSION')).read()
 
         # create source distribute
-        subprocess.check_call([sys.executable, 'setup.py', 'sdist'], shell=True, cwd=self.pkg_dir)
         self.pkg_filename = os.path.join(self.pkg_dir, 'dist', 'vic_pyramid-%s.zip' % self.version)
+        if os.path.exists(self.pkg_filename):
+            os.remove(self.pkg_filename)
+        subprocess.check_call([sys.executable, 'setup.py', 'sdist'], shell=True, cwd=self.pkg_dir)
 
         # create test folder
         self.test_folder = os.path.join(self.pkg_dir, 'test_folder')
@@ -32,6 +34,7 @@ class TestScaffolds(unittest.TestCase):
         self.test_pcreate = os.path.join(self.test_scripts_folder, 'pcreate')
 
         # install vic_pyramid
+        subprocess.call([self.test_pip, 'uninstall', '-y', 'vic_pyramid'], shell=True, cwd=self.test_folder)
         subprocess.check_call([self.test_pip, 'install', self.pkg_filename], shell=True, cwd=self.test_folder)
 
         # create a helloworld project
@@ -55,7 +58,7 @@ class TestScaffolds(unittest.TestCase):
         self.assert_exists('helloworld', 'helloworld', 'static', 'font-awesome', 'font', 'FontAwesome.otf')
 
         # install the project
-        subprocess.check_call([self.test_python, 'setup.py', 'install'], 
+        subprocess.check_call([self.test_python, 'setup.py', 'develop'], 
             shell=True, cwd=self.helloworld_folder)
 
         # test the project

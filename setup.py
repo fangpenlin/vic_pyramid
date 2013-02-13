@@ -16,7 +16,7 @@ setup(
     author='Victor Lin',
     author_email='bornstub@gmail.com',
     description="Victor's Pyramid Scaffold",
-    long_description=README + '\n\n' +  CHANGES,
+    long_description=README + '\n\n' + CHANGES,
     url='https://bitbucket.org/victorlin/vic_pyramid',
     classifiers=[
     ],
@@ -29,7 +29,7 @@ setup(
     tests_require=[
         'nose-cov',
     ],
-    entry_points = """\
+    entry_points=""" \
     [paste.paster_create_template]
     vic_pyramid=vic_pyramid.scaffolds:VictorPyramidTemplate
     [pyramid.scaffold]
