@@ -12,10 +12,14 @@ class TestScaffolds(unittest.TestCase):
         self.version = open(os.path.join(self.pkg_dir, 'VERSION')).read()
 
         # create source distribute
-        self.pkg_filename = os.path.join(self.pkg_dir, 'dist', 'vic_pyramid-%s.zip' % self.version)
+        if sys.platform == 'win32':
+            ext = 'zip'
+        else:
+            ext = 'tar.gz'
+        self.pkg_filename = os.path.join(self.pkg_dir, 'dist', 'vic_pyramid-%s.%s' % (self.version, ext))
         if os.path.exists(self.pkg_filename):
             os.remove(self.pkg_filename)
-        subprocess.check_call([sys.executable, 'setup.py', 'sdist'], shell=True, cwd=self.pkg_dir)
+        subprocess.check_call([sys.executable, 'setup.py', 'sdist'], shell=False, cwd=self.pkg_dir)
 
         # create test folder
         self.test_folder = os.path.join(self.pkg_dir, 'test_folder')
@@ -23,7 +27,7 @@ class TestScaffolds(unittest.TestCase):
             os.mkdir(self.test_folder)
 
         # install virtualenv
-        subprocess.check_call(['virtualenv', '--no-site-packages', 'env'], shell=True, cwd=self.test_folder)
+        subprocess.check_call(['virtualenv', '--no-site-packages', 'env'], shell=False, cwd=self.test_folder)
 
         if sys.platform == 'win32':
             self.test_scripts_folder = os.path.join(self.test_folder, 'env', 'Scripts')
@@ -34,12 +38,12 @@ class TestScaffolds(unittest.TestCase):
         self.test_pcreate = os.path.join(self.test_scripts_folder, 'pcreate')
 
         # install vic_pyramid
-        subprocess.call([self.test_pip, 'uninstall', '-y', 'vic_pyramid'], shell=True, cwd=self.test_folder)
-        subprocess.check_call([self.test_pip, 'install', self.pkg_filename], shell=True, cwd=self.test_folder)
+        subprocess.call([self.test_pip, 'uninstall', '-y', 'vic_pyramid'], shell=False, cwd=self.test_folder)
+        subprocess.check_call([self.test_pip, 'install', self.pkg_filename], shell=False, cwd=self.test_folder)
 
         # create a helloworld project
         subprocess.check_call([self.test_pcreate, '-s', 'vic_pyramid', 'helloworld'], 
-            shell=True, cwd=self.test_folder)
+            shell=False, cwd=self.test_folder)
         self.helloworld_folder = os.path.join(self.test_folder, 'helloworld')
         
     def tearDown(self):
@@ -59,11 +63,11 @@ class TestScaffolds(unittest.TestCase):
 
         # install the project
         subprocess.check_call([self.test_python, 'setup.py', 'develop'], 
-            shell=True, cwd=self.helloworld_folder)
+            shell=False, cwd=self.helloworld_folder)
 
         # test the project
         subprocess.check_call([self.test_python, 'setup.py', 'nosetests', '-v'], 
-            shell=True, cwd=self.helloworld_folder)
+            shell=False, cwd=self.helloworld_folder)
 
 
 def suite():
