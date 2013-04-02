@@ -2,20 +2,24 @@ import logging
 
 from . import tables
 
+
 class AuthError(Exception):
     """Authentication error
     
     """
+
 
 class BadPassword(AuthError):
     """Raised when user tries to authenticate with wrong password
     
     """
 
+
 class UserNotExist(AuthError):
     """Raised when user tries to authenticate with a non-exist user
     
     """
+
 
 class UserModel(object):
     """User data model
@@ -224,3 +228,13 @@ class UserModel(object):
             .filter(tables.Group.group_id.in_(group_ids))
         user.groups = new_groups.all()
         self.session.flush()
+
+    def get_recovery_code(self, key, user_id):
+        """Get current recovery code of a user
+
+        """
+        import hmac
+        user = self.get_user_by_id(user_id)
+        h = hmac.new(key)
+        h.update('%s%s%s%s' % (user_id, user.user_name, user.email, user.password))
+        return h.hexdigest()

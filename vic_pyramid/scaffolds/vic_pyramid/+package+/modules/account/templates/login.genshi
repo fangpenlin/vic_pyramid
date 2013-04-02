@@ -20,6 +20,7 @@
         ${ form_field(form.password) }
         <div class="form-actions">
             <input name="submit" class="btn" type="submit" value="${_('Login')}" />
+            <a href="${ request.route_url('account.forgot_password') }">Forgot password?</a>
         </div>
     </fieldset>
     <input name="came_from" type="hidden" value="${ came_from }" />

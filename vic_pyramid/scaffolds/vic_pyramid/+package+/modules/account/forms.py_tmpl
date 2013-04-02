@@ -1,11 +1,13 @@
 from wtforms import Form
 from wtforms import TextField
 from wtforms import PasswordField
+from wtforms import HiddenField
 from wtforms import validators
 
 from {{project}}.i18n import LocalizerFactory
 
 get_localizer = LocalizerFactory()
+
 
 class FormFactory(object):
     
@@ -27,3 +29,30 @@ class FormFactory(object):
                 validators.Required(self.required_msg),
             ])
         return LoginForm
+
+    def make_forgot_password_form(self):
+        _ = self.localizer
+
+        class ForgotPasswordForm(Form):
+            email = TextField(_(u'Email'), [
+                validators.Required(self.required_msg),
+                validators.Email(self.invalid_email_msg)
+            ])
+        return ForgotPasswordForm
+    
+    def make_recovery_password_form(self):
+        _ = self.localizer
+
+        class RecoveryPasswordForm(Form):
+            new_password = PasswordField(_(u'Password'), [
+                validators.Required(self.required_msg),
+                validators.Length(min=6)
+            ])
+            new_password_confirm = PasswordField(_(u'Confirm Password'), [
+                validators.Required(self.required_msg),
+                validators.EqualTo('new_password', 
+                                   message=self.password_not_match_msg)
+            ])
+            user_name = HiddenField()
+            code = HiddenField()
+        return RecoveryPasswordForm

@@ -27,6 +27,7 @@ requires = [
     'wtforms',
     'babel',
     'boto',
+    'BeautifulSoup',
 ]
 
 setup(name='{{project}}',

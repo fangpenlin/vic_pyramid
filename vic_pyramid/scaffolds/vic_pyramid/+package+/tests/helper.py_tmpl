@@ -4,7 +4,7 @@ def create_session(echo=False, zope_transaction=True):
     """
     from sqlalchemy import create_engine
     from zope.sqlalchemy import ZopeTransactionExtension
-    from {{project}}.models.tables import initdb
+    from {{package}}.models.tables import initdb
     
     engine = create_engine('sqlite:///', convert_unicode=True, echo=echo)
     initdb(engine)

@@ -9,6 +9,7 @@ DBSession = scoped_session(sessionmaker(autocommit=False,
     
 _now_func = [func.utc_timestamp]
 
+
 def set_now_func(func):
     """Replace now function and return the old function
     
@@ -17,11 +18,13 @@ def set_now_func(func):
     _now_func[0] = func
     return old
 
+
 def get_now_func():
     """Return current now func
     
     """
     return _now_func[0]
+
 
 def now_func():
     """Return current datetime
@@ -29,6 +32,7 @@ def now_func():
     """
     func = _now_func[0]
     return func()
+
 
 def initdb(engine):
     DeclarativeBase.metadata.bind = engine
@@ -51,6 +55,7 @@ user_group_table = Table('user_group',  DeclarativeBase.metadata,
         onupdate="CASCADE", ondelete="CASCADE"))
 )
 
+
 class Group(DeclarativeBase):
     """A group is a bundle of users sharing same permissions
     
@@ -70,6 +75,7 @@ class Group(DeclarativeBase):
 
     def __unicode__(self):
         return self.group_name
+
 
 class User(DeclarativeBase):
     """A user is the entity contains attributes of a member account
@@ -99,6 +105,7 @@ class User(DeclarativeBase):
         for g in self.groups:
             perms = perms | set(g.permissions)
         return perms
+
 
 class Permission(DeclarativeBase):
     """A permission indicates the operation can be performed by specific users

@@ -92,6 +92,59 @@ class TestAccountView(unittest.TestCase):
         self.login_user('tester', 'testerpass')
         self.testapp.get('/logout', status='3*')
 
+    def test_recovery_password(self):
+        self.testapp.get('/forgot_password', status=200)
+
+        res = self.testapp.post('/forgot_password', dict(
+            email='tester@example.com',
+        ), status=200)
+        mailer = res.request.environ['pyramid_mailer.dummy_mailer']
+        self.assertEqual(len(mailer.outbox), 1)
+        mail = mailer.outbox[0]
+        # find recovery link
+        from BeautifulSoup import BeautifulSoup
+        soup = BeautifulSoup(mail.html)
+        links = soup.findAll('a')
+        recovery_link = None
+        for link in links:
+            if 'recovery_password' in link['href']:
+                recovery_link = link['href']
+                break
+
+        self.testapp.get('/recovery_password?user_name=xxx&code=xxx', status=404)
+        self.testapp.get('/recovery_password?user_name=tester&code=xxx', status=403)
+        self.testapp.get(recovery_link, status=200)
+
+        import urlparse
+        import urllib
+        q = urlparse.parse_qs(recovery_link.split('?')[-1])
+
+        code = q['code'][0]
+        qs = q.copy()
+        qs.update(dict(code=code + '0'))
+        qs = urllib.urlencode(qs, True)
+        self.testapp.get('/recovery_password?' + qs, status=403)
+
+        qs = q.copy()
+        qs.update(dict(user_name='tester01'))
+        qs = urllib.urlencode(qs, True)
+        self.testapp.get('/recovery_password?' + qs, status=404)
+
+        self.testapp.get(recovery_link, status=200)
+        self.testapp.post(recovery_link, dict(
+            new_password_confirm='password1',
+            new_password='password2',
+        ), status=200) 
+        # make sure the password is not changed
+        self.assert_login_success('tester', 'testerpass')
+
+        self.testapp.post(recovery_link, dict(
+            new_password_confirm='newpass',
+            new_password='newpass',
+        ), status=302) 
+        # make sure the password is not changed
+        self.assert_login_success('tester', 'newpass')
+
 
 def suite():
     suite = unittest.TestSuite()
