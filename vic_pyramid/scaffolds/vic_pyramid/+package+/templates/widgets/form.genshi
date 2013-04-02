@@ -13,26 +13,38 @@
 </py:def>
       
 <py:def function="form_field(field)">
-    <div class="control-group${ ' error' if field.errors else '' }">
+    <div py:if="field.type != 'HiddenField'" 
+        class="control-group${ ' error' if field.errors else '' }"
+    >
         ${ form_label(field) }
         <div class="controls">
             ${ field() }
             ${ field_errors(field) }
         </div> 
     </div>
+    <py:if test="field.type == 'HiddenField'">
+        ${ field() }
+    </py:if>
 </py:def>
 
 <py:def function="standard_form(form, action, submit=_('Submit'), method='POST')">
     <form class="form-horizontal" action="${ action }" method="${ method }">
         <fieldset>
             <py:for each="field in form">
-                ${ form_field(field) }
+                <py:if test="field.type != 'HiddenField'">
+                    ${ form_field(field) }
+                </py:if>
             </py:for>
             
             <div class="form-actions">
                 <input name="submit" class="btn" type="submit" value="${ submit }" />
             </div>
         </fieldset>
+        <py:for each="field in form">
+            <py:if test="field.type == 'HiddenField'">
+                ${ form_field(field) }
+            </py:if>
+        </py:for>
         <input type="hidden" name="csrf_token" value="${ request.session.get_csrf_token() }" />
     </form>
 </py:def>
