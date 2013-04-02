@@ -25,5 +25,10 @@ section#container {
             display: inline;
         }
     }
+
+    textarea#content {
+        height: 200px;
+        width: 400px;
+    }
     
 }
