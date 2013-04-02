@@ -1,5 +1,6 @@
 import unittest
 
+
 class TestUserModel(unittest.TestCase):
     
     def setUp(self):
@@ -192,7 +193,8 @@ class TestUserModel(unittest.TestCase):
         assert_update([gid1, gid3])
         assert_update([gid3])
         assert_update([])
-    
+
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestUserModel))

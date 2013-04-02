@@ -1,5 +1,6 @@
 import unittest
 
+
 class TestPermissionModel(unittest.TestCase):
     
     def setUp(self):
@@ -32,7 +33,8 @@ class TestPermissionModel(unittest.TestCase):
         
         self.assertEqual(permission.permission_name, permission_name)
         self.assertEqual(permission.description, description)
-    
+
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestPermissionModel))

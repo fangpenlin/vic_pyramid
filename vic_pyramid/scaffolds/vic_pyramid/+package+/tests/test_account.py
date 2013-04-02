@@ -1,6 +1,7 @@
 # -*- coding: utf8 -*-
 import unittest
 
+
 class TestAccountView(unittest.TestCase):
     def setUp(self):
         from .helper import init_testing_env
@@ -90,7 +91,8 @@ class TestAccountView(unittest.TestCase):
         self.testapp.get('/logout', status=400)
         self.login_user('tester', 'testerpass')
         self.testapp.get('/logout', status='3*')
-        
+
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestAccountView))

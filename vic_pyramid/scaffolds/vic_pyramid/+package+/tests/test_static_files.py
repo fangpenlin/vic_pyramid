@@ -1,5 +1,6 @@
 import unittest
 
+
 class TestStaticFiles(unittest.TestCase):
     def setUp(self):
         from .helper import init_testing_env
@@ -13,7 +14,8 @@ class TestStaticFiles(unittest.TestCase):
         
     def test_home(self):
         self.testapp.get('/favicon.ico', status=200)
-        
+
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestStaticFiles))

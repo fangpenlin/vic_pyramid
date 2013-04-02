@@ -1,5 +1,6 @@
 import unittest
 
+
 class TestGroupModel(unittest.TestCase):
     
     def setUp(self):
@@ -72,7 +73,8 @@ class TestGroupModel(unittest.TestCase):
         assert_update([pid1])
         assert_update([])
         assert_update([pid1])
-    
+
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestGroupModel))

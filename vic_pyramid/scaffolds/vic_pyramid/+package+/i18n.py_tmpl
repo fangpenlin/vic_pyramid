@@ -4,6 +4,7 @@ _ = TranslationStringFactory('{{package}}')
 
 default_domain = '{{package}}'
 
+
 def normalize_locale_name(locale_name):
     """Normalize locale name, for example, zh_tw will be normalized as
     zh_TW
@@ -16,6 +17,7 @@ def normalize_locale_name(locale_name):
     parts = normalized.split('.')
     result = parts[0]
     return result
+
 
 class LocalizerFactory(object):
     """Localize string
@@ -32,7 +34,8 @@ class LocalizerFactory(object):
         from pyramid.i18n import get_localizer
         localizer = get_localizer(request)
         return Localizer(localizer, self.domain)
-        
+
+
 class Localizer(object):
     """A proxy for localizer, bound with domain argument
     
@@ -56,4 +59,3 @@ class Localizer(object):
                                           domain=self.domain, 
                                           mapping=mapping)
         return result
-    

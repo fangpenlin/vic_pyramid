@@ -1,5 +1,6 @@
 from .models.user import UserModel
-    
+
+
 def get_group(userid, request):
     if userid is not None:
         user_model = UserModel(request.read_session)

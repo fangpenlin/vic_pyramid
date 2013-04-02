@@ -2,6 +2,7 @@ from pyramid.request import Request
 from pyramid.decorator import reify
 from pyramid.events import subscriber
 from pyramid.events import NewRequest
+from pyramid.settings import asbool
 
 from {{package}}.i18n import normalize_locale_name
 
@@ -23,6 +24,19 @@ def select_lanuage(event):
     match = normalize_locale_name(match)
     request._LOCALE_ = match
     request.response.set_cookie('_LOCALE_', match)
+
+
+@subscriber(NewRequest)
+def expose_dummy_mailer(event):
+    """Expose dummy mailer in WSGI mailer, mainly for testing
+        
+    """
+    from pyramid_mailer import get_mailer
+    request = event.request
+    settings = request.registry.settings
+    use_dummy_mailer = asbool(settings.get('use_dummy_mailer', False))
+    if use_dummy_mailer:
+        request.environ['pyramid_mailer.dummy_mailer'] = get_mailer(request)
 
 
 class WebRequest(Request):

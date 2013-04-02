@@ -4,11 +4,13 @@ import yaml
 from pyramid.config import Configurator
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
+from pyramid.settings import asbool
 from pyramid_beaker import session_factory_from_settings
 
 from .auth import get_group
 from .models import setup_database
 from .request import WebRequest
+
 
 def load_app_cfg():
     """Load application configuration and return
@@ -49,6 +51,8 @@ def main(global_config, **settings):
     config.add_translation_dirs('{{package}}:locale/')
     # add the mailer
     config.include('pyramid_mailer')
+    if asbool(settings.get('use_dummy_mailer', False)):
+        config.include('pyramid_mailer.testing')
     # add Genshi renderer
     config.include('pyramid_genshi')
     # setup modules

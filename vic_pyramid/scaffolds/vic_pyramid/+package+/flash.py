@@ -9,6 +9,7 @@ MSG_TYPES = [
 #: default type to use
 DEFAULT_TYPE = 'info'
 
+
 def add_flash(request, msg, type_=DEFAULT_TYPE):
     """Add a flash message
     

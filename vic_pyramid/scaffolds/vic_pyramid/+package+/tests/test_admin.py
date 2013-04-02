@@ -1,6 +1,7 @@
 # -*- coding: utf8 -*-
 import unittest
 
+
 class TestAdminView(unittest.TestCase):
     def setUp(self):
         from .helper import init_testing_env
@@ -108,7 +109,8 @@ class TestAdminView(unittest.TestCase):
         assert_access_all(True)
         self.logout()
         assert_access_all(False)
-        
+
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestAdminView))
