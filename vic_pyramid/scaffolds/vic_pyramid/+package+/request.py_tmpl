@@ -5,6 +5,7 @@ from pyramid.events import NewRequest
 
 from {{package}}.i18n import normalize_locale_name
 
+
 @subscriber(NewRequest)
 def select_lanuage(event):
     """Select language from accept-languages header of request
@@ -22,6 +23,7 @@ def select_lanuage(event):
     match = normalize_locale_name(match)
     request._LOCALE_ = match
     request.response.set_cookie('_LOCALE_', match)
+
 
 class WebRequest(Request):
     
@@ -75,8 +77,19 @@ class WebRequest(Request):
         model = UserModel(self.read_session)
         user = model.get_user_by_id(self.user_id)
         return user
+
+    @reify
+    def real_ip(self):
+        """The real IP address from x-forwarded-for, or x-real-ip, mainly
+        depends on configuration
+        
+        """
+        addresses = self.headers.get('X-Forwarded-For')
+        if not addresses:
+            return self.remote_addr
+        parts = addresses.split(',')
+        return parts[0].strip()
     
     def add_flash(self, *args, **kwargs):
         from .flash import add_flash
         return add_flash(self, *args, **kwargs)
-    

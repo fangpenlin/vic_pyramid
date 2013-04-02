@@ -19,6 +19,11 @@ sqlalchemy.read_write_same = true
 
 genshi.default_domain = {{package}}
 
+mail.host = smtp.example.com
+mail.username = example_user
+mail.password = smtppass
+mail.default_sender = admin@example.com
+
 [server:main]
 use = egg:waitress#main
 host = 0.0.0.0

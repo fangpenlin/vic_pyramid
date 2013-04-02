@@ -9,3 +9,6 @@ vic_pyramid.egg-info/
 dist/
 build/
 test_folder/
+cov_core-*.egg/
+coverage-*.egg/
+nose_cov-*.egg/

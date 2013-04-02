@@ -13,6 +13,7 @@ requires = [
     'pyramid>1.2',
     'pyramid_genshi',
     'pyramid_beaker',
+    'pyramid_mailer',
     'SQLAlchemy',
     'transaction',
     'pyramid_tm',
@@ -24,7 +25,8 @@ requires = [
     'PyYAML',
     'nose',
     'wtforms',
-	'babel',
+    'babel',
+    'boto',
 ]
 
 setup(name='{{project}}',
@@ -62,4 +64,3 @@ setup(name='{{project}}',
     populate_{{project}} = {{package}}.scripts.populate:main
     """,
 )
-

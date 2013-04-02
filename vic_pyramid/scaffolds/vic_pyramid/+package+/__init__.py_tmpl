@@ -24,6 +24,7 @@ def load_app_cfg():
         app_cfg = yaml.load(f)
     return app_cfg
 
+
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     
@@ -46,6 +47,8 @@ def main(global_config, **settings):
                           request_factory=WebRequest)
     # activate translation
     config.add_translation_dirs('{{package}}:locale/')
+    # add the mailer
+    config.include('pyramid_mailer')
     # add Genshi renderer
     config.include('pyramid_genshi')
     # setup modules
@@ -55,4 +58,3 @@ def main(global_config, **settings):
     # scan modules
     config.scan()
     return config.make_wsgi_app()
-
