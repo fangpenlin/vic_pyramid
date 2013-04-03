@@ -38,6 +38,12 @@ def set_lang(request):
     return response
 
 
+@view_config(route_name='front.terms_of_service', 
+             renderer='templates/terms_of_service.genshi')
+def terms_of_service(request):
+    return dict()
+
+
 @view_config(route_name='front.contact_us_received', 
              renderer='templates/contact_us_received.genshi')
 def contact_us_received(request):

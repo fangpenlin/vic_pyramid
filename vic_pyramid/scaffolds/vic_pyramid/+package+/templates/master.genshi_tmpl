@@ -83,6 +83,9 @@ for msg in msgs:
                 
                 <ul id="login" class="nav pull-right">
                     <py:if test="request.user_id is None">
+                        <li py:attrs="{'class': 'active'} if route_name == 'account.register' else {}">
+                            <a href="${ request.route_url('account.register') }"><i class="icon-ok"></i> Register</a>
+                        </li>
                         <li py:attrs="{'class': 'active'} if route_name == 'account.login' else {}">
                             <a href="${ request.route_url('account.login') }"><i class="icon-signin"></i> Login</a>
                         </li>

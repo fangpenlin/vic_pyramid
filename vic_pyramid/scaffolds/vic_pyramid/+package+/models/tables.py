@@ -41,18 +41,18 @@ def initdb(engine):
 # groups and permissions. This is required by repoze.what.
 group_permission_table = Table('group_permission', DeclarativeBase.metadata,
     Column('group_id', Integer, ForeignKey('group.group_id',
-        onupdate="CASCADE", ondelete="CASCADE")),
+            onupdate="CASCADE", ondelete="CASCADE")),
     Column('permission_id', Integer, ForeignKey('permission.permission_id',
-        onupdate="CASCADE", ondelete="CASCADE"))
+            onupdate="CASCADE", ondelete="CASCADE"))
 )
 
 # This is the association table for the many-to-many relationship between
 # groups and members - this is, the memberships. It's required by repoze.what.
 user_group_table = Table('user_group',  DeclarativeBase.metadata,
     Column('user_id', Integer, ForeignKey('user.user_id',
-        onupdate="CASCADE", ondelete="CASCADE")),
+            onupdate="CASCADE", ondelete="CASCADE")),
     Column('group_id', Integer, ForeignKey('group.group_id',
-        onupdate="CASCADE", ondelete="CASCADE"))
+            onupdate="CASCADE", ondelete="CASCADE"))
 )
 
 
@@ -92,6 +92,8 @@ class User(DeclarativeBase):
     display_name = Column(Unicode(255))
     
     password = Column('password', String(80))
+
+    verified = Column(Boolean, default=False)
     
     created = Column(DateTime, default=now_func)
     

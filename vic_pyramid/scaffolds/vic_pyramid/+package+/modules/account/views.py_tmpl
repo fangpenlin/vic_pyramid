@@ -12,6 +12,7 @@ from {{package}}.models.user import UserModel
 from {{package}}.mail import render_mail
 from {{package}}.mail import send_mail
 from {{package}}.i18n import LocalizerFactory
+from {{package}}.utils import check_csrf_token
 from .forms import FormFactory
 
 get_localizer = LocalizerFactory()
@@ -113,6 +114,131 @@ def logout(request):
     request.add_flash(msg)
     return HTTPFound(location=came_from,
                      headers=headers)
+
+
+@view_config(route_name='account.register', 
+             renderer='templates/register.genshi')
+def register(request):
+    _ = get_localizer(request)
+    settings = request.registry.settings
+    
+    user_model = UserModel(request.write_session)
+    
+    factory = FormFactory(_)
+    RegisterForm = factory.make_register_form()
+    form = RegisterForm(request.params)
+    
+    if request.method == 'POST':
+        check_csrf_token(request)
+        
+        validate_result = form.validate()
+        user_name = request.params['user_name']
+        password = request.params['password']
+        email = request.params['email']
+
+        black_domain = set(settings.get('email_black_domain_list', []))
+        domain = email.split('@')[-1].lower()
+        if domain in black_domain:
+            msg = _(u'Invalid email address')
+            form.email.errors.append(msg)
+            validate_result = False
+        
+        by_name = user_model.get_user_by_name(user_name)
+        if by_name is not None:
+            msg = _(u'Username %s already exists') % user_name
+            form.user_name.errors.append(msg)
+            validate_result = False
+            
+        by_email = user_model.get_user_by_email(email)
+        if by_email is not None:
+            msg = _(u'Email %s already exists') % email
+            form.email.errors.append(msg)
+            validate_result = False
+
+        if validate_result:
+            with transaction.manager:
+                
+                user_id = user_model.create_user(
+                    user_name=user_name,
+                    display_name=user_name,
+                    password=password,
+                    email=email,
+                )
+                
+                auth_secret_key = settings['auth_secret_key']
+                code = user_model.get_verification_code(
+                    user_id=user_id, 
+                    verify_type='create_user',
+                    secret=auth_secret_key
+                )
+                link = request.route_url(
+                    'account.activate', 
+                    user_name=user_name, 
+                    code=code
+                )
+                params = dict(link=link, user_name=user_name)
+                html = render_mail(
+                    request, 
+                    '{{package}}:templates/mails/register_link.genshi', 
+                    params
+                )
+                
+                subject = _('{{package}} account activation')
+                send_mail(
+                    request=request,
+                    subject=subject,
+                    to_addresses=[email],
+                    format='html',
+                    body=html
+                )
+            
+            msg = _(u"User ${user_name} has been registered", 
+                    mapping=dict(user_name=user_name))
+            request.add_flash(msg, 'success')
+            return HTTPFound(location=request.route_url('account.check_mailbox'))
+    
+    return dict(form=form)
+
+
+@view_config(route_name='account.check_mailbox', 
+             renderer='templates/check_mailbox.genshi')
+def check_mailbox(request):
+    return dict()
+
+
+@view_config(route_name='account.activate', 
+             renderer='templates/activate.genshi')
+def activate(request):
+    _ = get_localizer(request)
+    settings = request.registry.settings
+    
+    user_model = UserModel(request.write_session)
+    
+    code = request.matchdict['code']
+    user_name = request.matchdict['user_name']
+    user = user_model.get_user_by_name(user_name)
+    
+    auth_secret_key = settings['auth_secret_key']
+    valid_code = user_model.get_verification_code(
+        user_id=user.user_id, 
+        verify_type='create_user',
+        secret=auth_secret_key
+    )
+    
+    if valid_code != code:
+        msg = _(u"Invalid activation link", 
+                mapping=dict(user_name=user_name))
+        request.add_flash(msg, 'error')
+        return HTTPFound(location=request.route_url('front.home'))
+    
+    if not user.verified:
+        with transaction.manager:
+            user_model.update_user(user.user_id, verified=True)
+    
+    msg = _(u"User ${user_name} is activated", 
+            mapping=dict(user_name=user_name))
+    request.add_flash(msg, 'success')
+    return dict()
 
 
 @view_config(route_name='account.forgot_password',

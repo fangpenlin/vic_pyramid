@@ -95,6 +95,7 @@ class UserModel(object):
         display_name,
         password,
         email,
+        verified=False, 
     ):
         """Create a new user and return verification
         
@@ -109,7 +110,8 @@ class UserModel(object):
             email=unicode(email), 
             display_name=unicode(display_name), 
             password=salt_hashedpassword,
-            created=tables.now_func()
+            created=tables.now_func(),
+            verified=verified, 
         )
         self.session.add(user)
         # flush the change, so we can get real user id
@@ -216,6 +218,8 @@ class UserModel(object):
             user.display_name = kwargs['display_name']
         if 'email' in kwargs:
             user.email = kwargs['email']
+        if 'verified' in kwargs:
+            user.verified = kwargs['verified']
         self.session.add(user)
     
     def update_groups(self, user_id, group_ids):
@@ -238,3 +242,15 @@ class UserModel(object):
         h = hmac.new(key)
         h.update('%s%s%s%s' % (user_id, user.user_name, user.email, user.password))
         return h.hexdigest()
+
+    def get_verification_code(self, user_id, verify_type, secret):
+        """Get a verification code of user
+        
+        """
+        import hmac
+        user = self.get_user_by_id(user_id)
+        code_hash = hmac.new(secret)
+        code_hash.update(str(user_id))
+        code_hash.update(str(user.user_name))
+        code_hash.update(str(verify_type))
+        return code_hash.hexdigest()

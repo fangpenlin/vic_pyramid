@@ -30,9 +30,9 @@ requires = [
     'BeautifulSoup',
 ]
 
-setup(name='{{project}}',
+setup(name='{{package}}',
     version='0.0',
-    description='{{project}}',
+    description='{{package}}',
     long_description=README + '\n\n' +  CHANGES,
     classifiers=[
         "Programming Language :: Python",
@@ -62,6 +62,6 @@ setup(name='{{project}}',
     [paste.app_factory]
     main = {{package}}:main
     [console_scripts]
-    populate_{{project}} = {{package}}.scripts.populate:main
+    populate_{{package}} = {{package}}.scripts.populate:main
     """,
 )

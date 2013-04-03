@@ -1,6 +1,5 @@
 import os
 import sys
-import difflib
 
 
 def replace_package_lines(lines, project_name):
@@ -13,33 +12,50 @@ def replace_package_lines(lines, project_name):
 
 
 def get_diff(scaffolds_dir, target_dir, project_name, ext=None):
-    ext = ext or ['.py']
-    for dirpath, dirname, filenames in os.walk(scaffolds_dir):
+    ext = ext or ['.py', '.ini', '.genshi']
+    for dirpath, dirname, filenames in os.walk(target_dir):
         for filename in filenames:
-            fullpath = os.path.join(dirpath, filename)
-            relpath = os.path.relpath(fullpath, scaffolds_dir)
+            work_fullpath = os.path.join(dirpath, filename)
+            work_relpath = os.path.relpath(work_fullpath, target_dir)
 
-            tmpl = False
-            proj_relpath = relpath.replace('+package+', project_name)
-            if proj_relpath.endswith('_tmpl'):
-                proj_relpath = proj_relpath[:-len('_tmpl')]
-                tmpl = True
-            proj_fullpath = os.path.join(target_dir, proj_relpath)
-
-            _, e = os.path.splitext(proj_fullpath)
+            _, e = os.path.splitext(work_fullpath)
             if e not in ext:
                 continue
 
-            if not os.path.exists(proj_fullpath):
-                # TODO: 
+            if '.egg' in work_fullpath:
                 continue
 
-            with open(fullpath, 'wt') as a:
-                with open(proj_fullpath, 'rt') as b:
-                    for line in b.readlines():
-                        l = line
-                        l = l.replace(project_name, '{{package}}')
-                        a.write(l)
+            with open(work_fullpath, 'rt') as f:
+                work_lines = list(f.readlines())
+
+            tmpl = False
+            for line in work_lines:
+                if project_name in line:
+                    tmpl = True
+
+            sc_relpath = work_relpath.replace(project_name, '+package+')
+            if tmpl:
+                sc_relpath = sc_relpath + '_tmpl'
+            sc_fullpath = os.path.join(scaffolds_dir, sc_relpath)
+
+            stack = []
+            current_path = sc_fullpath
+            while True:
+                base, name = os.path.split(current_path)
+                if os.path.exists(base):
+                    break
+                stack.append(base)
+                current_path = base
+
+            for dirname in stack[::-1]:
+                os.mkdir(dirname)
+
+            with open(sc_fullpath, 'wt') as f:
+                for line in work_lines:
+                    l = line
+                    l = l.replace(project_name, '{{package}}')
+                    f.write(l)
+
 
 def main():
     from vic_pyramid import scaffolds 

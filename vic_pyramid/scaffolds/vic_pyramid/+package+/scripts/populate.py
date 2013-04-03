@@ -10,15 +10,16 @@ from pyramid.paster import (
 from ..models import tables
 from ..models import setup_database
 
+
 def usage(argv):
     cmd = os.path.basename(argv[0])
     print('usage: %s <config_uri>\n'
           '(example: "%s development.ini")' % (cmd, cmd)) 
     sys.exit(1)
 
+
 def main(argv=sys.argv):
     import getpass
-    import transaction
     from ..models.user import UserModel
     from ..models.group import GroupModel
     from ..models.permission import PermissionModel
@@ -56,7 +57,8 @@ def main(argv=sys.argv):
                 user_name='admin',
                 display_name='Administrator',
                 email=email,
-                password=password
+                password=password, 
+                verified=True, 
             )
             admin = user_model.get_user_by_id(user_id)
             session.flush()
@@ -87,4 +89,3 @@ def main(argv=sys.argv):
         print 'Add admin to admin group'
         user_model.update_groups(admin.user_id, [group.group_id])
         session.flush()
-            

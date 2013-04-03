@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:py="http://genshi.edgewall.org/"
+      xmlns:xi="http://www.w3.org/2001/XInclude">
+      
+    <xi:include href="../../../templates/master.genshi" />
+    <xi:include href="../../../templates/widgets/form.genshi" />
+
+<head>
+    <meta content="text/html; charset=UTF-8" http-equiv="content-type" py:replace="''"/>
+    <title>Register</title>
+</head>
+
+<body>
+
+<h2>Register</h2>
+
+<form class="form-horizontal" action="${ request.route_url('account.register') }" method="POST">
+    <fieldset>
+        ${ form_field(form.user_name) }
+        ${ form_field(form.email) }
+        ${ form_field(form.email_confirm) }
+        ${ form_field(form.password) }
+            
+        <div class="control-group${ ' error' if form.terms_of_service.errors else '' }">
+             ${ form_label(form.terms_of_service) }
+            <div class="controls">
+                ${ form.terms_of_service() }
+                
+                I have read and agree to the 
+                <a href="${ request.route_url('front.terms_of_service') }" target="_blank">Terms of Service</a>
+                
+                ${ field_errors(form.terms_of_service) }
+            </div>  
+        </div>
+
+        <div class="form-actions">
+            <input name="submit" class="btn btn-primary btn-large" type="submit" value="${_('Register')}" />
+        </div>
+    </fieldset>
+    <input type="hidden" name="csrf_token" value="${ request.session.get_csrf_token() }" />
+</form>
+
+
+</body>
+</html>
