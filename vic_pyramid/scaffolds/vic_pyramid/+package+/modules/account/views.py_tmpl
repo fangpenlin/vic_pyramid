@@ -228,8 +228,7 @@ def activate(request):
     if valid_code != code:
         msg = _(u"Invalid activation link", 
                 mapping=dict(user_name=user_name))
-        request.add_flash(msg, 'error')
-        return HTTPFound(location=request.route_url('front.home'))
+        return HTTPForbidden(msg)
     
     if not user.verified:
         with transaction.manager:

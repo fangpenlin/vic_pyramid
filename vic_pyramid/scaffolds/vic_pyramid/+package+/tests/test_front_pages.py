@@ -15,6 +15,9 @@ class TestFrontPagesView(unittest.TestCase):
     def test_home(self):
         self.testapp.get('/', status=200)
 
+    def test_terms_of_service(self):
+        self.testapp.get('/terms_of_service', status=200)
+
     def test_contact_us_received(self):
         self.testapp.get('/contact_us_received', status=200)
 
