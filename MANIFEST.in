@@ -1,3 +1,6 @@
-include *.txt *.ini *.cfg *.rst distribute_setup.py
-recursive-include vic_pyramid *.*_tmpl *.py *.css *.ico *.js *.genshi *.scss *.mo *.po *.pot *.eot *.svg *.ttf *.woff *.otf
+include VERSION
+include CHANGES.rst
+include README.rst
+include distribute_setup.py 
+recursive-include vic_pyramid *.*_tmpl *.py *.css *.ico *.js *.genshi *.scss *.mo *.po *.pot *.eot *.svg *.ttf *.woff *.otf *.txt
 prune env

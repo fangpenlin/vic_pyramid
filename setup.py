@@ -6,9 +6,20 @@ use_setuptools()
 from setuptools import setup, find_packages
 
 here = os.path.abspath(os.path.dirname(__file__))
-VERSION = '0.1.5'
+VERSION = open(os.path.join(here, 'VERSION')).read()
 README = open(os.path.join(here, 'README.rst')).read()
 CHANGES = open(os.path.join(here, 'CHANGES.rst')).read()
+
+
+def read_requirements(filename):
+    content = open(os.path.join(here, filename)).read()
+    requirements = map(lambda r: r.strip(), content.splitlines())
+    return requirements
+
+
+requirements = read_requirements('requirements.txt')
+test_requirements = read_requirements('test_requirements.txt')
+
 
 setup(
     name='vic_pyramid',
@@ -23,12 +34,8 @@ setup(
     zip_safe=False,
     include_package_data=True,
     packages=find_packages(),
-    install_requires=[
-        'pyramid',
-    ], 
-    tests_require=[
-        'nose-cov',
-    ],
+    install_requires=requirements, 
+    tests_require=test_requirements,
     entry_points=""" \
     [paste.paster_create_template]
     vic_pyramid=vic_pyramid.scaffolds:VictorPyramidTemplate

@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 from wtforms import Form
 from wtforms import TextField
 from wtforms import PasswordField
@@ -10,6 +12,7 @@ from wtforms.widgets.core import HTMLString
 from {{package}}.i18n import LocalizerFactory
 
 get_localizer = LocalizerFactory()
+
 
 def are_similar(left, right):
     """Return are two strings too similar
@@ -24,6 +27,7 @@ def are_similar(left, right):
     if right and right in left:
         return True
     return False
+
 
 def similar(target, message):
     """This validator make sure that two fileds are not too similar. Mainly
@@ -42,6 +46,7 @@ def similar(target, message):
         if are_similar(other_data, my_data):
             raise ValidationError(message)
     return callee
+
 
 class CheckboxList(object):
     """
@@ -84,6 +89,7 @@ class CheckboxList(object):
             (html_params(**options), options['id'], escape(unicode(label)))
         )
 
+
 class FormFactory(object):
     
     def __init__(self, localizer):
@@ -99,19 +105,28 @@ class FormFactory(object):
         _ = self.localizer
         
         class UserCreateForm(Form):
-            user_name = TextField(_(u'User name'), [
-                validators.Required(self.required_msg),
-            ])
+            user_name = TextField(
+                _(u'User name'), 
+                [
+                    validators.Required(self.required_msg),
+                ]
+            )
             display_name = TextField(_(u'Display name'), [])
-            password = PasswordField(_(u'Password'), [
-                validators.Required(self.required_msg),
-                similar('user_name', self.password_too_similar_msg),
-                similar('display_name', self.password_too_similar_msg),
-                validators.Length(min=6)
-            ])
-            email = TextField(_(u'Email'), [
-                validators.Email(self.invalid_email_msg)
-            ])
+            password = PasswordField(
+                _(u'Password'), 
+                [
+                    validators.Required(self.required_msg),
+                    similar('user_name', self.password_too_similar_msg),
+                    similar('display_name', self.password_too_similar_msg),
+                    validators.Length(min=6)
+                ]
+            )
+            email = TextField(
+                _(u'Email'), 
+                [
+                    validators.Email(self.invalid_email_msg)
+                ]
+            )
             groups = SelectMultipleField(_(u'Groups'), widget=CheckboxList())
         return UserCreateForm
     
@@ -120,14 +135,19 @@ class FormFactory(object):
         
         class UserEditForm(Form):
             display_name = TextField(_(u'Display name'), [])
-            password = PasswordField(_(u'Password'), [
-                #similar('user_name', self.password_too_similar_msg),
-                # TODO: check is password similar to user_name here
-                # validators.Length(min=6)
-            ])
-            email = TextField(_(u'Email'), [
-                validators.Email(self.invalid_email_msg)
-            ])
+            password = PasswordField(
+                _(u'Password'), 
+                [
+                    #similar('user_name', self.password_too_similar_msg),
+                    # TODO: check is password similar to user_name here
+                    # validators.Length(min=6)
+                ]
+            )
+            email = TextField(
+                _(u'Email'), [
+                    validators.Email(self.invalid_email_msg)
+                ]
+            )
             groups = SelectMultipleField(_(u'Groups'), widget=CheckboxList())
         return UserEditForm
     
@@ -135,11 +155,14 @@ class FormFactory(object):
         _ = self.localizer
         
         class GroupCreateForm(Form):
-            group_name = TextField(_(u'Group name'), [
-                validators.Required(self.required_msg),
-            ])
+            group_name = TextField(
+                _(u'Group name'), [
+                    validators.Required(self.required_msg),
+                ]
+            )
             display_name = TextField(_(u'Display name'), [])
-            permissions = SelectMultipleField(_(u'Permissions'), 
+            permissions = SelectMultipleField(
+                _(u'Permissions'), 
                 widget=CheckboxList()
             )
         return GroupCreateForm
@@ -148,11 +171,15 @@ class FormFactory(object):
         _ = self.localizer
         
         class GroupEditForm(Form):
-            group_name = TextField(_(u'Group name'), [
-                validators.Required(self.required_msg),
-            ])
+            group_name = TextField(
+                _(u'Group name'), 
+                [
+                    validators.Required(self.required_msg),
+                ]
+            )
             display_name = TextField(_(u'Display name'), [])
-            permissions = SelectMultipleField(_(u'Permissions'), 
+            permissions = SelectMultipleField(
+                _(u'Permissions'), 
                 widget=CheckboxList()
             )
         return GroupEditForm
@@ -161,9 +188,12 @@ class FormFactory(object):
         _ = self.localizer
         
         class PermissionCreateForm(Form):
-            permission_name = TextField(_(u'Permission name'), [
-                validators.Required(self.required_msg),
-            ])
+            permission_name = TextField(
+                _(u'Permission name'), 
+                [
+                    validators.Required(self.required_msg),
+                ]
+            )
             description = TextField(_(u'Description'), [])
         return PermissionCreateForm
     
@@ -171,8 +201,11 @@ class FormFactory(object):
         _ = self.localizer
         
         class PermissionEditForm(Form):
-            permission_name = TextField(_(u'Permission name'), [
-                validators.Required(self.required_msg),
-            ])
+            permission_name = TextField(
+                _(u'Permission name'), 
+                [
+                    validators.Required(self.required_msg),
+                ]
+            )
             description = TextField(_(u'Description'), [])
         return PermissionEditForm

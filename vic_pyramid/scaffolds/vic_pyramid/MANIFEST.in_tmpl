@@ -1,2 +1,5 @@
-include *.txt *.ini *.cfg *.rst
+include requirements.txt 
+include test_requirements.txt 
+include CHANGES.rst
+include README.rst
 recursive-include {{package}} *.ico *.png *.css *.gif *.jpg *.pt *.txt *.mak *.mako *.js *.html *.xml *.genshi *.yaml

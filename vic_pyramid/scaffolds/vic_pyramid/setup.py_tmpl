@@ -9,26 +9,16 @@ here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.rst')).read()
 CHANGES = open(os.path.join(here, 'CHANGES.rst')).read()
 
-requires = [
-    'pyramid>1.2',
-    'pyramid_genshi',
-    'pyramid_beaker',
-    'pyramid_mailer',
-    'SQLAlchemy',
-    'transaction',
-    'pyramid_tm',
-    'pyramid_debugtoolbar',
-    'zope.sqlalchemy',
-    'waitress',
-    'WTForms',
-    'scss_tools',
-    'PyYAML',
-    'nose',
-    'wtforms',
-    'babel',
-    'boto',
-    'BeautifulSoup',
-]
+
+def read_requirements(filename):
+    content = open(os.path.join(here, filename)).read()
+    requirements = map(lambda r: r.strip(), content.splitlines())
+    return requirements
+
+
+requirements = read_requirements('requirements.txt')
+test_requirements = read_requirements('test_requirements.txt')
+
 
 setup(name='{{package}}',
     version='0.0',
@@ -48,11 +38,8 @@ setup(name='{{package}}',
     include_package_data=True,
     zip_safe=False,
     test_suite='{{package}}',
-    tests_require=[
-        'nose-cov',
-        'webtest'
-    ],
-    install_requires = requires,
+    tests_require=test_requirements,
+    install_requires=requirements,
     message_extractors={'{{package}}': [
         ('**.py', 'python', None),
         ('**.genshi', 'genshi', None),

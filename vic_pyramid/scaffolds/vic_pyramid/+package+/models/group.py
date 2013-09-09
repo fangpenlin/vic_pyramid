@@ -1,6 +1,8 @@
+from __future__ import unicode_literals
 import logging
 
 from . import tables
+
 
 class GroupModel(object):
     """Group data model

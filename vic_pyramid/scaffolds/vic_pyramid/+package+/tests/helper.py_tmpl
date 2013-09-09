@@ -1,20 +1,27 @@
-def create_session(echo=False, zope_transaction=True):
+from __future__ import unicode_literals
+
+
+def create_session(echo=False):
     """Create engine and session, return session then
     
     """
     from sqlalchemy import create_engine
+    from sqlalchemy.orm import scoped_session
+    from sqlalchemy.orm import sessionmaker
     from zope.sqlalchemy import ZopeTransactionExtension
-    from {{package}}.models.tables import initdb
+    from {{package}}.models.tables import DeclarativeBase 
     
     engine = create_engine('sqlite:///', convert_unicode=True, echo=echo)
-    initdb(engine)
-    from ..models.tables import DeclarativeBase, DBSession
-    DeclarativeBase.metadata.create_all(bind=engine)
-    DBSession.configure(bind=engine,
-                        extension=ZopeTransactionExtension())
-    if zope_transaction:
-        DBSession.configure(extension=ZopeTransactionExtension())
-    return DBSession
+    DeclarativeBase.metadata.bind = engine
+    DeclarativeBase.metadata.create_all()
+
+    session = scoped_session(sessionmaker(
+        autocommit=False,
+        autoflush=False,
+        bind=engine,
+        extension=ZopeTransactionExtension()
+    ))
+    return session
 
 
 def set_db_settings(settings):

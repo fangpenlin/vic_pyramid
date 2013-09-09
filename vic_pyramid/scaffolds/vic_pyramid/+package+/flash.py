@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 #: type of messages
 MSG_TYPES = [
     'info',

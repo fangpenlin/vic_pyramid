@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 import transaction
 from pyramid.view import view_config
 from pyramid.security import Allow
@@ -13,6 +15,7 @@ from .forms import FormFactory
 
 get_localizer = LocalizerFactory()
 
+
 class AdminContext(object):
     """Context for providing ACL attribute of administrator
     
@@ -26,11 +29,13 @@ class AdminContext(object):
     def __init__(self, request):
         pass
 
+
 @view_config(route_name='admin.home', 
              renderer='templates/home.genshi',
              permission='admin')
 def home(request):
     return dict()
+
 
 @view_config(route_name='admin.user_list', 
              renderer='templates/user_list.genshi',
@@ -39,6 +44,7 @@ def user_list(request):
     user_model = UserModel(request.read_session)
     users = user_model.get_users()
     return dict(users=users)
+
 
 @view_config(route_name='admin.user_create', 
              renderer='templates/user_create.genshi',
@@ -97,6 +103,7 @@ def user_create(request):
             return HTTPFound(location=request.route_url('admin.user_list'))
     
     return dict(form=form)
+
 
 @view_config(route_name='admin.user_edit', 
              renderer='templates/user_edit.genshi',
@@ -164,6 +171,7 @@ def user_edit(request):
     
     return dict(form=form, user=user)
 
+
 @view_config(route_name='admin.group_list', 
              renderer='templates/group_list.genshi',
              permission='admin')
@@ -171,6 +179,7 @@ def group_list(request):
     group_model = GroupModel(request.read_session)
     groups = group_model.get_groups()
     return dict(groups=groups)
+
 
 @view_config(route_name='admin.group_create', 
              renderer='templates/group_create.genshi',
@@ -222,6 +231,7 @@ def group_create(request):
             return HTTPFound(location=request.route_url('admin.group_list'))
     
     return dict(form=form)
+
 
 @view_config(route_name='admin.group_edit', 
              renderer='templates/group_edit.genshi',
@@ -289,6 +299,7 @@ def group_edit(request):
     
     return dict(form=form, group=group)
 
+
 @view_config(route_name='admin.permission_list', 
              renderer='templates/permission_list.genshi',
              permission='admin')
@@ -296,6 +307,7 @@ def permission_list(request):
     permission_model = PermissionModel(request.read_session)
     permissions = permission_model.get_permissions()
     return dict(permissions=permissions)
+
 
 @view_config(route_name='admin.permission_create', 
              renderer='templates/permission_create.genshi',
@@ -335,6 +347,7 @@ def permission_create(request):
             return HTTPFound(location=request.route_url('admin.permission_list'))
     return dict(form=form)
 
+
 @view_config(route_name='admin.permission_edit', 
              renderer='templates/permission_edit.genshi',
              permission='admin')
@@ -361,7 +374,8 @@ def permission_edit(request):
         description = request.params['description']
         
         by_name = permission_model.get_permission_by_name(permission_name)
-        if (by_name is not None and 
+        if (
+            by_name is not None and 
             permission_name != permission.permission_name
         ):
             msg = _(u'Permission name %s already exists') % permission_name

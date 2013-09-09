@@ -1,9 +1,11 @@
-import transaction
+from __future__ import unicode_literals
+
 from sqlalchemy import engine_from_config
 from sqlalchemy.orm import scoped_session
 from sqlalchemy.orm import sessionmaker
 from zope.sqlalchemy import ZopeTransactionExtension
     
+
 def setup_database(global_config, **settings):
     """Setup database
     

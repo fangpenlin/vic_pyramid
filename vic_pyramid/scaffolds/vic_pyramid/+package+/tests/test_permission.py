@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 import unittest
 
 
@@ -8,7 +9,7 @@ class TestPermissionModel(unittest.TestCase):
         from .helper import create_session
         from ..models import tables
         tables.set_now_func(datetime.datetime.utcnow)
-        self.session = create_session(zope_transaction=True)
+        self.session = create_session()
         
     def tearDown(self):
         self.session.remove()

@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 import logging
 
 from . import tables
@@ -177,8 +178,8 @@ class UserModel(object):
         from sqlalchemy.sql.expression import or_
         User = tables.User
         user = self.session.query(User) \
-            .filter(or_(User.user_name==name_or_email,
-                        User.email==name_or_email)) \
+            .filter(or_(User.user_name == name_or_email,
+                        User.email == name_or_email)) \
             .first()
         if user is None:
             # maybe it's case problem, although we enforce lower case to
@@ -187,8 +188,8 @@ class UserModel(object):
             # user query twice
             name_or_email = name_or_email.lower()
             user = self.session.query(User) \
-                .filter(or_(User.user_name==name_or_email,
-                            User.email==name_or_email)) \
+                .filter(or_(User.user_name == name_or_email,
+                            User.email == name_or_email)) \
                 .first()
             if user is None:
                 raise UserNotExist('User %s does not exist' % name_or_email)
