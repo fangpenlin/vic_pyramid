@@ -4,7 +4,7 @@ from .models.user import UserModel
 
 def get_group(userid, request):
     if userid is not None:
-        user_model = UserModel(request.read_session)
+        user_model = UserModel(request.db_session)
         user = user_model.get_user_by_id(userid)
         if user is None:
             return []

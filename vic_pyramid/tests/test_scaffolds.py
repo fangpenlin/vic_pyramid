@@ -36,16 +36,18 @@ class TestScaffolds(unittest.TestCase):
             os.mkdir(self.test_folder)
 
         # create virtualenv
-        subprocess.check_call(
-            ['virtualenv', '--no-site-packages', 'env'], 
-            shell=False, 
-            cwd=self.test_folder,
-        )
+        self.test_env = os.path.join(self.test_folder, 'env')
+        if not os.path.exists(self.test_env):
+            subprocess.check_call(
+                ['virtualenv', '--no-site-packages', 'env'], 
+                shell=False, 
+                cwd=self.test_folder,
+            )
 
         if sys.platform == 'win32':
-            self.test_scripts_folder = os.path.join(self.test_folder, 'env', 'Scripts')
+            self.test_scripts_folder = os.path.join(self.test_env, 'Scripts')
         else:
-            self.test_scripts_folder = os.path.join(self.test_folder, 'env', 'bin')
+            self.test_scripts_folder = os.path.join(self.test_env, 'bin')
         self.test_python = os.path.join(self.test_scripts_folder, 'python')
         self.test_pip = os.path.join(self.test_scripts_folder, 'pip')
         self.test_pcreate = os.path.join(self.test_scripts_folder, 'pcreate')

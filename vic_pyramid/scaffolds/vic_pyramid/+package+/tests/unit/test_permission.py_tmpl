@@ -1,25 +1,17 @@
 from __future__ import unicode_literals
-import unittest
+
+from .helper import ModelTestCase
+
+import transaction
 
 
-class TestPermissionModel(unittest.TestCase):
-    
-    def setUp(self):
-        import datetime
-        from .helper import create_session
-        from ..models import tables
-        tables.set_now_func(datetime.datetime.utcnow)
-        self.session = create_session()
-        
-    def tearDown(self):
-        self.session.remove()
+class TestPermissionModel(ModelTestCase):
         
     def make_one(self):
-        from ..models.permission import PermissionModel
+        from {{package}}.models.permission import PermissionModel
         return PermissionModel(self.session)
     
     def test_create_permission(self):
-        import transaction
         model = self.make_one()
         
         permission_name = 'test'
@@ -34,12 +26,3 @@ class TestPermissionModel(unittest.TestCase):
         
         self.assertEqual(permission.permission_name, permission_name)
         self.assertEqual(permission.description, description)
-
-
-def suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestPermissionModel))
-    return suite
-        
-if __name__ == '__main__':
-    unittest.main(defaultTest='suite')

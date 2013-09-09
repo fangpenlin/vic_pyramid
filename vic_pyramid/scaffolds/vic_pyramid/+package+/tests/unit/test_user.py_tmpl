@@ -1,29 +1,21 @@
 from __future__ import unicode_literals
-import unittest
+
+from .helper import ModelTestCase
+
+import transaction
 
 
-class TestUserModel(unittest.TestCase):
-    
-    def setUp(self):
-        import datetime
-        from .helper import create_session
-        from ..models import tables
-        tables.set_now_func(datetime.datetime.utcnow)
-        self.session = create_session()
-        
-    def tearDown(self):
-        self.session.remove()
+class TestUserModel(ModelTestCase):
         
     def make_one(self):
-        from ..models.user import UserModel
+        from {{package}}.models.user import UserModel
         return UserModel(self.session)
     
     def make_group_model(self):
-        from ..models.group import GroupModel
+        from {{package}}.models.group import GroupModel
         return GroupModel(self.session)
     
     def test_create_user(self):
-        import transaction
         model = self.make_one()
         
         user_name = 'victorlin'
@@ -49,7 +41,6 @@ class TestUserModel(unittest.TestCase):
         self.assertNotIn(password, user.password)
         
     def test_authenticate_user(self):
-        import transaction
         model = self.make_one()
         with transaction.manager:
             user_1 = model.create_user(
@@ -94,8 +85,8 @@ class TestUserModel(unittest.TestCase):
         self.assertEqual(result, user_3)
         
         # cases should not pass
-        from ..models.user import BadPassword
-        from ..models.user import UserNotExist
+        from {{package}}.models.user import BadPassword
+        from {{package}}.models.user import UserNotExist
         
         with self.assertRaises(BadPassword):
             model.authenticate_user(u'tester@now.in', u'First_pass')
@@ -119,7 +110,6 @@ class TestUserModel(unittest.TestCase):
         )
         
     def test_get_user(self):
-        import transaction
         model = self.make_one()
         
         user_name = 'victorlin'
@@ -157,7 +147,6 @@ class TestUserModel(unittest.TestCase):
         self.assertEqual(user.user_id, user_id2)
         
     def test_update_groups(self):
-        import transaction
         model = self.make_one()
         group_model = self.make_group_model()
         
@@ -194,12 +183,3 @@ class TestUserModel(unittest.TestCase):
         assert_update([gid1, gid3])
         assert_update([gid3])
         assert_update([])
-
-
-def suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestUserModel))
-    return suite
-        
-if __name__ == '__main__':
-    unittest.main(defaultTest='suite')

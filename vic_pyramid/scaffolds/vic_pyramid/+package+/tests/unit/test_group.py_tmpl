@@ -1,29 +1,21 @@
 from __future__ import unicode_literals
-import unittest
+
+from .helper import ModelTestCase
+
+import transaction
 
 
-class TestGroupModel(unittest.TestCase):
-    
-    def setUp(self):
-        import datetime
-        from .helper import create_session
-        from ..models import tables
-        tables.set_now_func(datetime.datetime.utcnow)
-        self.session = create_session()
-        
-    def tearDown(self):
-        self.session.remove()
+class TestGroupModel(ModelTestCase):
         
     def make_one(self):
-        from ..models.group import GroupModel
+        from {{package}}.models.group import GroupModel
         return GroupModel(self.session)
     
     def make_permission_model(self):
-        from ..models.permission import PermissionModel
+        from {{package}}.models.permission import PermissionModel
         return PermissionModel(self.session)
     
     def test_create_group(self):
-        import transaction
         model = self.make_one()
         
         group_name = 'tester'
@@ -40,7 +32,6 @@ class TestGroupModel(unittest.TestCase):
         self.assertEqual(group.display_name, display_name)
         
     def test_update_permissions(self):
-        import transaction
         model = self.make_one()
         permission_model = self.make_permission_model()
         
@@ -74,12 +65,3 @@ class TestGroupModel(unittest.TestCase):
         assert_update([pid1])
         assert_update([])
         assert_update([pid1])
-
-
-def suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestGroupModel))
-    return suite
-        
-if __name__ == '__main__':
-    unittest.main(defaultTest='suite')

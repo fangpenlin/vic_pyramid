@@ -54,7 +54,7 @@ def login(request):
         username_or_email = request.params['username_or_email']
         password = request.params['password']
         error = False
-        session = request.read_session
+        session = request.db_session
         user_model = UserModel(session)
         try:
             user_id = user_model.authenticate_user(username_or_email, password)
@@ -98,7 +98,7 @@ def logout(request):
         referrer = request.route_url('front.home') 
     came_from = request.params.get('came_from', referrer)
     
-    session = request.read_session
+    session = request.db_session
     user_model = UserModel(session)
     user_id = authenticated_userid(request)
     if user_id is None:
@@ -124,7 +124,7 @@ def register(request):
     _ = get_localizer(request)
     settings = request.registry.settings
     
-    user_model = UserModel(request.write_session)
+    user_model = UserModel(request.db_session)
     
     factory = FormFactory(_)
     RegisterForm = factory.make_register_form()
@@ -214,7 +214,7 @@ def activate(request):
     _ = get_localizer(request)
     settings = request.registry.settings
     
-    user_model = UserModel(request.write_session)
+    user_model = UserModel(request.db_session)
     
     code = request.matchdict['code']
     user_name = request.matchdict['user_name']
@@ -256,7 +256,7 @@ def forgot_password(request):
     factory = FormFactory(_)
     ForgotPasswordForm = factory.make_forgot_password_form()
     form = ForgotPasswordForm(request.params)
-    session = request.write_session
+    session = request.db_session
     user_model = UserModel(session)
 
     if request.method == 'POST' and form.validate():
@@ -310,7 +310,7 @@ def recovery_password(request):
     _ = get_localizer(request)
     settings = request.registry.settings
     
-    user_model = UserModel(request.write_session)
+    user_model = UserModel(request.db_session)
     
     user_name = request.params['user_name']
     code = request.params['code']

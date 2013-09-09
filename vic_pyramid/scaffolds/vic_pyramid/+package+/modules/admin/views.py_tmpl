@@ -41,7 +41,7 @@ def home(request):
              renderer='templates/user_list.genshi',
              permission='admin')
 def user_list(request):
-    user_model = UserModel(request.read_session)
+    user_model = UserModel(request.db_session)
     users = user_model.get_users()
     return dict(users=users)
 
@@ -52,8 +52,8 @@ def user_list(request):
 def user_create(request):
     _ = get_localizer(request)
     
-    user_model = UserModel(request.write_session)
-    group_model = GroupModel(request.write_session)
+    user_model = UserModel(request.db_session)
+    group_model = GroupModel(request.db_session)
     
     factory = FormFactory(_)
     UserCreateForm = factory.make_user_create_form()
@@ -111,8 +111,8 @@ def user_create(request):
 def user_edit(request):
     _ = get_localizer(request)
     
-    user_model = UserModel(request.write_session)
-    group_model = GroupModel(request.write_session)
+    user_model = UserModel(request.db_session)
+    group_model = GroupModel(request.db_session)
     
     user_name = request.matchdict['user_name']
     user = user_model.get_user_by_name(user_name)
@@ -176,7 +176,7 @@ def user_edit(request):
              renderer='templates/group_list.genshi',
              permission='admin')
 def group_list(request):
-    group_model = GroupModel(request.read_session)
+    group_model = GroupModel(request.db_session)
     groups = group_model.get_groups()
     return dict(groups=groups)
 
@@ -187,8 +187,8 @@ def group_list(request):
 def group_create(request):
     _ = get_localizer(request)
     
-    group_model = GroupModel(request.write_session)
-    permission_model = PermissionModel(request.write_session)
+    group_model = GroupModel(request.db_session)
+    permission_model = PermissionModel(request.db_session)
     
     factory = FormFactory(_)
     GroupCreateForm = factory.make_group_create_form()
@@ -239,8 +239,8 @@ def group_create(request):
 def group_edit(request):
     _ = get_localizer(request)
     
-    group_model = GroupModel(request.write_session)
-    permission_model = PermissionModel(request.write_session)
+    group_model = GroupModel(request.db_session)
+    permission_model = PermissionModel(request.db_session)
     
     group_name = request.matchdict['group_name']
     group = group_model.get_group_by_name(group_name)
@@ -304,7 +304,7 @@ def group_edit(request):
              renderer='templates/permission_list.genshi',
              permission='admin')
 def permission_list(request):
-    permission_model = PermissionModel(request.read_session)
+    permission_model = PermissionModel(request.db_session)
     permissions = permission_model.get_permissions()
     return dict(permissions=permissions)
 
@@ -315,7 +315,7 @@ def permission_list(request):
 def permission_create(request):
     _ = get_localizer(request)
     
-    permission_model = PermissionModel(request.write_session)
+    permission_model = PermissionModel(request.db_session)
     
     factory = FormFactory(_)
     PermissionCreateForm = factory.make_permission_create_form()
@@ -354,7 +354,7 @@ def permission_create(request):
 def permission_edit(request):
     _ = get_localizer(request)
     
-    permission_model = PermissionModel(request.write_session)
+    permission_model = PermissionModel(request.db_session)
     
     permission_name = request.matchdict['permission_name']
     permission = permission_model.get_permission_by_name(permission_name)

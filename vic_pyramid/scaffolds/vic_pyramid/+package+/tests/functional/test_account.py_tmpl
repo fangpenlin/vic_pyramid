@@ -1,23 +1,15 @@
 # -*- coding: utf8 -*-
 from __future__ import unicode_literals
-import unittest
+
+import transaction
+
+from .helper import ViewTestCase
 
 
-class TestAccountView(unittest.TestCase):
+class TestAccountView(ViewTestCase):
     def setUp(self):
-        from .helper import init_testing_env
-        self.testapp = init_testing_env({
-            'sqlalchemy.write.url': 'sqlite:///',
-            'use_dummy_mailer': True
-        })
-        self.create_testuser()
-        
-    def tearDown(self):
-        self.testapp.Session.remove()
-        
-    def create_testuser(self):
-        import transaction
-        from ..models.user import UserModel
+        super(TestAccountView, self).setUp()
+        from {{package}}.models.user import UserModel
         model = UserModel(self.testapp.session)
         with transaction.manager:
             model.create_user(
@@ -152,9 +144,9 @@ class TestAccountView(unittest.TestCase):
         self.assert_(len(errors) > 0)
 
     def assert_register_success(self, params):
+        from {{package}}.models.user import UserModel
         res = self.testapp.post('/register', params, status=302)
 
-        from ..models.user import UserModel
         model = UserModel(self.testapp.session)
         user = model.get_user_by_name(params['user_name'])
         self.assertNotEqual(user, None)
@@ -248,6 +240,7 @@ class TestAccountView(unittest.TestCase):
         ))
 
     def test_activate(self):
+        from {{package}}.models.user import UserModel
         res = self.testapp.get('/register', status=200)
         csrf_token = self.get_csrf_token(res)
 
@@ -280,7 +273,6 @@ class TestAccountView(unittest.TestCase):
         self.testapp.get('/activate/tester2/' + code + 'x', status=403)
         self.testapp.get('/activate/tester2/' + code[:-1] + 'x', status=403)
 
-        from ..models.user import UserModel
         model = UserModel(self.testapp.session)
         user = model.get_user_by_name('tester2')
         self.assertEqual(user.verified, False)
@@ -288,12 +280,3 @@ class TestAccountView(unittest.TestCase):
         self.testapp.get('/activate/tester2/' + code, status=200)
         user = model.get_user_by_name('tester2')
         self.assertEqual(user.verified, True)
-
-
-def suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestAccountView))
-    return suite
-        
-if __name__ == '__main__':
-    unittest.main(defaultTest='suite')

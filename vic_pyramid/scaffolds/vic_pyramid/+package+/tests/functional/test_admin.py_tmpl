@@ -1,25 +1,17 @@
 # -*- coding: utf8 -*-
 from __future__ import unicode_literals
-import unittest
+
+from .helper import ViewTestCase
+
+import transaction
 
 
-class TestAdminView(unittest.TestCase):
+class TestAdminView(ViewTestCase):
     def setUp(self):
-        from .helper import init_testing_env
-        self.testapp = init_testing_env({
-            'sqlalchemy.write.url': 'sqlite:///',
-            'use_dummy_mailer': True
-        })
-        self.create_data()
-        
-    def tearDown(self):
-        self.testapp.Session.remove()
-        
-    def create_data(self):
-        import transaction
-        from ..models.user import UserModel
-        from ..models.group import GroupModel
-        from ..models.permission import PermissionModel
+        super(TestAdminView, self).setUp()
+        from {{package}}.models.user import UserModel
+        from {{package}}.models.group import GroupModel
+        from {{package}}.models.permission import PermissionModel
         user_model = UserModel(self.testapp.session)
         group_model = GroupModel(self.testapp.session)
         permission_model = PermissionModel(self.testapp.session)
@@ -110,12 +102,3 @@ class TestAdminView(unittest.TestCase):
         assert_access_all(True)
         self.logout()
         assert_access_all(False)
-
-
-def suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestAdminView))
-    return suite
-        
-if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
