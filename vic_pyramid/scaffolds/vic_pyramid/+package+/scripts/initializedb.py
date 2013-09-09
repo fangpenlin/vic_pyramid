@@ -46,10 +46,10 @@ def main(argv=sys.argv, input_func=raw_input, getpass_func=getpass.getpass):
         if admin is None:
             print 'Create admin account'
             
-            email = input_func('Email:')
+            email = input_func(b'Email:')
             
-            password = getpass_func('Password:')
-            confirm = getpass_func('Confirm:')
+            password = getpass_func(b'Password:')
+            confirm = getpass_func(b'Confirm:')
             if password != confirm:
                 print 'Password not match'
                 return
