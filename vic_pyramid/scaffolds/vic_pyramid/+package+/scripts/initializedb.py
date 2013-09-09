@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 import os
 import sys
 import transaction
+import getpass
 
 from pyramid.paster import (
     get_appsettings,
@@ -19,8 +20,7 @@ def usage(argv):
     sys.exit(1)
 
 
-def main(argv=sys.argv):
-    import getpass
+def main(argv=sys.argv, input_func=raw_input, getpass_func=getpass.getpass):
     from ..models.user import UserModel
     from ..models.group import GroupModel
     from ..models.permission import PermissionModel
@@ -46,10 +46,10 @@ def main(argv=sys.argv):
         if admin is None:
             print 'Create admin account'
             
-            email = raw_input('Email:')
+            email = input_func('Email:')
             
-            password = getpass.getpass('Password:')
-            confirm = getpass.getpass('Confirm:')
+            password = getpass_func('Password:')
+            confirm = getpass_func('Confirm:')
             if password != confirm:
                 print 'Password not match'
                 return

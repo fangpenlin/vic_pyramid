@@ -49,6 +49,6 @@ setup(name='{{package}}',
     [paste.app_factory]
     main = {{package}}:main
     [console_scripts]
-    populate_{{package}} = {{package}}.scripts.populate:main
+    initialize_{{package}}_db = {{package}}.scripts.initializedb:main
     """,
 )

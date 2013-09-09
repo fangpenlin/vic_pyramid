@@ -58,11 +58,14 @@ class TestScaffolds(unittest.TestCase):
         self.test_pcreate = os.path.join(self.test_scripts_folder, 'pcreate')
 
         # install vic_pyramid
-        self.check_call(
-            [self.test_pip, 'uninstall', '-y', 'vic_pyramid'], 
-            shell=False, 
-            cwd=self.test_folder,
-        )
+        try:
+            self.check_call(
+                [self.test_pip, 'uninstall', '-y', 'vic_pyramid'], 
+                shell=False, 
+                cwd=self.test_folder,
+            )
+        except subprocess.CalledProcessError:
+            pass
         self.check_call(
             [self.test_pip, 'install', self.pkg_filename], 
             shell=False, 
