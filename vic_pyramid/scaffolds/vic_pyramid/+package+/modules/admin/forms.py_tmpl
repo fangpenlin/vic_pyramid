@@ -85,8 +85,20 @@ class CheckboxList(object):
         if selected:
             options['checked'] = True
         return HTMLString(
-            u'<li class="checkbox"><input %s></input><label for="%s">%s</label></li>' % 
-            (html_params(**options), options['id'], escape(unicode(label)))
+            """\
+            <li>
+                <div class="checkbox">'
+                    <label>
+                        <input {params}></input>
+                        {label}
+                    </label>
+                </div>
+            </li>
+            """
+            .format(
+                params=html_params(**options),
+                label=escape(unicode(label)),
+            )
         )
 
 

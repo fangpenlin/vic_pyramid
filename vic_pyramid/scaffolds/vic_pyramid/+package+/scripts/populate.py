@@ -33,10 +33,10 @@ def main(argv=sys.argv):
     
     # create all tables
     settings = setup_database({}, **settings)
-    engine = settings['write_engine']
+    engine = settings['engine']
     tables.DeclarativeBase.metadata.create_all(engine)
     
-    session = settings['write_session_maker']()
+    session = settings['session']
     user_model = UserModel(session)
     group_model = GroupModel(session)
     permission_model = PermissionModel(session)

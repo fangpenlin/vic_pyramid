@@ -73,6 +73,13 @@ class WebRequest(Request):
         return user
 
     @reify
+    def route_name(self):
+        """Return route name if available, otherwise None is returned
+
+        """
+        return self.matched_route.name if self.matched_route else None
+
+    @reify
     def real_ip(self):
         """The real IP address from x-forwarded-for, or x-real-ip, mainly
         depends on configuration
