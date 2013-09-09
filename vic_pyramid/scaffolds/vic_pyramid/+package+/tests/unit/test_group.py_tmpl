@@ -15,18 +15,18 @@ class TestGroupModel(ModelTestCase):
         from {{package}}.models.permission import PermissionModel
         return PermissionModel(self.session)
     
-    def test_create_group(self):
+    def test_create(self):
         model = self.make_one()
         
         group_name = 'tester'
         display_name = group_name
         
         with transaction.manager:
-            group_id = model.create_group(
+            group_id = model.create(
                 group_name=group_name,
                 display_name=display_name,
             )
-        group = model.get_group_by_id(group_id)
+        group = model.get(group_id)
         
         self.assertEqual(group.group_name, group_name)
         self.assertEqual(group.display_name, display_name)
@@ -39,22 +39,22 @@ class TestGroupModel(ModelTestCase):
         display_name = group_name
         
         with transaction.manager:
-            group_id = model.create_group(
+            group_id = model.create(
                 group_name=group_name,
                 display_name=display_name,
             )
-            pid1 = permission_model.create_permission('p1')
-            pid2 = permission_model.create_permission('p2')
-            pid3 = permission_model.create_permission('p3')
+            pid1 = permission_model.create('p1')
+            pid2 = permission_model.create('p2')
+            pid3 = permission_model.create('p3')
             
-        group = model.get_group_by_id(group_id)
+        group = model.get(group_id)
         pids = set([p.permission_id for p in group.permissions])
         self.assertEqual(pids, set([]))
             
         def assert_update(new_permissions):
             with transaction.manager:
                 model.update_permissions(group_id, new_permissions)
-            group = model.get_group_by_id(group_id)
+            group = model.get(group_id)
             pids = set([p.permission_id for p in group.permissions])
             self.assertEqual(pids, set(new_permissions))
         

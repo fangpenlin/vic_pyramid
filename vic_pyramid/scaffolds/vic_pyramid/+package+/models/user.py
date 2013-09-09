@@ -1,10 +1,10 @@
 from __future__ import unicode_literals
-import logging
 
 from . import tables
+from .base import BaseTableModel
 
 
-class AuthError(Exception):
+class AuthError(RuntimeError):
     """Authentication error
     
     """
@@ -22,52 +22,48 @@ class UserNotExist(AuthError):
     """
 
 
-class UserModel(object):
+class UserModel(BaseTableModel):
     """User data model
     
     """
-    
-    def __init__(self, session, logger=None):
-        self.logger = logger or logging.getLogger(__name__)
-        self.session = session
+    TABLE = tables.User
         
-    def get_user_by_name(self, user_name):
+    def get_by_name(self, user_name):
         """Get a user by name
         
         """
-        user = self.session \
-            .query(tables.User) \
-            .filter_by(user_name=unicode(user_name)) \
+        user = (
+            self.session
+            .query(tables.User)
+            .filter_by(user_name=user_name)
             .first()
+        )
         return user
     
-    def get_user_by_id(self, user_id):
-        """Get a user by ID
-        
-        """
-        user = self.session.query(tables.User).get(int(user_id))
-        return user
-    
-    def get_user_by_email(self, email):
+    def get_by_email(self, email):
         """Get a user by email
         
         """
-        user = self.session \
-            .query(tables.User) \
-            .filter_by(email=unicode(email)) \
+        user = (
+            self.session
+            .query(tables.User)
+            .filter_by(email=email)
             .first()
+        )
         return user
     
-    def get_user_by_ids(self, user_ids):
+    def gets(self, user_ids):
         """Get users by ID list
         
         if follow_list_order is true, the order will be returned as the order
         of user_ids
         
         """
-        User = tables.User
-        users = self.session.query(User) \
+        User = self.TABLE
+        users = (
+            self.session.query(User)
             .filter(User.user_id.in_(user_ids))
+        )
         return users
     
     def get_users(self):
@@ -90,7 +86,7 @@ class UserModel(object):
             query = query.filter_by(email=email)
         return query.first()
     
-    def create_user(
+    def create(
         self, 
         user_name, 
         display_name,
@@ -159,7 +155,7 @@ class UserModel(object):
         
         """
         import hashlib
-        user = self.get_user_by_id(user_id)
+        user = self.get(user_id)
         if user is None:
             raise UserNotExist
         
@@ -177,20 +173,26 @@ class UserModel(object):
         """
         from sqlalchemy.sql.expression import or_
         User = tables.User
-        user = self.session.query(User) \
+        user = (
+            self.session
+            .query(User)
             .filter(or_(User.user_name == name_or_email,
-                        User.email == name_or_email)) \
+                        User.email == name_or_email))
             .first()
+        )
         if user is None:
             # maybe it's case problem, although we enforce lower case to
             # user name and email now, but it seems there is still some
             # accounts have id in different cases, so that's why we do the
             # user query twice
             name_or_email = name_or_email.lower()
-            user = self.session.query(User) \
+            user = (
+                self.session
+                .query(User)
                 .filter(or_(User.user_name == name_or_email,
-                            User.email == name_or_email)) \
+                            User.email == name_or_email))
                 .first()
+            )
             if user is None:
                 raise UserNotExist('User %s does not exist' % name_or_email)
         if not self.validate_password(user.user_id, password):
@@ -201,7 +203,7 @@ class UserModel(object):
         """Update password of an user
         
         """
-        user = self.get_user_by_id(user_id)
+        user = self.get(user_id)
         if user is None:
             raise KeyError
         salt_hashedpassword = ''.join(self.get_salt_hashedpassword(password))
@@ -212,7 +214,7 @@ class UserModel(object):
         """Update attributes of a user
         
         """
-        user = self.get_user_by_id(user_id)
+        user = self.get(user_id)
         if user is None:
             raise KeyError
         if 'display_name' in kwargs:
@@ -227,10 +229,12 @@ class UserModel(object):
         """Update groups of this user
         
         """
-        user = self.get_user_by_id(user_id)
-        new_groups = self.session \
-            .query(tables.Group) \
+        user = self.get(user_id)
+        new_groups = (
+            self.session
+            .query(tables.Group)
             .filter(tables.Group.group_id.in_(group_ids))
+        )
         user.groups = new_groups.all()
         self.session.flush()
 
@@ -239,7 +243,7 @@ class UserModel(object):
 
         """
         import hmac
-        user = self.get_user_by_id(user_id)
+        user = self.get(user_id)
         h = hmac.new(key)
         h.update('%s%s%s%s' % (user_id, user.user_name, user.email, user.password))
         return h.hexdigest()
@@ -249,7 +253,7 @@ class UserModel(object):
         
         """
         import hmac
-        user = self.get_user_by_id(user_id)
+        user = self.get(user_id)
         code_hash = hmac.new(secret)
         code_hash.update(str(user_id))
         code_hash.update(str(user.user_name))

@@ -69,7 +69,7 @@ class WebRequest(Request):
         if self.user_id is None:
             return None
         model = UserModel(self.db_session)
-        user = model.get_user_by_id(self.user_id)
+        user = model.get(self.user_id)
         return user
 
     @reify

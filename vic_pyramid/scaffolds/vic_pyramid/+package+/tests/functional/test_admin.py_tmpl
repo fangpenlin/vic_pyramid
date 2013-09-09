@@ -16,23 +16,23 @@ class TestAdminView(ViewTestCase):
         group_model = GroupModel(self.testapp.session)
         permission_model = PermissionModel(self.testapp.session)
         with transaction.manager:
-            user_model.create_user(
+            user_model.create(
                 user_name='tester', 
                 display_name='tester', 
                 password='testerpass', 
                 email='tester@example.com'
             )
-            admin_id = user_model.create_user(
+            admin_id = user_model.create(
                 user_name='admin', 
                 display_name='admin', 
                 password='adminpass', 
                 email='admin@example.com'
             )
-            group_id = group_model.create_group(
+            group_id = group_model.create(
                 group_name='admin', 
                 display_name='admin', 
             )
-            permission_id = permission_model.create_permission(
+            permission_id = permission_model.create(
                 permission_name='admin', 
                 description='admin'
             )

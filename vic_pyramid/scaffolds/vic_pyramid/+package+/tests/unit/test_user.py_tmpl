@@ -24,13 +24,13 @@ class TestUserModel(ModelTestCase):
         password = 'thepass'
         
         with transaction.manager:
-            user_id = model.create_user(
+            user_id = model.create(
                 user_name=user_name,
                 email=email,
                 display_name=display_name,
                 password=password,
             )
-        user = model.get_user_by_id(user_id)
+        user = model.get(user_id)
         
         self.assertEqual(user.user_name, user_name)
         self.assertEqual(user.email, email)
@@ -43,19 +43,19 @@ class TestUserModel(ModelTestCase):
     def test_authenticate_user(self):
         model = self.make_one()
         with transaction.manager:
-            user_1 = model.create_user(
+            user_1 = model.create(
                 user_name=u'tester',
                 email=u'tester@now.in',
                 display_name=u'tester',
                 password=u'first_pass'
             )
-            user_2 = model.create_user(
+            user_2 = model.create(
                 user_name=u'tester2',
                 email=u'tester2@now.in',
                 display_name=u'tester2',
                 password=u'pass2'
             )
-            user_3 = model.create_user(
+            user_3 = model.create(
                 user_name=u'tester3',
                 email=u'tester3@now.in',
                 display_name=u'tester2',
@@ -102,7 +102,7 @@ class TestUserModel(ModelTestCase):
             model.authenticate_user(u'user_not_exist', u'abc')
             
         # make sure not activated user can't not login
-        model.create_user(
+        model.create(
             user_name=u'not_activated',
             email=u'not_activated@now.in',
             display_name=u'not_activated',
@@ -118,32 +118,32 @@ class TestUserModel(ModelTestCase):
         password = 'thepass'
         
         with transaction.manager:
-            user_id = model.create_user(
+            user_id = model.create(
                 user_name=user_name,
                 email=email,
                 display_name=display_name,
                 password=password,
             )
-            user_id2 = model.create_user(
+            user_id2 = model.create(
                 user_name='user2',
                 email='user2@example.com',
                 display_name='user2',
                 password='user2pass',
             )
-        user = model.get_user_by_id(user_id)
+        user = model.get(user_id)
         self.assertEqual(user.user_id, user_id)
         
-        user = model.get_user_by_email(email)
+        user = model.get_by_email(email)
         self.assertEqual(user.user_id, user_id)
         
-        users = list(model.get_user_by_ids([user_id]))
+        users = list(model.gets([user_id]))
         self.assertEqual(len(users), 1)
         self.assertEqual(users[0].user_id, user_id)
         
-        user = model.get_user_by_id(user_id2)
+        user = model.get(user_id2)
         self.assertEqual(user.user_id, user_id2)
         
-        user = model.get_user_by_email('user2@example.com')
+        user = model.get_by_email('user2@example.com')
         self.assertEqual(user.user_id, user_id2)
         
     def test_update_groups(self):
@@ -156,24 +156,24 @@ class TestUserModel(ModelTestCase):
         password = 'thepass'
         
         with transaction.manager:
-            user_id = model.create_user(
+            user_id = model.create(
                 user_name=user_name,
                 email=email,
                 display_name=display_name,
                 password=password,
             )
-            gid1 = group_model.create_group('g1')
-            gid2 = group_model.create_group('g2')
-            gid3 = group_model.create_group('g3')
+            gid1 = group_model.create('g1')
+            gid2 = group_model.create('g2')
+            gid3 = group_model.create('g3')
             
-        user = model.get_user_by_id(user_id)
+        user = model.get(user_id)
         gids = set([g.group_id for g in user.groups])
         self.assertEqual(gids, set([]))
         
         def assert_update(new_groups):
             with transaction.manager:
                 model.update_groups(user_id, new_groups)
-            user = model.get_user_by_id(user_id)
+            user = model.get(user_id)
             gids = set([g.group_id for g in user.groups])
             self.assertEqual(gids, set(new_groups))
             

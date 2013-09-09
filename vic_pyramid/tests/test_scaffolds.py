@@ -4,11 +4,16 @@ import sys
 import shutil
 import unittest
 import subprocess
+import logging
 
 
 class TestScaffolds(unittest.TestCase):
     def setUp(self):
         import vic_pyramid
+        # redirect messages to logger
+        self.stdout_logger = logging.getLogger('stdout')
+        self.stderr_logger = logging.getLogger('stderr')
+
         self.pkg_dir, _ = os.path.split(os.path.dirname(vic_pyramid.__file__))
         self.version = open(os.path.join(self.pkg_dir, 'VERSION')).read()
 
@@ -24,7 +29,7 @@ class TestScaffolds(unittest.TestCase):
         )
         if os.path.exists(self.pkg_filename):
             os.remove(self.pkg_filename)
-        subprocess.check_call(
+        self.check_call(
             [sys.executable, 'setup.py', 'sdist'], 
             shell=False, 
             cwd=self.pkg_dir,
@@ -38,7 +43,7 @@ class TestScaffolds(unittest.TestCase):
         # create virtualenv
         self.test_env = os.path.join(self.test_folder, 'env')
         if not os.path.exists(self.test_env):
-            subprocess.check_call(
+            self.check_call(
                 ['virtualenv', '--no-site-packages', 'env'], 
                 shell=False, 
                 cwd=self.test_folder,
@@ -53,12 +58,12 @@ class TestScaffolds(unittest.TestCase):
         self.test_pcreate = os.path.join(self.test_scripts_folder, 'pcreate')
 
         # install vic_pyramid
-        subprocess.call(
+        self.check_call(
             [self.test_pip, 'uninstall', '-y', 'vic_pyramid'], 
             shell=False, 
             cwd=self.test_folder,
         )
-        subprocess.check_call(
+        self.check_call(
             [self.test_pip, 'install', self.pkg_filename], 
             shell=False, 
             cwd=self.test_folder,
@@ -69,21 +74,37 @@ class TestScaffolds(unittest.TestCase):
         if os.path.exists(self.helloworld_folder):
             shutil.rmtree(self.helloworld_folder)
         # create a helloworld project
-        subprocess.check_call(
+        self.check_call(
             [self.test_pcreate, '-s', 'vic_pyramid', 'helloworld'], 
             shell=False, cwd=self.test_folder
         )
 
+    def check_call(self, *args, **kwargs):
+        kwargs['stdout'] = subprocess.PIPE
+        kwargs['stderr'] = subprocess.PIPE
+        proc = subprocess.Popen(*args, **kwargs)
+        ret = proc.wait()
+        for line in proc.stdout.readlines():
+            self.stdout_logger.info(line.strip())
+        for line in proc.stderr.readlines():
+            self.stderr_logger.info(line.strip())
+        if ret:
+            raise subprocess.CalledProcessError(
+                returncode=ret,
+                cmd=proc.cmd,
+            )
+        return ret
+
     def test_flake8(self):
         # install flake8
-        subprocess.call(
+        self.check_call(
             [self.test_pip, 'install', 'flake8'], 
             shell=False, 
             cwd=self.test_folder,
         )
 
         flake8 = os.path.join(self.test_scripts_folder, 'flake8')
-        subprocess.check_call(
+        self.check_call(
             [flake8, 'helloworld', '--ignore=W293,W291,E501', '--show-source'], 
             shell=False, 
             cwd=self.helloworld_folder,
@@ -116,7 +137,7 @@ class TestScaffolds(unittest.TestCase):
 
     def test_scaffolds(self):
         # install requirements
-        subprocess.check_call(
+        self.check_call(
             [
                 self.test_pip, 'install', '-r', 
                 os.path.join(self.helloworld_folder, 'requirements.txt')
@@ -125,7 +146,7 @@ class TestScaffolds(unittest.TestCase):
         )
 
         # install testing requirements
-        subprocess.check_call(
+        self.check_call(
             [
                 self.test_pip, 'install', '-r', 
                 os.path.join(self.helloworld_folder, 'test_requirements.txt')
@@ -134,13 +155,13 @@ class TestScaffolds(unittest.TestCase):
         )
 
         # install the project
-        subprocess.check_call(
+        self.check_call(
             [self.test_python, 'setup.py', 'develop'], 
             shell=False, cwd=self.helloworld_folder
         )
 
         # test the project
-        subprocess.check_call(
+        self.check_call(
             [self.test_python, 'setup.py', 'nosetests', '-v'], 
             shell=False, cwd=self.helloworld_folder
         )

@@ -1,43 +1,35 @@
 from __future__ import unicode_literals
-import logging
 
 from . import tables
+from .base import BaseTableModel
 
 
-class GroupModel(object):
+class GroupModel(BaseTableModel):
     """Group data model
     
     """
-    
-    def __init__(self, session, logger=None):
-        self.logger = logger or logging.getLogger(__name__)
-        self.session = session
-        
-    def get_group_by_id(self, group_id):
-        """Get group by group id
-        
-        """
-        group = self.session.query(tables.Group).get(int(group_id))
-        return group
-    
-    def get_group_by_name(self, group_name):
+    TABLE = tables.Group
+
+    def get_by_name(self, group_name):
         """Get a group by name
         
         """
-        group = self.session \
-            .query(tables.Group) \
-            .filter_by(group_name=unicode(group_name)) \
+        group = (
+            self.session
+            .query(self.TABLE)
+            .filter_by(group_name=group_name)
             .first()
+        )
         return group
         
     def get_groups(self):
         """Get groups
         
         """
-        query = self.session.query(tables.Group)
+        query = self.session.query(self.TABLE)
         return query
     
-    def create_group(
+    def create(
         self, 
         group_name, 
         display_name=None,
@@ -63,7 +55,7 @@ class GroupModel(object):
         """Update attributes of a group
         
         """
-        group = self.get_group_by_id(group_id)
+        group = self.get(group_id)
         if group is None:
             raise KeyError
         if 'display_name' in kwargs:
@@ -76,9 +68,11 @@ class GroupModel(object):
         """Update permissions of this group
         
         """
-        group = self.get_group_by_id(group_id)
-        new_permissions = self.session \
-            .query(tables.Permission) \
+        group = self.get(group_id)
+        new_permissions = (
+            self.session
+            .query(tables.Permission)
             .filter(tables.Permission.permission_id.in_(permission_ids))
+        )
         group.permissions = new_permissions.all()
         self.session.flush()

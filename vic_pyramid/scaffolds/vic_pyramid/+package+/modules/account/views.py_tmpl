@@ -71,7 +71,7 @@ def login(request):
         if user_id is not None and not error:
             headers = remember(request, user_id)
             
-            user = user_model.get_user_by_id(user_id)
+            user = user_model.get(user_id)
             msg = _(u"Welcome back, ${user_name}", 
                     mapping=dict(user_name=user.user_name))
             request.add_flash(msg)
@@ -104,7 +104,7 @@ def logout(request):
     if user_id is None:
         raise HTTPBadRequest('You are not logged in')
     
-    user = user_model.get_user_by_id(user_id)
+    user = user_model.get(user_id)
     if user is None:
         raise HTTPBadRequest
     
@@ -145,13 +145,13 @@ def register(request):
             form.email.errors.append(msg)
             validate_result = False
         
-        by_name = user_model.get_user_by_name(user_name)
+        by_name = user_model.get_by_name(user_name)
         if by_name is not None:
             msg = _(u'Username %s already exists') % user_name
             form.user_name.errors.append(msg)
             validate_result = False
             
-        by_email = user_model.get_user_by_email(email)
+        by_email = user_model.get_by_email(email)
         if by_email is not None:
             msg = _(u'Email %s already exists') % email
             form.email.errors.append(msg)
@@ -160,7 +160,7 @@ def register(request):
         if validate_result:
             with transaction.manager:
                 
-                user_id = user_model.create_user(
+                user_id = user_model.create(
                     user_name=user_name,
                     display_name=user_name,
                     password=password,
@@ -218,7 +218,7 @@ def activate(request):
     
     code = request.matchdict['code']
     user_name = request.matchdict['user_name']
-    user = user_model.get_user_by_name(user_name)
+    user = user_model.get_by_name(user_name)
     
     auth_secret_key = settings['auth_secret_key']
     valid_code = user_model.get_verification_code(
@@ -262,7 +262,7 @@ def forgot_password(request):
     if request.method == 'POST' and form.validate():
         email = request.params['email']
         
-        user = user_model.get_user_by_email(email)
+        user = user_model.get_by_email(email)
         if user is None:
             msg = _(u'Cannot find the user')
             form.email.errors.append(msg)
@@ -315,7 +315,7 @@ def recovery_password(request):
     user_name = request.params['user_name']
     code = request.params['code']
 
-    user = user_model.get_user_by_name(user_name)
+    user = user_model.get_by_name(user_name)
     if user is None:
         return HTTPNotFound(_('No such user %s') % user_name)
     user_id = user.user_id
@@ -334,7 +334,7 @@ def recovery_password(request):
     invalid_msg = _(u'Invalid password recovery link')
     redirect_url = request.route_url('front.home')
 
-    user = user_model.get_user_by_name(user_name)
+    user = user_model.get_by_name(user_name)
     if user is None:
         request.add_flash(invalid_msg, 'error')
         raise HTTPFound(location=redirect_url)

@@ -12,7 +12,7 @@ class TestAccountView(ViewTestCase):
         from {{package}}.models.user import UserModel
         model = UserModel(self.testapp.session)
         with transaction.manager:
-            model.create_user(
+            model.create(
                 user_name='tester', 
                 display_name='tester', 
                 password='testerpass', 
@@ -148,7 +148,7 @@ class TestAccountView(ViewTestCase):
         res = self.testapp.post('/register', params, status=302)
 
         model = UserModel(self.testapp.session)
-        user = model.get_user_by_name(params['user_name'])
+        user = model.get_by_name(params['user_name'])
         self.assertNotEqual(user, None)
         self.assertEqual(user.user_name, params['user_name'])
         self.assertEqual(user.email, params['email'])
@@ -274,9 +274,9 @@ class TestAccountView(ViewTestCase):
         self.testapp.get('/activate/tester2/' + code[:-1] + 'x', status=403)
 
         model = UserModel(self.testapp.session)
-        user = model.get_user_by_name('tester2')
+        user = model.get_by_name('tester2')
         self.assertEqual(user.verified, False)
 
         self.testapp.get('/activate/tester2/' + code, status=200)
-        user = model.get_user_by_name('tester2')
+        user = model.get_by_name('tester2')
         self.assertEqual(user.verified, True)

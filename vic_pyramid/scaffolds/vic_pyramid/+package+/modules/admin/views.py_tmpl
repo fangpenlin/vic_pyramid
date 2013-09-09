@@ -75,13 +75,13 @@ def user_create(request):
         email = request.params['email']
         groups = request.params.getall('groups')
         
-        by_name = user_model.get_user_by_name(user_name)
+        by_name = user_model.get_by_name(user_name)
         if by_name is not None:
             msg = _(u'Username %s already exists') % user_name
             form.user_name.errors.append(msg)
             validate_result = False
             
-        by_email = user_model.get_user_by_email(email)
+        by_email = user_model.get_by_email(email)
         if by_email is not None:
             msg = _(u'Email %s already exists') % email
             form.email.errors.append(msg)
@@ -89,7 +89,7 @@ def user_create(request):
         
         if validate_result:
             with transaction.manager:
-                user_id = user_model.create_user(
+                user_id = user_model.create(
                     user_name=user_name,
                     display_name=display_name,
                     password=password,
@@ -115,7 +115,7 @@ def user_edit(request):
     group_model = GroupModel(request.db_session)
     
     user_name = request.matchdict['user_name']
-    user = user_model.get_user_by_name(user_name)
+    user = user_model.get_by_name(user_name)
     if user is None:
         msg = _(u'User %s does not exists') % user_name
         return HTTPNotFound(msg)
@@ -145,7 +145,7 @@ def user_edit(request):
         email = request.params['email']
         groups = request.params.getall('groups')
         
-        by_email = user_model.get_user_by_email(email)
+        by_email = user_model.get_by_email(email)
         if by_email is not None and email != user.email:
             msg = _(u'Email %s already exists') % email
             form.email.errors.append(msg)
@@ -208,7 +208,7 @@ def group_create(request):
         display_name = request.params['display_name']
         permissions = request.params.getall('permissions')
         
-        by_name = group_model.get_group_by_name(group_name)
+        by_name = group_model.get_by_name(group_name)
         if by_name is not None:
             msg = _(u'Group name %s already exists') % group_name
             form.group_name.errors.append(msg)
@@ -216,7 +216,7 @@ def group_create(request):
 
         if validate_result:
             with transaction.manager:
-                group_id = group_model.create_group(
+                group_id = group_model.create(
                     group_name=group_name, 
                     display_name=display_name, 
                 )
@@ -243,7 +243,7 @@ def group_edit(request):
     permission_model = PermissionModel(request.db_session)
     
     group_name = request.matchdict['group_name']
-    group = group_model.get_group_by_name(group_name)
+    group = group_model.get_by_name(group_name)
     if group is None:
         msg = _(u'Group %s does not exist') % group_name
         return HTTPNotFound(msg)
@@ -272,7 +272,7 @@ def group_edit(request):
         display_name = request.params['display_name']
         permissions = request.params.getall('permissions')
         
-        by_name = group_model.get_group_by_name(group_name)
+        by_name = group_model.get_by_name(group_name)
         if by_name is not None and group_name != group.group_name:
             msg = _(u'Group name %s already exists') % group_name
             form.group_name.errors.append(msg)
@@ -289,7 +289,7 @@ def group_edit(request):
                     group_id=group.group_id, 
                     permission_ids=permissions,
                 )
-            group = group_model.get_group_by_id(group.group_id)
+            group = group_model.get(group.group_id)
             msg = _(u"Group ${group_name} has been updated", 
                     mapping=dict(group_name=group.group_name))
             request.add_flash(msg, 'success')
@@ -328,7 +328,7 @@ def permission_create(request):
         permission_name = request.params['permission_name']
         description = request.params['description']
         
-        by_name = permission_model.get_permission_by_name(permission_name)
+        by_name = permission_model.get_by_name(permission_name)
         if by_name is not None:
             msg = _(u'Permission name %s already exists') % permission_name
             form.permission_name.errors.append(msg)
@@ -336,7 +336,7 @@ def permission_create(request):
 
         if validate_result:
             with transaction.manager:
-                permission_model.create_permission(
+                permission_model.create(
                     permission_name=permission_name, 
                     description=description, 
                 )
@@ -357,7 +357,7 @@ def permission_edit(request):
     permission_model = PermissionModel(request.db_session)
     
     permission_name = request.matchdict['permission_name']
-    permission = permission_model.get_permission_by_name(permission_name)
+    permission = permission_model.get_by_name(permission_name)
     if permission is None:
         msg = _(u'Permission %s does not exist') % permission_name
         return HTTPNotFound(msg)
@@ -373,7 +373,7 @@ def permission_edit(request):
         permission_name = request.params['permission_name']
         description = request.params['description']
         
-        by_name = permission_model.get_permission_by_name(permission_name)
+        by_name = permission_model.get_by_name(permission_name)
         if (
             by_name is not None and 
             permission_name != permission.permission_name

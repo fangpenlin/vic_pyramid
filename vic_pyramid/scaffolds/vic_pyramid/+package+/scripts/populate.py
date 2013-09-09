@@ -42,7 +42,7 @@ def main(argv=sys.argv):
     permission_model = PermissionModel(session)
     
     with transaction.manager:
-        admin = user_model.get_user_by_name('admin')
+        admin = user_model.get_by_name('admin')
         if admin is None:
             print 'Create admin account'
             
@@ -54,34 +54,34 @@ def main(argv=sys.argv):
                 print 'Password not match'
                 return
         
-            user_id = user_model.create_user(
+            user_id = user_model.create(
                 user_name='admin',
                 display_name='Administrator',
                 email=email,
                 password=password, 
                 verified=True, 
             )
-            admin = user_model.get_user_by_id(user_id)
+            admin = user_model.get(user_id)
             session.flush()
             print 'Created admin, user_id=%s' % admin.user_id
             
-        permission = permission_model.get_permission_by_name('admin')
+        permission = permission_model.get_by_name('admin')
         if permission is None:
             print 'Create admin permission ...'
-            permission_model.create_permission(
+            permission_model.create(
                 permission_name='admin',
                 description='Administrate',
             )
-            permission = permission_model.get_permission_by_name('admin')
+            permission = permission_model.get_by_name('admin')
             
-        group = group_model.get_group_by_name('admin')
+        group = group_model.get_by_name('admin')
         if group is None:
             print 'Create admin group ...'
-            group_model.create_group(
+            group_model.create(
                 group_name='admin',
                 display_name='Administrators',
             )
-            group = group_model.get_group_by_name('admin')
+            group = group_model.get_by_name('admin')
             
         print 'Add admin permission to admin group'
         group_model.update_permissions(group.group_id, [permission.permission_id])
