@@ -11,11 +11,8 @@ pyramid.includes =
     pyramid_debugtoolbar
     pyramid_tm
 
-sqlalchemy.read.url = sqlite:///%(here)s/{{project}}.db
-sqlalchemy.read.pool_recycle = 3600
-sqlalchemy.write.url = sqlite:///%(here)s/{{project}}.db
-sqlalchemy.write.pool_recycle = 3600
-sqlalchemy.read_write_same = true
+sqlalchemy.url = sqlite:///%(here)s/{{project}}.db
+sqlalchemy.pool_recycle = 3600
 
 genshi.default_domain = {{package}}
 
