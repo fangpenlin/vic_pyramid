@@ -25,7 +25,7 @@ class TestScaffolds(unittest.TestCase):
         self.pkg_filename = os.path.join(
             self.pkg_dir, 
             'dist', 
-            'vic_pyramid-%s.%s' % (self.version, ext)
+            'vic_pyramid-{}.{}'.format(self.version, ext)
         )
         if os.path.exists(self.pkg_filename):
             os.remove(self.pkg_filename)
@@ -83,14 +83,21 @@ class TestScaffolds(unittest.TestCase):
         )
 
     def check_call(self, *args, **kwargs):
-        kwargs['stdout'] = subprocess.PIPE
-        kwargs['stderr'] = subprocess.PIPE
+        from pyramid.settings import asbool
+        echo = asbool(os.environ.get('TEST_ECHO', False))
+        if not echo:
+            kwargs['stdout'] = subprocess.PIPE
+            kwargs['stderr'] = subprocess.PIPE
         proc = subprocess.Popen(*args, **kwargs)
+        stdoutdata, stderrdata = proc.communicate()
+        if not echo:
+            for line in stdoutdata.splitlines():
+                line = line.strip()
+                self.stdout_logger.info(line)
+            for line in stderrdata.splitlines():
+                line = line.strip()
+                self.stderr_logger.info(line)
         ret = proc.wait()
-        for line in proc.stdout.readlines():
-            self.stdout_logger.info(line.strip())
-        for line in proc.stderr.readlines():
-            self.stderr_logger.info(line.strip())
         if ret:
             raise subprocess.CalledProcessError(
                 returncode=ret,
