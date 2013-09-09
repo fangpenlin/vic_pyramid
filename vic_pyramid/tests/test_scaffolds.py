@@ -101,7 +101,8 @@ class TestScaffolds(unittest.TestCase):
         if ret:
             raise subprocess.CalledProcessError(
                 returncode=ret,
-                cmd=proc.cmd,
+                cmd=args[0],
+                output=None,
             )
         return ret
 
