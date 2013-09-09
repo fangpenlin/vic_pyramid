@@ -4,4 +4,4 @@ include README.rst
 include distribute_setup.py 
 include requirements.txt
 include test_requirements.txt
-recursive-include vic_pyramid *.*_tmpl *.py *.css *.ico *.js *.genshi *.scss *.mo *.po *.pot *.eot *.svg *.ttf *.woff *.otf *.txt
+recursive-include vic_pyramid *.*_tmpl *.py *.css *.ico *.js *.genshi *.scss *.mo *.po *.pot *.eot *.svg *.ttf *.woff *.otf *.txt .less
