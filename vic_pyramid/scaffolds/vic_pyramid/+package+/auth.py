@@ -7,11 +7,11 @@ def get_group(userid, request):
         user_model = UserModel(request.db_session)
         user = user_model.get(userid)
         if user is None:
-            return []
+            return set()
         
         result = set(['user', 'user:%s' % user.user_name])
         result |= set(['permission:%s' % p.permission_name 
                        for p in user.permissions])
         result |= set(['group:%s' % g.group_name for g in user.groups])
         return result
-    return []
+    return set()
