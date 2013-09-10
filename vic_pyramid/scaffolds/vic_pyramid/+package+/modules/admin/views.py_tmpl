@@ -42,7 +42,7 @@ def home(request):
              permission='admin')
 def user_list(request):
     user_model = UserModel(request.db_session)
-    users = user_model.get_users()
+    users = user_model.get_list()
     return dict(users=users)
 
 
@@ -59,7 +59,7 @@ def user_create(request):
     UserCreateForm = factory.make_user_create_form()
     form = UserCreateForm(request.params)
     
-    groups = group_model.get_groups()
+    groups = group_model.get_list()
     form.groups.choices = [
         (str(g.group_id), '%s - %s' % (g.group_name, g.display_name)) 
         for g in groups
@@ -130,7 +130,7 @@ def user_edit(request):
         groups=user_groups
     )
     
-    groups = group_model.get_groups()
+    groups = group_model.get_list()
     form.groups.choices = [
         (str(g.group_id), '%s - %s' % (g.group_name, g.display_name), ) 
         for g in groups
@@ -177,7 +177,7 @@ def user_edit(request):
              permission='admin')
 def group_list(request):
     group_model = GroupModel(request.db_session)
-    groups = group_model.get_groups()
+    groups = group_model.get_list()
     return dict(groups=groups)
 
 
@@ -194,7 +194,7 @@ def group_create(request):
     GroupCreateForm = factory.make_group_create_form()
     form = GroupCreateForm(request.params)
     
-    permissions = permission_model.get_permissions()
+    permissions = permission_model.get_list()
     form.permissions.choices = [
         (str(p.permission_id), p.permission_name) 
         for p in permissions
@@ -258,7 +258,7 @@ def group_edit(request):
         display_name=group.display_name
     )
     
-    permissions = permission_model.get_permissions()
+    permissions = permission_model.get_list()
     form.permissions.choices = [
         (str(p.permission_id), p.permission_name) 
         for p in permissions
@@ -305,7 +305,7 @@ def group_edit(request):
              permission='admin')
 def permission_list(request):
     permission_model = PermissionModel(request.db_session)
-    permissions = permission_model.get_permissions()
+    permissions = permission_model.get_list()
     return dict(permissions=permissions)
 
 

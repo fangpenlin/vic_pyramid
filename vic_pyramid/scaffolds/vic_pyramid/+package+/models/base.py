@@ -20,7 +20,8 @@ class BaseTableModel(object):
         
         """
         record = (
-            self.session.query(self.TABLE)
+            self.session
+            .query(self.TABLE)
             .get(record_id)
         )
         if raise_error and record is None:
@@ -29,3 +30,21 @@ class BaseTableModel(object):
                 .format(self.TABLE.__name__, record_id)
             )
         return record 
+
+    def get_list(self, ids=None, offset=None, limit=None):
+        """Get record list
+
+        """
+        from sqlalchemy.orm import class_mapper
+        query = (
+            self.session
+            .query(self.TABLE)
+        )
+        if ids is not None:
+            pk = class_mapper(self.TABLE).primary_key[0]
+            query = query.filter(pk.in_(ids))
+        if offset is not None:
+            query = query.offset(offset)
+        if limit is not None:
+            query = query.limit(limit)
+        return query

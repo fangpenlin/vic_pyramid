@@ -16,18 +16,11 @@ class PermissionModel(BaseTableModel):
         """
         permission = (
             self.session
-            .query(self.TABLE)
+            .query(tables.Permission)
             .filter_by(permission_name=permission_name)
             .first()
         )
         return permission
-        
-    def get_permissions(self):
-        """Get permissions
-        
-        """
-        query = self.session.query(self.TABLE)
-        return query
     
     def create(
         self, 
@@ -37,7 +30,7 @@ class PermissionModel(BaseTableModel):
         """Create a new permission and return its id
         
         """
-        permission = self.TABLE(
+        permission = tables.Permission(
             permission_name=unicode(permission_name), 
             description=unicode(description) if description is not None else None, 
         )
@@ -55,9 +48,7 @@ class PermissionModel(BaseTableModel):
         """Update attributes of a permission
         
         """
-        permission = self.get(permission_id)
-        if permission is None:
-            raise KeyError
+        permission = self.get(permission_id, raise_error=True)
         if 'description' in kwargs:
             permission.description = kwargs['description']
         if 'permission_name' in kwargs:

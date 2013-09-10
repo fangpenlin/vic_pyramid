@@ -1,4 +1,7 @@
 from __future__ import unicode_literals
+import os
+import hmac
+import hashlib
 
 from . import tables
 from .base import BaseTableModel
@@ -52,40 +55,6 @@ class UserModel(BaseTableModel):
         )
         return user
     
-    def gets(self, user_ids):
-        """Get users by ID list
-        
-        if follow_list_order is true, the order will be returned as the order
-        of user_ids
-        
-        """
-        User = self.TABLE
-        users = (
-            self.session.query(User)
-            .filter(User.user_id.in_(user_ids))
-        )
-        return users
-    
-    def get_users(self):
-        """Get users
-        
-        """
-        query = self.session.query(tables.User)
-        return query
-    
-    def query_user(self, user_id=None, user_name=None, email=None):
-        """Query user by different conditions
-        
-        """
-        query = self.session.query(tables.User)
-        if user_id is not None:
-            query = query.filter_by(user_id=user_id)
-        if user_name is not None:
-            query = query.filter_by(user_name=user_name)
-        if email is not None:
-            query = query.filter_by(email=email)
-        return query.first()
-    
     def create(
         self, 
         user_name, 
@@ -129,8 +98,6 @@ class UserModel(BaseTableModel):
         
         return value is (hexdigest of salt, hexdigest of hashedpassword)
         """
-        import os
-        import hashlib
         if isinstance(password, unicode):
             password_utf8 = password.encode('utf8')
         else:
@@ -154,7 +121,6 @@ class UserModel(BaseTableModel):
         """Validate password of a user
         
         """
-        import hashlib
         user = self.get(user_id)
         if user is None:
             raise UserNotExist
@@ -203,7 +169,7 @@ class UserModel(BaseTableModel):
         """Update password of an user
         
         """
-        user = self.get(user_id)
+        user = self.get(user_id, raise_error=True)
         if user is None:
             raise KeyError
         salt_hashedpassword = ''.join(self.get_salt_hashedpassword(password))
@@ -214,9 +180,7 @@ class UserModel(BaseTableModel):
         """Update attributes of a user
         
         """
-        user = self.get(user_id)
-        if user is None:
-            raise KeyError
+        user = self.get(user_id, raise_error=True)
         if 'display_name' in kwargs:
             user.display_name = kwargs['display_name']
         if 'email' in kwargs:
@@ -229,7 +193,7 @@ class UserModel(BaseTableModel):
         """Update groups of this user
         
         """
-        user = self.get(user_id)
+        user = self.get(user_id, raise_error=True)
         new_groups = (
             self.session
             .query(tables.Group)
@@ -242,8 +206,7 @@ class UserModel(BaseTableModel):
         """Get current recovery code of a user
 
         """
-        import hmac
-        user = self.get(user_id)
+        user = self.get(user_id, raise_error=True)
         h = hmac.new(key)
         h.update('%s%s%s%s' % (user_id, user.user_name, user.email, user.password))
         return h.hexdigest()
@@ -252,8 +215,7 @@ class UserModel(BaseTableModel):
         """Get a verification code of user
         
         """
-        import hmac
-        user = self.get(user_id)
+        user = self.get(user_id, raise_error=True)
         code_hash = hmac.new(secret)
         code_hash.update(str(user_id))
         code_hash.update(str(user.user_name))

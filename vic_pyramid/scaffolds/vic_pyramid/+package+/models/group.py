@@ -16,18 +16,11 @@ class GroupModel(BaseTableModel):
         """
         group = (
             self.session
-            .query(self.TABLE)
+            .query(tables.Group)
             .filter_by(group_name=group_name)
             .first()
         )
         return group
-        
-    def get_groups(self):
-        """Get groups
-        
-        """
-        query = self.session.query(self.TABLE)
-        return query
     
     def create(
         self, 
@@ -55,9 +48,7 @@ class GroupModel(BaseTableModel):
         """Update attributes of a group
         
         """
-        group = self.get(group_id)
-        if group is None:
-            raise KeyError
+        group = self.get(group_id, raise_error=True)
         if 'display_name' in kwargs:
             group.display_name = kwargs['display_name']
         if 'group_name' in kwargs:
@@ -68,7 +59,7 @@ class GroupModel(BaseTableModel):
         """Update permissions of this group
         
         """
-        group = self.get(group_id)
+        group = self.get(group_id, raise_error=True)
         new_permissions = (
             self.session
             .query(tables.Permission)

@@ -136,7 +136,7 @@ class TestUserModel(ModelTestCase):
         user = model.get_by_email(email)
         self.assertEqual(user.user_id, user_id)
         
-        users = list(model.gets([user_id]))
+        users = list(model.get_list(ids=[user_id]))
         self.assertEqual(len(users), 1)
         self.assertEqual(users[0].user_id, user_id)
         
