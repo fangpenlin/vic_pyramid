@@ -23,14 +23,14 @@ class AccountView(BaseView):
 
     FormFactory = FormFactory
 
-    @view_config(route_name='account.login', 
+    @view_config(route_name='account.login',
                  renderer='templates/login.genshi')
     @view_config(context='pyramid.httpexceptions.HTTPForbidden',
                  renderer='templates/login.genshi')
     def login(self):
         """Display login form or do login
         
-        mainly borrowed from 
+        mainly borrowed from
         https://docs.pylonsproject.org/projects/pyramid/1.1/tutorials/wiki/authorization.html?highlight=login#adding-login-and-logout-views
         
         """
@@ -71,7 +71,7 @@ class AccountView(BaseView):
                 )
                 
             headers = remember(request, user.user_id)
-            msg = _('Welcome back, ${user_name}', 
+            msg = _('Welcome back, ${user_name}',
                     mapping=dict(user_name=user.user_name))
             request.add_flash(msg)
             return HTTPFound(location=came_from,
@@ -94,7 +94,7 @@ class AccountView(BaseView):
         # never use the login form itself as came_from
         # or, there is no referer
         if referrer == my_url or not referrer:
-            referrer = request.route_url('front.home') 
+            referrer = request.route_url('front.home')
         came_from = request.params.get('came_from', referrer)
         
         session = request.db_session
@@ -116,7 +116,7 @@ class AccountView(BaseView):
         return HTTPFound(location=came_from,
                          headers=headers)
 
-    @view_config(route_name='account.register', 
+    @view_config(route_name='account.register',
                  renderer='templates/register.genshi')
     def register(self):
         _ = self.localizer
@@ -189,19 +189,19 @@ class AccountView(BaseView):
                         body=html
                     )
                 
-                msg = _(u"User ${user_name} has been registered", 
+                msg = _(u"User ${user_name} has been registered",
                         mapping=dict(user_name=user_name))
                 request.add_flash(msg, 'success')
                 return HTTPFound(location=request.route_url('account.check_mailbox'))
         
         return dict(form=form)
 
-    @view_config(route_name='account.check_mailbox', 
+    @view_config(route_name='account.check_mailbox',
                  renderer='templates/check_mailbox.genshi')
     def check_mailbox(self):
         return dict()
 
-    @view_config(route_name='account.activate', 
+    @view_config(route_name='account.activate',
                  renderer='templates/activate.genshi')
     def activate(self):
         _ = self.localizer
@@ -216,13 +216,13 @@ class AccountView(BaseView):
         
         auth_secret_key = settings['auth_secret_key']
         valid_code = user_model.get_verification_code(
-            user=user, 
+            user=user,
             verify_type='create_user',
             secret=auth_secret_key
         )
         
         if valid_code != code:
-            msg = _(u"Invalid activation link", 
+            msg = _(u"Invalid activation link",
                     mapping=dict(user_name=user_name))
             return HTTPForbidden(msg)
         
@@ -230,7 +230,7 @@ class AccountView(BaseView):
             with transaction.manager:
                 user_model.update(user, verified=True)
         
-        msg = _(u"User ${user_name} is activated", 
+        msg = _(u"User ${user_name} is activated",
                 mapping=dict(user_name=user_name))
         request.add_flash(msg, 'success')
         return dict()
@@ -314,11 +314,10 @@ class AccountView(BaseView):
 
         if code != valid_code:
             return HTTPForbidden(_('Bad password recovery link'))
-        
 
         form = self.form_factory.make_recovery_password_form()(
-            request.params, 
-            user_name=user_name, 
+            request.params,
+            user_name=user_name,
             code=code,
         )
         

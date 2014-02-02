@@ -20,10 +20,11 @@ requirements = read_requirements('requirements.txt')
 test_requirements = read_requirements('test-requirements.txt')
 
 
-setup(name='{{package}}',
+setup(
+    name='{{package}}',
     version='0.0',
     description='{{package}}',
-    long_description=README + '\n\n' +  CHANGES,
+    long_description=README + '\n\n' + CHANGES,
     classifiers=[
         "Programming Language :: Python",
         "Framework :: Pylons",
