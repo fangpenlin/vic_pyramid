@@ -1,17 +1,17 @@
 # -*- coding: utf8 -*-
 from __future__ import unicode_literals
 
-from .helper import ViewTestCase
-
 import transaction
+
+from {{package}}.models.user import UserModel
+from {{package}}.models.group import GroupModel
+from {{package}}.models.permission import PermissionModel
+from .helper import ViewTestCase
 
 
 class TestAdminView(ViewTestCase):
     def setUp(self):
         super(TestAdminView, self).setUp()
-        from {{package}}.models.user import UserModel
-        from {{package}}.models.group import GroupModel
-        from {{package}}.models.permission import PermissionModel
         user_model = UserModel(self.testapp.session)
         group_model = GroupModel(self.testapp.session)
         permission_model = PermissionModel(self.testapp.session)

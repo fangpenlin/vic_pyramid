@@ -8,6 +8,8 @@ import textwrap
 import sqlite3
 import StringIO
 
+from {{package}}.scripts import initializedb
+
 
 class TestInitializedb(unittest.TestCase):
 
@@ -18,8 +20,6 @@ class TestInitializedb(unittest.TestCase):
         shutil.rmtree(self.temp_dir)
 
     def test_usage(self):
-        from {{package}}.scripts import initializedb
-
         filename = '/path/to/initializedb'
 
         old_stdout = sys.stdout
@@ -37,8 +37,6 @@ class TestInitializedb(unittest.TestCase):
         self.assertMultiLineEqual(usage_out.getvalue(), expected)
 
     def test_main(self):
-        from {{package}}.scripts import initializedb
-
         def mock_raw_input(text):
             return 'tester@example.com'
 

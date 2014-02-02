@@ -1,18 +1,18 @@
 from __future__ import unicode_literals
 
-from .helper import ModelTestCase
-
 import transaction
+
+from {{package}}.models.group import GroupModel
+from {{package}}.models.permission import PermissionModel
+from .helper import ModelTestCase
 
 
 class TestGroupModel(ModelTestCase):
         
     def make_one(self):
-        from {{package}}.models.group import GroupModel
         return GroupModel(self.session)
     
     def make_permission_model(self):
-        from {{package}}.models.permission import PermissionModel
         return PermissionModel(self.session)
     
     def test_create(self):

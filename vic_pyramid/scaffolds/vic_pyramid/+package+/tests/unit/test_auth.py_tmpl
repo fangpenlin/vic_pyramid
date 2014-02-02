@@ -1,28 +1,27 @@
 from __future__ import unicode_literals
 
-from .helper import ModelTestCase
-
 import transaction
+from pyramid.testing import DummyRequest
+
+from {{package}}.models.user import UserModel
+from {{package}}.models.group import GroupModel 
+from {{package}}.models.permission import PermissionModel 
+from {{package}}.auth import get_group
+from .helper import ModelTestCase
 
 
 class TestAuth(ModelTestCase):
 
     def make_user_model(self):
-        from {{package}}.models.user import UserModel
         return UserModel(self.session)
 
     def make_group_model(self):
-        from {{package}}.models.group import GroupModel 
         return GroupModel(self.session)
  
     def make_permission_model(self):
-        from {{package}}.models.permission import PermissionModel 
         return PermissionModel(self.session)
 
     def test_get_group(self):
-        from pyramid.testing import DummyRequest
-        from {{package}}.auth import get_group
-
         user_model = self.make_user_model()
         group_model = self.make_group_model()
         permission_model = self.make_permission_model()

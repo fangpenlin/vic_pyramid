@@ -2,15 +2,16 @@ from __future__ import unicode_literals
 import os
 import unittest
 
+from webtest import TestApp
+
+from {{package}} import main
+from {{package}}.models import setup_database
+from {{package}}.models.tables import DeclarativeBase
+
 
 class ViewTestCase(unittest.TestCase):
     
     def setUp(self):
-        from webtest import TestApp
-        from {{package}} import main
-        from {{package}}.models import setup_database
-        from {{package}}.models.tables import DeclarativeBase
-
         if hasattr(self, 'settings'):
             settings = self.settings
         else:
@@ -28,6 +29,5 @@ class ViewTestCase(unittest.TestCase):
         self.testapp.session = settings['session']
 
     def tearDown(self):
-        from {{package}}.models.tables import DeclarativeBase
         self.testapp.session.remove()
         DeclarativeBase.metadata.drop_all()

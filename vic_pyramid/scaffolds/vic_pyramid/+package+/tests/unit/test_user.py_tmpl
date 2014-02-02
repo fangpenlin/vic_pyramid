@@ -1,18 +1,20 @@
 from __future__ import unicode_literals
 
-from .helper import ModelTestCase
-
 import transaction
+
+from {{package}}.models.user import UserModel
+from {{package}}.models.group import GroupModel
+from {{package}}.models.user import BadPassword
+from {{package}}.models.user import UserNotExist
+from .helper import ModelTestCase
 
 
 class TestUserModel(ModelTestCase):
         
     def make_one(self):
-        from {{package}}.models.user import UserModel
         return UserModel(self.session)
     
     def make_group_model(self):
-        from {{package}}.models.group import GroupModel
         return GroupModel(self.session)
     
     def test_create_user(self):
@@ -85,8 +87,6 @@ class TestUserModel(ModelTestCase):
         self.assertEqual(result, user_3)
         
         # cases should not pass
-        from {{package}}.models.user import BadPassword
-        from {{package}}.models.user import UserNotExist
         
         with self.assertRaises(BadPassword):
             model.authenticate_user(u'tester@now.in', u'First_pass')

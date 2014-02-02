@@ -1,14 +1,14 @@
 from __future__ import unicode_literals
 
-from .helper import ModelTestCase
-
 import transaction
+
+from {{package}}.models.permission import PermissionModel
+from .helper import ModelTestCase
 
 
 class TestPermissionModel(ModelTestCase):
         
     def make_one(self):
-        from {{package}}.models.permission import PermissionModel
         return PermissionModel(self.session)
     
     def test_create(self):

@@ -6,10 +6,13 @@ import unittest
 import subprocess
 import logging
 
+from pyramid.settings import asbool
+
+import vic_pyramid
+
 
 class TestScaffolds(unittest.TestCase):
     def setUp(self):
-        import vic_pyramid
         # redirect messages to logger
         self.stdout_logger = logging.getLogger('stdout')
         self.stderr_logger = logging.getLogger('stderr')
@@ -83,7 +86,6 @@ class TestScaffolds(unittest.TestCase):
         )
 
     def check_call(self, *args, **kwargs):
-        from pyramid.settings import asbool
         echo = asbool(os.environ.get('TEST_ECHO', False))
         if not echo:
             kwargs['stdout'] = subprocess.PIPE

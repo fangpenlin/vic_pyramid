@@ -1,15 +1,17 @@
 # -*- coding: utf8 -*-
 from __future__ import unicode_literals
+import urlparse
+import urllib
 
 import transaction
 
+from {{package}}.models.user import UserModel
 from .helper import ViewTestCase
 
 
 class TestAccountView(ViewTestCase):
     def setUp(self):
         super(TestAccountView, self).setUp()
-        from {{package}}.models.user import UserModel
         model = UserModel(self.testapp.session)
         with transaction.manager:
             model.create(
@@ -108,8 +110,6 @@ class TestAccountView(ViewTestCase):
         self.testapp.get('/recovery_password?user_name=tester&code=xxx', status=403)
         self.testapp.get(recovery_link, status=200)
 
-        import urlparse
-        import urllib
         q = urlparse.parse_qs(recovery_link.split('?')[-1])
 
         code = q['code'][0]
@@ -144,7 +144,6 @@ class TestAccountView(ViewTestCase):
         self.assert_(len(errors) > 0)
 
     def assert_register_success(self, params):
-        from {{package}}.models.user import UserModel
         res = self.testapp.post('/register', params, status=302)
 
         model = UserModel(self.testapp.session)
@@ -240,7 +239,6 @@ class TestAccountView(ViewTestCase):
         ))
 
     def test_activate(self):
-        from {{package}}.models.user import UserModel
         res = self.testapp.get('/register', status=200)
         csrf_token = self.get_csrf_token(res)
 
