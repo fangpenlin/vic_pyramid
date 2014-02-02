@@ -23,7 +23,7 @@
         <td>Action</td>
         <td>ID</td>
         <td>Permission name</td>
-        <td>Description</td>
+        <td>Display name</td>
     </tr></thead>
 
     <tbody>
@@ -35,7 +35,7 @@
             </td>
             <td>${ permission.permission_id }</td>
             <td>${ permission.permission_name }</td>
-            <td>${ permission.description }</td>
+            <td>${ permission.display_name }</td>
         </tr>
     </tbody>
 </table>

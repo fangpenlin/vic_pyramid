@@ -155,14 +155,17 @@ class AdminViews(BaseView):
             
             if validate_result:
                 with transaction.manager:
-                    user_model.update_user(
-                        user_id=user.user_id,
+                    extra_kwargs = {}
+                    if password:
+                        extra_kwargs['password'] = password
+                    groups = map(group_model.get, groups)
+                    user_model.update(
+                        user=user,
                         display_name=display_name,
                         email=email,
+                        password=password,
+                        groups=groups,
                     )
-                    if password:
-                        user_model.update_password(user.user_id, password)
-                    user_model.update_groups(user.user_id, map(int, groups))
                 
                 msg = _(u"User ${user_name} has been updated", 
                         mapping=dict(user_name=user_name))
@@ -213,13 +216,11 @@ class AdminViews(BaseView):
 
             if validate_result:
                 with transaction.manager:
-                    group_id = group_model.create(
+                    permissions = map(permission_model.get, permissions)
+                    group_model.create(
                         group_name=group_name, 
-                        display_name=display_name, 
-                    )
-                    group_model.update_permissions(
-                        group_id=group_id, 
-                        permission_ids=permissions,
+                        display_name=display_name,
+                        permissions=permissions,
                     )
                 
                 msg = _(u"Group ${group_name} has been created", 
@@ -274,14 +275,12 @@ class AdminViews(BaseView):
 
             if validate_result:
                 with transaction.manager:
-                    group_model.update_group(
-                        group_id=group.group_id,
+                    permissions = map(permission_model.get, permissions)
+                    group_model.update(
+                        group=group,
                         group_name=group_name, 
                         display_name=display_name, 
-                    )
-                    group_model.update_permissions(
-                        group_id=group.group_id, 
-                        permission_ids=permissions,
+                        permissions=permissions,
                     )
                 group = group_model.get(group.group_id)
                 msg = _(u"Group ${group_name} has been updated", 
@@ -315,7 +314,7 @@ class AdminViews(BaseView):
             
             validate_result = form.validate()
             permission_name = request.params['permission_name']
-            description = request.params['description']
+            display_name = request.params['display_name']
             
             by_name = permission_model.get_by_name(permission_name)
             if by_name is not None:
@@ -327,7 +326,7 @@ class AdminViews(BaseView):
                 with transaction.manager:
                     permission_model.create(
                         permission_name=permission_name, 
-                        description=description, 
+                        display_name=display_name, 
                     )
                 
                 msg = _(u"Permission ${permission_name} has been created", 
@@ -360,7 +359,7 @@ class AdminViews(BaseView):
             
             validate_result = form.validate()
             permission_name = request.params['permission_name']
-            description = request.params['description']
+            display_name = request.params['display_name']
             
             by_name = permission_model.get_by_name(permission_name)
             if (
@@ -373,10 +372,10 @@ class AdminViews(BaseView):
 
             if validate_result:
                 with transaction.manager:
-                    permission_model.update_permission(
-                        permission_id=permission.permission_id,
+                    permission_model.update(
+                        permission=permission,
                         permission_name=permission_name, 
-                        description=description, 
+                        display_name=display_name, 
                     )
                 
                 msg = _(u"Permission ${permission_name} has been updated", 

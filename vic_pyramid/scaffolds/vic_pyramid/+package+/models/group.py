@@ -26,6 +26,7 @@ class GroupModel(BaseTableModel):
         self, 
         group_name, 
         display_name=None,
+        permissions=None,
     ):
         """Create a new group and return its id
         
@@ -35,6 +36,8 @@ class GroupModel(BaseTableModel):
             display_name=unicode(display_name) if display_name is not None else None, 
             created=tables.now_func()
         )
+        if permissions is not None:
+            group.permissions = permissions
         self.session.add(group)
         # flush the change, so we can get real user id
         self.session.flush()

@@ -11,6 +11,9 @@ from pyramid.paster import (
 
 from ..models import tables
 from ..models import setup_database
+from ..models.user import UserModel
+from ..models.group import GroupModel
+from ..models.permission import PermissionModel
 
 
 def usage(argv):
@@ -21,10 +24,6 @@ def usage(argv):
 
 
 def main(argv=sys.argv, input_func=raw_input, getpass_func=getpass.getpass):
-    from ..models.user import UserModel
-    from ..models.group import GroupModel
-    from ..models.permission import PermissionModel
-    
     if len(argv) != 2:
         usage(argv)
     config_uri = argv[1]
@@ -68,7 +67,7 @@ def main(argv=sys.argv, input_func=raw_input, getpass_func=getpass.getpass):
             print 'Create admin permission ...'
             permission = permission_model.create(
                 permission_name='admin',
-                description='Administrate',
+                display_name='Administrate',
             )
             
         group = group_model.get_by_name('admin')

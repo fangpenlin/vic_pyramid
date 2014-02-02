@@ -155,7 +155,7 @@ class Permission(DeclarativeBase):
     
     permission_name = Column(Unicode(16), unique=True, nullable=False)
     
-    description = Column(Unicode(255))
+    display_name = Column(Unicode(255))
     
     groups = relationship(
         Group, 

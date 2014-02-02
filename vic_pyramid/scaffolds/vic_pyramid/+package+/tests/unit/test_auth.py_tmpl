@@ -55,15 +55,15 @@ class TestAuth(ModelTestCase):
             )
             permission1 = permission_model.create(
                 permission_name='admin',
-                description='Admin',
+                display_name='Admin',
             )
             permission2 = permission_model.create(
                 permission_name='manager',
-                description='Manager',
+                display_name='Manager',
             )
             permission3 = permission_model.create(
                 permission_name='guest',
-                description='Guest',
+                display_name='Guest',
             )
 
             # + group1 super_users

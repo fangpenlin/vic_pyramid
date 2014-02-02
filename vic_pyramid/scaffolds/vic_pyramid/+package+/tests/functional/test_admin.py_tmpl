@@ -34,16 +34,20 @@ class TestAdminView(ViewTestCase):
             )
             permission = permission_model.create(
                 permission_name='admin', 
-                description='admin'
+                display_name='admin'
             )
             group_model.update(group, permissions=[permission])
             user_model.update(admin, groups=[group])
-        
+
+    def get_csrf_token(self, res):
+        input = res.html.find('input', dict(name='csrf_token'))
+        self.assert_(input)
+        return input['value']
+
     def login_user(self, name_or_email='tester', password='testerpass'):
         """Login as user and return cookie
         
         """
-
         params = dict(
             name_or_email=name_or_email, 
             password=password
@@ -103,3 +107,286 @@ class TestAdminView(ViewTestCase):
         assert_access_all(True)
         self.logout()
         assert_access_all(False)
+
+    def test_create_user(self):
+        group_model = GroupModel(self.testapp.session)
+        user_model = UserModel(self.testapp.session)
+
+        user_name = 'foobar'
+        display_name = 'Foo Bar'
+        password = 'my_super_pwd'
+        email = 'foobar@example.com'
+        url = '/admin/user/create'
+
+        self.login_user('admin', 'adminpass')
+        res = self.testapp.get(url)
+        csrf_token = self.get_csrf_token(res)
+
+        with transaction.manager:
+            group1 = group_model.create(
+                group_name='group1', 
+                display_name='group1', 
+            )
+            group2 = group_model.create(
+                group_name='group2', 
+                display_name='group2', 
+            )
+
+        params = [
+            ('user_name', user_name),
+            ('display_name', display_name),
+            ('password', password),
+            ('email', email),
+            ('groups', group1.group_id),
+            ('groups', group2.group_id),
+        ]
+
+        # test bad csrf token
+        self.testapp.post(url, params, status=400)
+        self.testapp.post(
+            url, 
+            params + [('csrf_token', 'bad_csrf')], 
+            status=400,
+        )
+
+        self.testapp.post(
+            url, 
+            params + [('csrf_token', csrf_token)],
+        )
+        user = user_model.get_by_name(user_name)
+        self.assertEqual(user.user_name, user_name)
+        self.assertEqual(user.display_name, display_name)
+        self.assertEqual(user.email, email)
+        self.assertEqual(set(user.groups), set([group1, group2]))
+
+        params = dict(
+            name_or_email=user_name, 
+            password=password
+        )
+        self.testapp.post('/login', params, status='3*')
+
+    def test_edit_user(self):
+        group_model = GroupModel(self.testapp.session)
+        user_model = UserModel(self.testapp.session)
+
+        with transaction.manager:
+            user = user_model.create(
+                user_name='foobar', 
+                display_name='foobar', 
+                password='foobarpass', 
+                email='foobar@example.com'
+            )
+            group1 = group_model.create(
+                group_name='group1', 
+                display_name='group1', 
+            )
+            group2 = group_model.create(
+                group_name='group2', 
+                display_name='group2', 
+            )
+            user_model.update(user, groups=[group1, group2])
+
+        url = '/admin/user/edit/{}'.format(user.user_name)
+        display_name = 'new name'
+        password = 'new_password'
+        email = 'new_email@example.com'
+
+        self.login_user('admin', 'adminpass')
+        res = self.testapp.get(url)
+        csrf_token = self.get_csrf_token(res)
+
+        params = [
+            ('display_name', display_name),
+            ('password', password),
+            ('email', email),
+            ('groups', group2.group_id),
+        ]
+
+        # test bad csrf token
+        self.testapp.post(url, params, status=400)
+        self.testapp.post(
+            url, 
+            params + [('csrf_token', 'bad_csrf')], 
+            status=400,
+        )
+
+        self.testapp.post(
+            url, 
+            params + [('csrf_token', csrf_token)],
+        )
+        self.assertEqual(user.display_name, display_name)
+        self.assertEqual(user.email, email)
+        self.assertEqual(set(user.groups), set([group2]))
+
+        params = dict(
+            name_or_email=user.user_name, 
+            password=password
+        )
+        self.testapp.post('/login', params, status='3*')
+
+    def test_create_group(self):
+        group_model = GroupModel(self.testapp.session)
+        permission_model = PermissionModel(self.testapp.session)
+
+        with transaction.manager:
+            permission1 = permission_model.create(
+                permission_name='permission1', 
+                display_name='permission1',
+            )
+            permission2 = permission_model.create(
+                permission_name='permission2', 
+                display_name='permission2',
+            )
+
+        group_name = 'foobar'
+        display_name = 'Foo Bar'
+        url = '/admin/group/create'
+
+        self.login_user('admin', 'adminpass')
+        res = self.testapp.get(url)
+        csrf_token = self.get_csrf_token(res)
+
+        params = [
+            ('group_name', group_name),
+            ('display_name', display_name),
+            ('permissions', permission1.permission_id),
+            ('permissions', permission2.permission_id),
+        ]
+
+        # test bad csrf token
+        self.testapp.post(url, params, status=400)
+        self.testapp.post(
+            url,
+            params + [('csrf_token', 'bad_csrf')], 
+            status=400,
+        )
+
+        self.testapp.post(
+            url,
+            params + [('csrf_token', csrf_token)],
+        )
+        group = group_model.get_by_name(group_name)
+        self.assertEqual(group.group_name, group_name)
+        self.assertEqual(group.display_name, display_name)
+        self.assertEqual(set(group.permissions), 
+                         set([permission1, permission2]))
+
+    def test_edit_group(self):
+        group_model = GroupModel(self.testapp.session)
+        permission_model = PermissionModel(self.testapp.session)
+
+        with transaction.manager:
+            permission1 = permission_model.create(
+                permission_name='permission1', 
+                display_name='permission1',
+            )
+            permission2 = permission_model.create(
+                permission_name='permission2', 
+                display_name='permission2',
+            )
+            group = group_model.create(
+                group_name='foobar', 
+                display_name='foobar', 
+                permissions=[permission1, permission2],
+            )
+
+        group_name = 'new name'
+        display_name = 'new display_name'
+        url = '/admin/group/edit/{}'.format(group.group_name)
+
+        self.login_user('admin', 'adminpass')
+        res = self.testapp.get(url)
+        csrf_token = self.get_csrf_token(res)
+
+        params = [
+            ('group_name', group_name),
+            ('display_name', display_name),
+            ('permissions', permission2.permission_id),
+        ]
+
+        # test bad csrf token
+        self.testapp.post(url, params, status=400)
+        self.testapp.post(
+            url,
+            params + [('csrf_token', 'bad_csrf')], 
+            status=400,
+        )
+
+        self.testapp.post(
+            url,
+            params + [('csrf_token', csrf_token)],
+        )
+        group = group_model.get_by_name(group_name)
+        self.assertEqual(group.group_name, group_name)
+        self.assertEqual(group.display_name, display_name)
+        self.assertEqual(set(group.permissions), set([permission2]))
+
+    def test_create_permission(self):
+        permission_model = PermissionModel(self.testapp.session)
+
+        permission_name = 'foobar'
+        display_name = 'Foo Bar'
+        url = '/admin/permission/create'
+
+        self.login_user('admin', 'adminpass')
+        res = self.testapp.get(url)
+        csrf_token = self.get_csrf_token(res)
+
+        params = [
+            ('permission_name', permission_name),
+            ('display_name', display_name),
+        ]
+
+        # test bad csrf token
+        self.testapp.post(url, params, status=400)
+        self.testapp.post(
+            url,
+            params + [('csrf_token', 'bad_csrf')], 
+            status=400,
+        )
+
+        self.testapp.post(
+            url,
+            params + [('csrf_token', csrf_token)],
+        )
+        permission = permission_model.get_by_name(permission_name)
+        self.assertEqual(permission.permission_name, permission_name)
+        self.assertEqual(permission.display_name, display_name)
+
+    def test_edit_permission(self):
+        permission_model = PermissionModel(self.testapp.session)
+
+        with transaction.manager:
+            permission = permission_model.create(
+                permission_name='foobar', 
+                display_name='foobar',
+            )
+
+        permission_name = 'new name'
+        display_name = 'new display_name'
+        url = '/admin/permission/edit/{}'.format(permission.permission_name)
+
+        self.login_user('admin', 'adminpass')
+        res = self.testapp.get(url)
+        csrf_token = self.get_csrf_token(res)
+
+        params = [
+            ('permission_name', permission_name),
+            ('display_name', display_name),
+        ]
+
+        # test bad csrf token
+        self.testapp.post(url, params, status=400)
+        self.testapp.post(
+            url,
+            params + [('csrf_token', 'bad_csrf')], 
+            status=400,
+        )
+
+        self.testapp.post(
+            url,
+            params + [('csrf_token', csrf_token)],
+        )
+        permission = permission_model.get_by_name(permission_name)
+        self.assertEqual(permission.permission_name, permission_name)
+        self.assertEqual(permission.display_name, display_name)

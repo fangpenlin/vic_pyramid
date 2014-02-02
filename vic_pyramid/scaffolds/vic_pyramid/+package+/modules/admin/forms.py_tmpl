@@ -4,48 +4,14 @@ from wtforms import Form
 from wtforms import TextField
 from wtforms import PasswordField
 from wtforms import SelectMultipleField
-from wtforms import ValidationError
 from wtforms import validators
 from wtforms.widgets.core import html_params
 from wtforms.widgets.core import HTMLString
 
+from {{package}}.modules.forms import similar
 from {{package}}.i18n import LocalizerFactory
 
 get_localizer = LocalizerFactory()
-
-
-def are_similar(left, right):
-    """Return are two strings too similar
-    
-    """
-    left = left.lower()
-    right = right.lower()
-    if left == right:
-        return True
-    if left and left in right:
-        return True
-    if right and right in left:
-        return True
-    return False
-
-
-def similar(target, message):
-    """This validator make sure that two fileds are not too similar. Mainly
-    for comparing password and user name
-    
-    """
-    def callee(form, field):
-        try:
-            other = form[target]
-        except KeyError:
-            raise ValidationError(
-                field.gettext(u"Invalid field name '%s'.") % target)
-        
-        other_data = other.data.lower()
-        my_data = field.data.lower()
-        if are_similar(other_data, my_data):
-            raise ValidationError(message)
-    return callee
 
 
 class CheckboxList(object):
@@ -69,8 +35,8 @@ class CheckboxList(object):
         html = [u'<ul %s>' % html_params(**kwargs)]
         for val, label, selected in field.iter_choices():
             html.append(self.render_option(field.name, val, label, selected))
-        html.append(u'</ul>')
-        return HTMLString(u''.join(html))
+        html.append('</ul>')
+        return HTMLString(''.join(html))
 
     @classmethod
     def render_option(cls, name, value, label, selected, **kwargs):
@@ -107,25 +73,25 @@ class FormFactory(object):
     def __init__(self, localizer):
         self.localizer = localizer
         _ = self.localizer
-        self.required_msg = _(u'This field is required.')
-        self.invalid_email_msg = _(u'Invalid email address.')
-        self.password_not_match_msg = _(u'Password must match')
+        self.required_msg = _('This field is required.')
+        self.invalid_email_msg = _('Invalid email address.')
+        self.password_not_match_msg = _('Password must match')
         self.password_too_similar_msg = \
-            _(u'Password is too similar to user name.')
+            _('Password is too similar to user name.')
     
     def make_user_create_form(self):
         _ = self.localizer
         
         class UserCreateForm(Form):
             user_name = TextField(
-                _(u'User name'), 
+                _('User name'), 
                 [
                     validators.Required(self.required_msg),
                 ]
             )
-            display_name = TextField(_(u'Display name'), [])
+            display_name = TextField(_('Display name'), [])
             password = PasswordField(
-                _(u'Password'), 
+                _('Password'), 
                 [
                     validators.Required(self.required_msg),
                     similar('user_name', self.password_too_similar_msg),
@@ -134,21 +100,21 @@ class FormFactory(object):
                 ]
             )
             email = TextField(
-                _(u'Email'), 
+                _('Email'), 
                 [
                     validators.Email(self.invalid_email_msg)
                 ]
             )
-            groups = SelectMultipleField(_(u'Groups'), widget=CheckboxList())
+            groups = SelectMultipleField(_('Groups'), widget=CheckboxList())
         return UserCreateForm
     
     def make_user_edit_form(self):
         _ = self.localizer
         
         class UserEditForm(Form):
-            display_name = TextField(_(u'Display name'), [])
+            display_name = TextField(_('Display name'), [])
             password = PasswordField(
-                _(u'Password'), 
+                _('Password'), 
                 [
                     #similar('user_name', self.password_too_similar_msg),
                     # TODO: check is password similar to user_name here
@@ -156,11 +122,11 @@ class FormFactory(object):
                 ]
             )
             email = TextField(
-                _(u'Email'), [
+                _('Email'), [
                     validators.Email(self.invalid_email_msg)
                 ]
             )
-            groups = SelectMultipleField(_(u'Groups'), widget=CheckboxList())
+            groups = SelectMultipleField(_('Groups'), widget=CheckboxList())
         return UserEditForm
     
     def make_group_create_form(self):
@@ -168,13 +134,13 @@ class FormFactory(object):
         
         class GroupCreateForm(Form):
             group_name = TextField(
-                _(u'Group name'), [
+                _('Group name'), [
                     validators.Required(self.required_msg),
                 ]
             )
-            display_name = TextField(_(u'Display name'), [])
+            display_name = TextField(_('Display name'), [])
             permissions = SelectMultipleField(
-                _(u'Permissions'), 
+                _('Permissions'), 
                 widget=CheckboxList()
             )
         return GroupCreateForm
@@ -184,14 +150,14 @@ class FormFactory(object):
         
         class GroupEditForm(Form):
             group_name = TextField(
-                _(u'Group name'), 
+                _('Group name'), 
                 [
                     validators.Required(self.required_msg),
                 ]
             )
-            display_name = TextField(_(u'Display name'), [])
+            display_name = TextField(_('Display name'), [])
             permissions = SelectMultipleField(
-                _(u'Permissions'), 
+                _('Permissions'), 
                 widget=CheckboxList()
             )
         return GroupEditForm
@@ -201,12 +167,12 @@ class FormFactory(object):
         
         class PermissionCreateForm(Form):
             permission_name = TextField(
-                _(u'Permission name'), 
+                _('Permission name'), 
                 [
                     validators.Required(self.required_msg),
                 ]
             )
-            description = TextField(_(u'Description'), [])
+            display_name = TextField(_('Display name'), [])
         return PermissionCreateForm
     
     def make_permission_edit_form(self):
@@ -214,10 +180,10 @@ class FormFactory(object):
         
         class PermissionEditForm(Form):
             permission_name = TextField(
-                _(u'Permission name'), 
+                _('Permission name'), 
                 [
                     validators.Required(self.required_msg),
                 ]
             )
-            description = TextField(_(u'Description'), [])
+            display_name = TextField(_('Display name'), [])
         return PermissionEditForm

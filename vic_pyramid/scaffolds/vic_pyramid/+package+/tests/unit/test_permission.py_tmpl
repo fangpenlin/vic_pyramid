@@ -15,13 +15,13 @@ class TestPermissionModel(ModelTestCase):
         model = self.make_one()
         
         permission_name = 'test'
-        description = permission_name
+        display_name = 'foobar'
         
         with transaction.manager:
             permission = model.create(
                 permission_name=permission_name,
-                description=description,
+                display_name=display_name,
             )
         
         self.assertEqual(permission.permission_name, permission_name)
-        self.assertEqual(permission.description, description)
+        self.assertEqual(permission.display_name, display_name)

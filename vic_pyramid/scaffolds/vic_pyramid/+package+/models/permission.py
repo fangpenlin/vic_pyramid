@@ -25,14 +25,14 @@ class PermissionModel(BaseTableModel):
     def create(
         self, 
         permission_name, 
-        description=None,
+        display_name=None,
     ):
         """Create a new permission and return its id
         
         """
         permission = tables.Permission(
             permission_name=unicode(permission_name), 
-            description=unicode(description) if description is not None else None, 
+            display_name=unicode(display_name) if display_name is not None else None, 
         )
         self.session.add(permission)
         self.session.flush()
@@ -41,14 +41,14 @@ class PermissionModel(BaseTableModel):
     def update(
         self, 
         permission, 
-        description=NOT_SET, 
+        display_name=NOT_SET, 
         permission_name=NOT_SET,
     ):
         """Update attributes of a permission
         
         """
-        if description is not NOT_SET:
-            permission.description = description
+        if display_name is not NOT_SET:
+            permission.display_name = display_name
         if permission_name is not NOT_SET:
             permission.permission_name = permission_name
         self.session.flush()
