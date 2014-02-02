@@ -81,13 +81,13 @@ class AdminViews(BaseView):
             
             by_name = user_model.get_by_name(user_name)
             if by_name is not None:
-                msg = _(u'Username %s already exists') % user_name
+                msg = _('Username %s already exists') % user_name
                 form.user_name.errors.append(msg)
                 validate_result = False
                 
             by_email = user_model.get_by_email(email)
             if by_email is not None:
-                msg = _(u'Email %s already exists') % email
+                msg = _('Email %s already exists') % email
                 form.email.errors.append(msg)
                 validate_result = False
             
@@ -102,7 +102,7 @@ class AdminViews(BaseView):
                     groups = map(group_model.get, groups)
                     user_model.update(user, groups=groups)
                 
-                msg = _(u"User ${user_name} has been created", 
+                msg = _("User ${user_name} has been created", 
                         mapping=dict(user_name=user_name))
                 request.add_flash(msg, 'success')
                 return HTTPFound(location=request.route_url('admin.user_list'))
@@ -121,7 +121,7 @@ class AdminViews(BaseView):
         user_name = request.matchdict['user_name']
         user = user_model.get_by_name(user_name)
         if user is None:
-            msg = _(u'User %s does not exists') % user_name
+            msg = _('User %s does not exists') % user_name
             return HTTPNotFound(msg)
         user_groups = [str(g.group_id) for g in user.groups]
 
@@ -149,7 +149,7 @@ class AdminViews(BaseView):
             
             by_email = user_model.get_by_email(email)
             if by_email is not None and email != user.email:
-                msg = _(u'Email %s already exists') % email
+                msg = _('Email %s already exists') % email
                 form.email.errors.append(msg)
                 validate_result = False
             
@@ -167,7 +167,7 @@ class AdminViews(BaseView):
                         groups=groups,
                     )
                 
-                msg = _(u"User ${user_name} has been updated", 
+                msg = _("User ${user_name} has been updated", 
                         mapping=dict(user_name=user_name))
                 request.add_flash(msg, 'success')
                 url = request.route_url('admin.user_edit', 
@@ -210,7 +210,7 @@ class AdminViews(BaseView):
             
             by_name = group_model.get_by_name(group_name)
             if by_name is not None:
-                msg = _(u'Group name %s already exists') % group_name
+                msg = _('Group name %s already exists') % group_name
                 form.group_name.errors.append(msg)
                 validate_result = False
 
@@ -223,7 +223,7 @@ class AdminViews(BaseView):
                         permissions=permissions,
                     )
                 
-                msg = _(u"Group ${group_name} has been created", 
+                msg = _("Group ${group_name} has been created", 
                         mapping=dict(group_name=group_name))
                 request.add_flash(msg, 'success')
                 return HTTPFound(location=request.route_url('admin.group_list'))
@@ -242,7 +242,7 @@ class AdminViews(BaseView):
         group_name = request.matchdict['group_name']
         group = group_model.get_by_name(group_name)
         if group is None:
-            msg = _(u'Group %s does not exist') % group_name
+            msg = _('Group %s does not exist') % group_name
             return HTTPNotFound(msg)
         group_permissions = [str(p.permission_id) for p in group.permissions]
 
@@ -269,7 +269,7 @@ class AdminViews(BaseView):
             
             by_name = group_model.get_by_name(group_name)
             if by_name is not None and group_name != group.group_name:
-                msg = _(u'Group name %s already exists') % group_name
+                msg = _('Group name %s already exists') % group_name
                 form.group_name.errors.append(msg)
                 validate_result = False
 
@@ -283,7 +283,7 @@ class AdminViews(BaseView):
                         permissions=permissions,
                     )
                 group = group_model.get(group.group_id)
-                msg = _(u"Group ${group_name} has been updated", 
+                msg = _("Group ${group_name} has been updated", 
                         mapping=dict(group_name=group.group_name))
                 request.add_flash(msg, 'success')
                 url = request.route_url('admin.group_edit', 
@@ -318,7 +318,7 @@ class AdminViews(BaseView):
             
             by_name = permission_model.get_by_name(permission_name)
             if by_name is not None:
-                msg = _(u'Permission name %s already exists') % permission_name
+                msg = _('Permission name %s already exists') % permission_name
                 form.permission_name.errors.append(msg)
                 validate_result = False
 
@@ -329,7 +329,7 @@ class AdminViews(BaseView):
                         display_name=display_name, 
                     )
                 
-                msg = _(u"Permission ${permission_name} has been created", 
+                msg = _("Permission ${permission_name} has been created", 
                         mapping=dict(permission_name=permission_name))
                 request.add_flash(msg, 'success')
                 return HTTPFound(location=request.route_url('admin.permission_list'))
@@ -346,7 +346,7 @@ class AdminViews(BaseView):
         permission_name = request.matchdict['permission_name']
         permission = permission_model.get_by_name(permission_name)
         if permission is None:
-            msg = _(u'Permission %s does not exist') % permission_name
+            msg = _('Permission %s does not exist') % permission_name
             return HTTPNotFound(msg)
         
         form = self.form_factory.make_permission_edit_form()(
@@ -366,7 +366,7 @@ class AdminViews(BaseView):
                 by_name is not None and 
                 permission_name != permission.permission_name
             ):
-                msg = _(u'Permission name %s already exists') % permission_name
+                msg = _('Permission name %s already exists') % permission_name
                 form.permission_name.errors.append(msg)
                 validate_result = False
 
@@ -378,7 +378,7 @@ class AdminViews(BaseView):
                         display_name=display_name, 
                     )
                 
-                msg = _(u"Permission ${permission_name} has been updated", 
+                msg = _("Permission ${permission_name} has been updated", 
                         mapping=dict(permission_name=permission_name))
                 request.add_flash(msg, 'success')
                 url = request.route_url('admin.permission_edit', 

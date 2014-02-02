@@ -110,7 +110,7 @@ Headers:
             body=body
         )
         
-        msg = _(u'We have received your message, thank you')
+        msg = _('We have received your message, thank you')
         request.add_flash(msg, 'success')
         return HTTPFound(location=request.route_url('front.contact_us_received'))
         

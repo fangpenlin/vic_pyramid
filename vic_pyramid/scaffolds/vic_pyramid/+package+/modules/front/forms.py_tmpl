@@ -15,18 +15,18 @@ class FormFactory(object):
     def __init__(self, localizer):
         self.localizer = localizer
         _ = self.localizer
-        self.required_msg = _(u'This field is required.')
-        self.invalid_email_msg = _(u'Invalid email address.')
+        self.required_msg = _('This field is required.')
+        self.invalid_email_msg = _('Invalid email address.')
     
     def make_contact_form(self):
         _ = self.localizer
 
         class ContactForm(Form):
-            email = TextField(_(u'Email address'), [
+            email = TextField(_('Email address'), [
                 validators.Required(self.required_msg),
                 validators.Email(self.invalid_email_msg)
             ])
-            content = TextAreaField(_(u'Content'), [
+            content = TextAreaField(_('Content'), [
                 validators.Required(self.required_msg)
             ])
         return ContactForm
