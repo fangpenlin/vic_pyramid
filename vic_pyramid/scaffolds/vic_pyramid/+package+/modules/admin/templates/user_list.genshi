@@ -14,7 +14,7 @@
 <h2>User list</h2>
 
 <a class="btn btn-default" href="${ request.route_url('admin.user_create') }">
-    <i class="icon-plus"></i>
+    <i class="fa fa-plus"></i>
     Create user
 </a>
 
@@ -32,7 +32,7 @@
         <tr py:for="user in users">
             <td>
                 <a class="btn btn-default" href="${ request.route_url('admin.user_edit', user_name=user.user_name) }">
-                    <i class="icon-edit"></i> Edit
+                    <i class="fa fa-edit"></i> Edit
                 </a>
             </td>
             <td>${ user.user_id }</td>

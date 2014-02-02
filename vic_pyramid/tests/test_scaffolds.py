@@ -126,7 +126,7 @@ class TestScaffolds(unittest.TestCase):
             self.assertTrue(os.path.exists(os.path.join(self.test_folder, *path)))
         assert_exists('helloworld', 'distribute_setup.py')
         assert_exists('helloworld', 'requirements.txt')
-        assert_exists('helloworld', 'test_requirements.txt')
+        assert_exists('helloworld', 'test-requirements.txt')
         assert_exists('helloworld', 'helloworld', 'locale')
         for ext in ['eot', 'svg', 'ttf', 'woff']:
             assert_exists(
@@ -134,7 +134,7 @@ class TestScaffolds(unittest.TestCase):
                 'helloworld', 
                 'static', 
                 'font-awesome', 
-                'font', 
+                'fonts', 
                 'fontawesome-webfont.' + ext
             )
         assert_exists(
@@ -142,7 +142,7 @@ class TestScaffolds(unittest.TestCase):
             'helloworld', 
             'static', 
             'font-awesome', 
-            'font', 
+            'fonts', 
             'FontAwesome.otf',
         )
 
@@ -160,7 +160,7 @@ class TestScaffolds(unittest.TestCase):
         self.check_call(
             [
                 self.test_pip, 'install', '-r', 
-                os.path.join(self.helloworld_folder, 'test_requirements.txt')
+                os.path.join(self.helloworld_folder, 'test-requirements.txt')
             ], 
             shell=False, cwd=self.helloworld_folder
         )

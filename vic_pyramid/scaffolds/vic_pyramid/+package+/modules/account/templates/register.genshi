@@ -34,7 +34,7 @@
 
     <div class="form-group">
         <div class="col-lg-offset-2 col-lg-10">
-            <input name="submit" class="btn btn-primary btn-large" type="submit" value="${_('Register')}" />
+            <input class="btn btn-primary btn-large" type="submit" value="${_('Register')}" />
         </div>
     </div>
     <input type="hidden" name="csrf_token" value="${ request.session.get_csrf_token() }" />

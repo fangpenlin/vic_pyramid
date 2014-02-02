@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 try:  # pyramid 1.0.X
     # "pyramid.paster.paste_script..." doesn't exist past 1.0.X
     from pyramid.paster import paste_script_template_renderer

@@ -15,7 +15,7 @@
 <h2>Create group</h2>
 
 <a class="btn btn-default" href="${ request.route_url('admin.group_list') }">
-    <i class=" icon-chevron-left"></i> Back to group list
+    <i class=" fa fa-chevron-left"></i> Back to group list
 </a>
 
 ${ standard_form(

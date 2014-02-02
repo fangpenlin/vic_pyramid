@@ -14,7 +14,7 @@
 <h2>Permission list</h2>
 
 <a class="btn btn-default" href="${ request.route_url('admin.permission_create') }">
-    <i class="icon-plus"></i>
+    <i class="fa fa-plus"></i>
     Create permission
 </a>
 
@@ -30,7 +30,7 @@
         <tr py:for="permission in permissions">
             <td>
                 <a class="btn btn-default" href="${ request.route_url('admin.permission_edit', permission_name=permission.permission_name) }">
-                    <i class="icon-edit"></i> Edit
+                    <i class="fa fa-edit"></i> Edit
                 </a>
             </td>
             <td>${ permission.permission_id }</td>

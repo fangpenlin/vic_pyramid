@@ -18,7 +18,7 @@ def read_requirements(filename):
 
 
 requirements = read_requirements('requirements.txt')
-test_requirements = read_requirements('test_requirements.txt')
+test_requirements = read_requirements('test-requirements.txt')
 
 
 setup(

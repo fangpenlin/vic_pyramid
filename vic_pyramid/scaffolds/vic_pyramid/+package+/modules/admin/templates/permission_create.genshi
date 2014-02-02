@@ -15,7 +15,7 @@
 <h2>Create permission</h2>
 
 <a class="btn btn-default" href="${ request.route_url('admin.permission_list') }">
-    <i class=" icon-chevron-left"></i> Back to permission list
+    <i class=" fa fa-chevron-left"></i> Back to permission list
 </a>
 
 ${ standard_form(
