@@ -32,7 +32,7 @@ class BaseTableModel(object):
                 '{0} {1} does not exist'
                 .format(self.TABLE.__name__, record_id)
             )
-        return record 
+        return record
 
     def get_list(self, ids=None, offset=None, limit=None):
         """Get record list
