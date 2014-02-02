@@ -109,7 +109,7 @@ class AccountView(BaseView):
         
         headers = forget(request)
         name = user.display_name or user.user_name
-        msg = _(u"Hope we will see you soon, ${user_name}",
+        msg = _("Hope we will see you soon, ${user_name}",
                 mapping=dict(user_name=name))
         
         request.add_flash(msg)
@@ -189,7 +189,7 @@ class AccountView(BaseView):
                         body=html
                     )
                 
-                msg = _(u"User ${user_name} has been registered",
+                msg = _("User ${user_name} has been registered",
                         mapping=dict(user_name=user_name))
                 request.add_flash(msg, 'success')
                 return HTTPFound(location=request.route_url('account.check_mailbox'))
@@ -222,7 +222,7 @@ class AccountView(BaseView):
         )
         
         if valid_code != code:
-            msg = _(u"Invalid activation link",
+            msg = _("Invalid activation link",
                     mapping=dict(user_name=user_name))
             return HTTPForbidden(msg)
         
@@ -230,7 +230,7 @@ class AccountView(BaseView):
             with transaction.manager:
                 user_model.update(user, verified=True)
         
-        msg = _(u"User ${user_name} is activated",
+        msg = _("User ${user_name} is activated",
                 mapping=dict(user_name=user_name))
         request.add_flash(msg, 'success')
         return dict()

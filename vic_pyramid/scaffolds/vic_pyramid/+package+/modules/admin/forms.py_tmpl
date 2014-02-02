@@ -32,7 +32,7 @@ class CheckboxList(object):
         kwargs.setdefault('id', field.id)
         if self.multiple:
             kwargs['multiple'] = True
-        html = [u'<ul %s>' % html_params(**kwargs)]
+        html = ['<ul %s>' % html_params(**kwargs)]
         for val, label, selected in field.iter_choices():
             html.append(self.render_option(field.name, val, label, selected))
         html.append('</ul>')

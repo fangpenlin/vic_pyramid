@@ -28,7 +28,7 @@ def similar(target, message):
             other = form[target]
         except KeyError:
             raise ValidationError(
-                field.gettext(u"Invalid field name '%s'.") % target)
+                field.gettext("Invalid field name '%s'.") % target)
         
         other_data = other.data.lower()
         my_data = field.data.lower()
