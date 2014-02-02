@@ -21,12 +21,12 @@ class TestAccountView(ViewTestCase):
                 email='tester@example.com'
             )
         
-    def login_user(self, username_or_email='tester', password='testerpass'):
+    def login_user(self, name_or_email='tester', password='testerpass'):
         """Login as user and return cookie
         
         """
         params = dict(
-            username_or_email=username_or_email, 
+            name_or_email=name_or_email, 
             password=password
         )
         self.testapp.post('/login', params)
@@ -36,7 +36,7 @@ class TestAccountView(ViewTestCase):
         
         """
         params = dict(
-            username_or_email=name, 
+            name_or_email=name, 
             password=password
         )
         self.testapp.post('/login', params, status='3*')
@@ -46,10 +46,10 @@ class TestAccountView(ViewTestCase):
         
         """
         params = dict(
-            username_or_email=name, 
+            name_or_email=name, 
             password=password
         )
-        self.testapp.post('/login', params, status=200)
+        self.testapp.post('/login', params, status=(403, 200))
         
     def test_login(self):
         self.testapp.get('/login', status=200)

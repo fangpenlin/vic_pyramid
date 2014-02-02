@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 
 from . import tables
 from .base import BaseTableModel
+from .base import NOT_SET
 
 
 class PermissionModel(BaseTableModel):
@@ -18,8 +19,7 @@ class PermissionModel(BaseTableModel):
             self.session
             .query(tables.Permission)
             .filter_by(permission_name=permission_name)
-            .first()
-        )
+        ).first()
         return permission
     
     def create(
@@ -35,22 +35,20 @@ class PermissionModel(BaseTableModel):
             description=unicode(description) if description is not None else None, 
         )
         self.session.add(permission)
-        # flush the change, so we can get real id
         self.session.flush()
-        assert permission.permission_id is not None, \
-            'Permission id should not be none here'
-        permission_id = permission.permission_id
-        
-        self.logger.info('Create permission %s', permission_name)
-        return permission_id
+        return permission
     
-    def update_permission(self, permission_id, **kwargs):
+    def update(
+        self, 
+        permission, 
+        description=NOT_SET, 
+        permission_name=NOT_SET,
+    ):
         """Update attributes of a permission
         
         """
-        permission = self.get(permission_id, raise_error=True)
-        if 'description' in kwargs:
-            permission.description = kwargs['description']
-        if 'permission_name' in kwargs:
-            permission.permission_name = kwargs['permission_name']
-        self.session.add(permission)
+        if description is not NOT_SET:
+            permission.description = description
+        if permission_name is not NOT_SET:
+            permission.permission_name = permission_name
+        self.session.flush()

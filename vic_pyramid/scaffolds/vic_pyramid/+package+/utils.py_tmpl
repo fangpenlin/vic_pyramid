@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 import os
 import hmac
+import hashlib
 
 import yaml
 from pyramid.httpexceptions import HTTPBadRequest
@@ -18,6 +19,30 @@ def generate_random_code():
     """
     random_code = os.urandom(60)
     return hmac.new(random_code).hexdigest()
+
+
+def salt_password(password, salt=None, hash_name='sha1'):
+    """Generate hashed password with salt hash(password + salt)
+
+    if salt is not given, generate_random_code will be used for generating
+    the salt value
+
+    """
+    if isinstance(password, unicode):
+        password = password.encode('utf8')
+    if isinstance(salt, unicode):
+        salt = salt.encode('utf8')
+    if salt is None:
+        salt = generate_random_code()
+
+    hash_method = getattr(hashlib, hash_name)
+    
+    # generate hashed password
+    hashed_pwd = hash_method()
+    hashed_pwd.update(password)
+    hashed_pwd.update(salt)
+    hex_hashed_pwd = hashed_pwd.hexdigest()
+    return hash_name, salt, hex_hashed_pwd
 
 
 def load_app_cfg():

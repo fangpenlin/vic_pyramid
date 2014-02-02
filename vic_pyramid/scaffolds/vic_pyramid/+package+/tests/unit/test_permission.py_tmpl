@@ -18,11 +18,10 @@ class TestPermissionModel(ModelTestCase):
         description = permission_name
         
         with transaction.manager:
-            permission_id = model.create(
+            permission = model.create(
                 permission_name=permission_name,
                 description=description,
             )
-        permission = model.get(permission_id)
         
         self.assertEqual(permission.permission_name, permission_name)
         self.assertEqual(permission.description, description)

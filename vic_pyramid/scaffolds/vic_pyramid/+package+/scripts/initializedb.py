@@ -54,39 +54,35 @@ def main(argv=sys.argv, input_func=raw_input, getpass_func=getpass.getpass):
                 print 'Password not match'
                 return
         
-            user_id = user_model.create(
+            admin = user_model.create(
                 user_name='admin',
                 display_name='Administrator',
                 email=email,
                 password=password, 
                 verified=True, 
             )
-            admin = user_model.get(user_id)
-            session.flush()
             print 'Created admin, user_id=%s' % admin.user_id
             
         permission = permission_model.get_by_name('admin')
         if permission is None:
             print 'Create admin permission ...'
-            permission_model.create(
+            permission = permission_model.create(
                 permission_name='admin',
                 description='Administrate',
             )
-            permission = permission_model.get_by_name('admin')
             
         group = group_model.get_by_name('admin')
         if group is None:
             print 'Create admin group ...'
-            group_model.create(
+            group = group_model.create(
                 group_name='admin',
                 display_name='Administrators',
             )
-            group = group_model.get_by_name('admin')
             
         print 'Add admin permission to admin group'
-        group_model.update_permissions(group.group_id, [permission.permission_id])
+        group_model.update(group, permissions=[permission])
         session.flush()
             
         print 'Add admin to admin group'
-        user_model.update_groups(admin.user_id, [group.group_id])
+        user_model.update(admin, groups=[group])
         session.flush()

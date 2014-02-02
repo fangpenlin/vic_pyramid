@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 
 from . import tables
 from .base import BaseTableModel
+from .base import NOT_SET
 
 
 class GroupModel(BaseTableModel):
@@ -18,8 +19,7 @@ class GroupModel(BaseTableModel):
             self.session
             .query(tables.Group)
             .filter_by(group_name=group_name)
-            .first()
-        )
+        ).first()
         return group
     
     def create(
@@ -38,32 +38,22 @@ class GroupModel(BaseTableModel):
         self.session.add(group)
         # flush the change, so we can get real user id
         self.session.flush()
-        assert group.group_id is not None, 'Group id should not be none here'
-        group_id = group.group_id
-        
-        self.logger.info('Create group %s', group_name)
-        return group_id
+        return group
     
-    def update_group(self, group_id, **kwargs):
+    def update(
+        self, 
+        group, 
+        display_name=NOT_SET, 
+        group_name=NOT_SET,
+        permissions=NOT_SET,
+    ):
         """Update attributes of a group
         
         """
-        group = self.get(group_id, raise_error=True)
-        if 'display_name' in kwargs:
-            group.display_name = kwargs['display_name']
-        if 'group_name' in kwargs:
-            group.group_name = kwargs['group_name']
-        self.session.add(group)
-    
-    def update_permissions(self, group_id, permission_ids):
-        """Update permissions of this group
-        
-        """
-        group = self.get(group_id, raise_error=True)
-        new_permissions = (
-            self.session
-            .query(tables.Permission)
-            .filter(tables.Permission.permission_id.in_(permission_ids))
-        )
-        group.permissions = new_permissions.all()
+        if display_name is not NOT_SET:
+            group.display_name = display_name
+        if group_name is not NOT_SET:
+            group.group_name = group_name
+        if permissions is not NOT_SET:
+            group.permissions = permissions
         self.session.flush()

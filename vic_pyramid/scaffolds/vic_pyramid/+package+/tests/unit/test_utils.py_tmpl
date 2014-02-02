@@ -10,6 +10,7 @@ from pyramid.httpexceptions import HTTPBadRequest
 
 from {{package}}.utils import generate_random_code
 from {{package}}.utils import check_csrf_token
+from {{package}}.utils import salt_password
 from {{package}}.utils import load_app_cfg
 
 
@@ -43,6 +44,41 @@ class TestUtils(unittest.TestCase):
         times = 1000
         codes = [generate_random_code() for _ in range(times)]
         self.assertEqual(len(set(codes)), times)
+
+    def test_salt_password(self):
+        password = 'my_super_pwd'
+        hash_name, salt, hashed_pwd = salt_password(password)
+        self.assertEqual(hash_name, 'sha1')
+        self.assertNotIn(password, hash_name)
+        self.assertNotIn(password, salt)
+        self.assertNotIn(password, hashed_pwd)
+
+    def test_salt_password_with_given_salt(self):
+        password = 'my_super_pwd'
+        _, salt1, hashed_pwd1 = salt_password(password)
+        _, salt2, hashed_pwd2 = salt_password(password, salt1)
+        self.assertEqual(salt1, salt2)
+        self.assertEqual(hashed_pwd1, hashed_pwd2)
+
+    def test_salt_password_wont_repeat(self):
+        password = 'foobar'
+        times = 100
+        salt_set = set()
+        hashed_pwd_set = set()
+        for _ in range(times):
+            _, salt, hashed_pwd = salt_password(password)
+            salt_set.add(salt)
+            hashed_pwd_set.add(salt)
+        self.assertEqual(len(salt_set), times)
+        self.assertEqual(len(hashed_pwd_set), times)
+
+    def test_salt_password_with_other_hash(self):
+        password = 'my_super_pwd'
+        hash_name, salt, hashed_pwd = salt_password(password, hash_name='md5')
+        self.assertEqual(hash_name, 'md5')
+        self.assertNotIn(password, hash_name)
+        self.assertNotIn(password, salt)
+        self.assertNotIn(password, hashed_pwd)
 
     def test_load_app_cfg(self):
         # make sure the configuration is loaded correctly

@@ -1,6 +1,9 @@
 from __future__ import unicode_literals
 import logging
 
+#: not set object
+NOT_SET = object()
+
 
 class BaseTableModel(object):
     """Base model for table
@@ -9,7 +12,7 @@ class BaseTableModel(object):
 
     #: the table object
     TABLE = None
-    
+
     def __init__(self, session, logger=None):
         self.logger = logger or logging.getLogger(__name__)
         self.session = session

@@ -22,11 +22,10 @@ class TestGroupModel(ModelTestCase):
         display_name = group_name
         
         with transaction.manager:
-            group_id = model.create(
+            group = model.create(
                 group_name=group_name,
                 display_name=display_name,
             )
-        group = model.get(group_id)
         
         self.assertEqual(group.group_name, group_name)
         self.assertEqual(group.display_name, display_name)
@@ -39,29 +38,26 @@ class TestGroupModel(ModelTestCase):
         display_name = group_name
         
         with transaction.manager:
-            group_id = model.create(
+            group = model.create(
                 group_name=group_name,
                 display_name=display_name,
             )
-            pid1 = permission_model.create('p1')
-            pid2 = permission_model.create('p2')
-            pid3 = permission_model.create('p3')
+            pm1 = permission_model.create('p1')
+            pm2 = permission_model.create('p2')
+            pm3 = permission_model.create('p3')
             
-        group = model.get(group_id)
         pids = set([p.permission_id for p in group.permissions])
         self.assertEqual(pids, set([]))
             
         def assert_update(new_permissions):
             with transaction.manager:
-                model.update_permissions(group_id, new_permissions)
-            group = model.get(group_id)
-            pids = set([p.permission_id for p in group.permissions])
-            self.assertEqual(pids, set(new_permissions))
+                model.update(group, permissions=new_permissions)
+            self.assertEqual(set(group.permissions), set(new_permissions))
         
-        assert_update([pid1])
-        assert_update([pid1, pid2])
-        assert_update([pid1, pid2, pid3])
-        assert_update([pid1, pid3])
-        assert_update([pid1])
+        assert_update([pm1])
+        assert_update([pm1, pm2])
+        assert_update([pm1, pm2, pm3])
+        assert_update([pm1, pm3])
+        assert_update([pm1])
         assert_update([])
-        assert_update([pid1])
+        assert_update([pm1])

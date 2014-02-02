@@ -22,29 +22,30 @@ class TestAdminView(ViewTestCase):
                 password='testerpass', 
                 email='tester@example.com'
             )
-            admin_id = user_model.create(
+            admin = user_model.create(
                 user_name='admin', 
                 display_name='admin', 
                 password='adminpass', 
                 email='admin@example.com'
             )
-            group_id = group_model.create(
+            group = group_model.create(
                 group_name='admin', 
                 display_name='admin', 
             )
-            permission_id = permission_model.create(
+            permission = permission_model.create(
                 permission_name='admin', 
                 description='admin'
             )
-            group_model.update_permissions(group_id, [permission_id])
-            user_model.update_groups(admin_id, [group_id])
+            group_model.update(group, permissions=[permission])
+            user_model.update(admin, groups=[group])
         
-    def login_user(self, username_or_email='tester', password='testerpass'):
+    def login_user(self, name_or_email='tester', password='testerpass'):
         """Login as user and return cookie
         
         """
+
         params = dict(
-            username_or_email=username_or_email, 
+            name_or_email=name_or_email, 
             password=password
         )
         self.testapp.post('/login', params)
@@ -57,7 +58,7 @@ class TestAdminView(ViewTestCase):
         
         """
         params = dict(
-            username_or_email=name, 
+            name_or_email=name, 
             password=password
         )
         self.testapp.post('/login', params, status='3*')

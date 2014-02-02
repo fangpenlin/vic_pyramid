@@ -1,0 +1,15 @@
+from __future__ import unicode_literals
+
+from {{package}}.i18n import LocalizerFactory
+
+class BaseView(object):
+
+    FormFactory = None
+
+    def __init__(self, context, request):
+        self.request = request
+        self.context = context
+        self.localizer_factory = LocalizerFactory()
+        self.localizer = self.localizer_factory(request)
+        if self.FormFactory is not None:
+            self.form_factory = self.FormFactory(self.localizer)

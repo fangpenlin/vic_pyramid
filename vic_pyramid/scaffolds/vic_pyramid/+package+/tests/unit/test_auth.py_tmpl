@@ -27,41 +27,41 @@ class TestAuth(ModelTestCase):
         permission_model = self.make_permission_model()
         
         with transaction.manager:
-            user_id1 = user_model.create(
+            user1 = user_model.create(
                 user_name='tester1',
                 email='tester1@example.com',
                 display_name='tester1',
                 password='thepass',
             )
-            user_id2 = user_model.create(
+            user2 = user_model.create(
                 user_name='tester2',
                 email='tester2@example.com',
                 display_name='tester2',
                 password='thepass',
             )
-            user_id3 = user_model.create(
+            user3 = user_model.create(
                 user_name='tester3',
                 email='tester3@example.com',
                 display_name='tester3',
                 password='thepass',
             )
-            group_id1 = group_model.create(
+            group1 = group_model.create(
                 group_name='super_users',
                 display_name='Super user',
             )
-            group_id2 = group_model.create(
+            group2 = group_model.create(
                 group_name='guest',
                 display_name='Guest group',
             )
-            permission_id1 = permission_model.create(
+            permission1 = permission_model.create(
                 permission_name='admin',
                 description='Admin',
             )
-            permission_id2 = permission_model.create(
+            permission2 = permission_model.create(
                 permission_name='manager',
                 description='Manager',
             )
-            permission_id3 = permission_model.create(
+            permission3 = permission_model.create(
                 permission_name='guest',
                 description='Guest',
             )
@@ -69,23 +69,23 @@ class TestAuth(ModelTestCase):
             # + group1 super_users
             #     + permission1 admin 
             #     + permission2 manager 
-            group_model.update_permissions(
-                group_id1, 
-                [permission_id1, permission_id2]
+            group_model.update(
+                group1, 
+                permissions=[permission1, permission2]
             )
             # + group2 guest
             #     + permission3 guest
-            group_model.update_permissions(group_id2, [permission_id3])
+            group_model.update(group2, permissions=[permission3])
 
             # user1
             #     + group1 super_users
             #         + permission1 admin 
             #         + permission2 manager 
-            user_model.update_groups(user_id1, [group_id1])
+            user_model.update(user1, groups=[group1])
             # user2
             #     + group2 guest
             #         + permission3 guest 
-            user_model.update_groups(user_id2, [group_id2])
+            user_model.update(user2, groups=[group2])
             # user3
             #     (nothing)
 
@@ -97,7 +97,7 @@ class TestAuth(ModelTestCase):
             self.assertEqual(group, set(expected))
 
         assert_group(
-            user_id1, 
+            user1.user_id, 
             [
                 'user', 
                 'user:tester1',
@@ -107,7 +107,7 @@ class TestAuth(ModelTestCase):
             ]
         )
         assert_group(
-            user_id2, 
+            user2.user_id, 
             [
                 'user', 
                 'user:tester2',
@@ -116,7 +116,7 @@ class TestAuth(ModelTestCase):
             ]
         )
         assert_group(
-            user_id3, 
+            user3.user_id, 
             [
                 'user', 
                 'user:tester3',

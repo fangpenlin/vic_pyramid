@@ -20,7 +20,7 @@ def setup_database(global_config, **settings):
   
     if 'session' not in settings:
         settings['session'] = scoped_session(sessionmaker(
-            extension=ZopeTransactionExtension(),
+            extension=ZopeTransactionExtension(keep_session=True),
             bind=settings['engine']
         ))
 
