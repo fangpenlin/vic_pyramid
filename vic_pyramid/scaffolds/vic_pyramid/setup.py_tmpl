@@ -46,7 +46,7 @@ setup(
         ('**.genshi', 'genshi', None),
         ('static/**', 'ignore', None)]
     }, 
-    entry_points = """\
+    entry_points="""\
     [paste.app_factory]
     main = {{package}}:main
     [console_scripts]
