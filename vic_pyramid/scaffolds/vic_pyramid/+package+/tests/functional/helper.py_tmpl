@@ -15,7 +15,10 @@ class ViewTestCase(unittest.TestCase):
         if hasattr(self, 'settings'):
             settings = self.settings
         else:
-            settings = dict(use_dummy_mailer=True)
+            settings = dict(
+                use_dummy_mailer=True,
+                db_session_cleanup=False,
+            )
 
         # init database
         db_url = os.environ.get('FUNC_TEST_DB', 'sqlite://')
