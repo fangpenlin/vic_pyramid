@@ -49,7 +49,10 @@ def clean_db_session(event):
     def clean_up(request):
         request.db_session.remove()
 
-    event.request.add_finished_callback(clean_up)
+    settings = event.request.registry.settings
+    db_session_cleanup = asbool(settings.get('db_session_cleanup', True))
+    if db_session_cleanup:
+        event.request.add_finished_callback(clean_up)
 
 
 class WebRequest(Request):

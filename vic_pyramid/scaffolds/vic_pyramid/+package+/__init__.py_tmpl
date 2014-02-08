@@ -45,5 +45,5 @@ def main(global_config, **settings):
     # add static view
     config.add_static_view('static', '{{package}}:static')
     # scan modules
-    config.scan(ignore=b'{{package}}.tests')
+    config.scan()
     return config.make_wsgi_app()
