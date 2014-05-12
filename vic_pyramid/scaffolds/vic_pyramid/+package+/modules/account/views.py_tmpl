@@ -58,7 +58,7 @@ class AccountView(BaseView):
             pwd_result = False
             user = user_model.get_by_name_or_email(name_or_email)
             if user is not None:
-                pwd_result = user_model.validate_password(user, password)
+                pwd_result = user_model.validate_password(user.user_id, password)
             if not pwd_result:
                 msg = _('Wrong username or password')
                 request.add_flash(msg, 'error')
