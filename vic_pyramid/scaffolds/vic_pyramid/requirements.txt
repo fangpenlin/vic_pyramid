@@ -1,4 +1,4 @@
-pyramid==1.4b3
+pyramid==1.4.5
 pyramid_genshi
 pyramid_beaker
 pyramid_mailer
