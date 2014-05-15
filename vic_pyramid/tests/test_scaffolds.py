@@ -115,6 +115,18 @@ class TestScaffolds(unittest.TestCase):
             shell=False, 
             cwd=self.test_folder,
         )
+        # install pep8 == 1.4.6
+        self.check_call(
+            [self.test_pip, 'install', 'pep8==1.4.6'],
+            shell=False,
+            cwd=self.test_folder,
+        )
+        # install pyflakes==0.7.3
+        self.check_call(
+            [self.test_pip, 'install', 'pyflakes==0.7.3'],
+            shell=False,
+            cwd=self.test_folder,
+        )
 
         flake8 = os.path.join(self.test_scripts_folder, 'flake8')
         self.check_call(
