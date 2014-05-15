@@ -37,7 +37,7 @@ class TestAdminView(ViewTestCase):
                 display_name='admin'
             )
             group_model.update(group, permissions=[permission])
-            user_model.update(admin, groups=[group])
+            user_model.update_groups(admin.user_id, groups=[group.group_id])
 
     def get_csrf_token(self, res):
         input = res.html.find('input', dict(name='csrf_token'))

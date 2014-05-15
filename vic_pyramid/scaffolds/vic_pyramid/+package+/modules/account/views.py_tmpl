@@ -164,7 +164,7 @@ class AccountView(BaseView):
                     
                     auth_secret_key = settings['auth_secret_key']
                     code = user_model.get_verification_code(
-                        user=user, 
+                        user=user.user_id,
                         verify_type='create_user',
                         secret=auth_secret_key
                     )
