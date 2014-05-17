@@ -164,7 +164,7 @@ class AccountView(BaseView):
                     
                     auth_secret_key = settings['auth_secret_key']
                     code = user_model.get_verification_code(
-                        user=user.user_id,
+                        user_id=user.user_id,
                         verify_type='create_user',
                         secret=auth_secret_key
                     )
@@ -216,7 +216,7 @@ class AccountView(BaseView):
         
         auth_secret_key = settings['auth_secret_key']
         valid_code = user_model.get_verification_code(
-            user=user,
+            user_id=user.user_id,
             verify_type='create_user',
             secret=auth_secret_key
         )
@@ -228,7 +228,7 @@ class AccountView(BaseView):
         
         if not user.verified:
             with transaction.manager:
-                user_model.update(user, verified=True)
+                user_model.update_user(user_id=user.user_id, verified=True)
         
         msg = _("User ${user_name} is activated",
                 mapping=dict(user_name=user_name))
@@ -264,7 +264,7 @@ class AccountView(BaseView):
 
             # generate verification
             auth_secret_key = settings['auth_secret_key']
-            code = user_model.get_recovery_code(user, auth_secret_key)
+            code = user_model.get_recovery_code(auth_secret_key, user.user_id)
             
             link = request.route_url('account.recovery_password')
             query = dict(user_name=user_name, code=code)
@@ -310,7 +310,7 @@ class AccountView(BaseView):
 
         # generate verification
         auth_secret_key = settings['auth_secret_key']
-        valid_code = user_model.get_recovery_code(user, auth_secret_key)
+        valid_code = user_model.get_recovery_code(auth_secret_key, user.user_id)
 
         if code != valid_code:
             return HTTPForbidden(_('Bad password recovery link'))
@@ -333,7 +333,7 @@ class AccountView(BaseView):
             new_password = request.POST['new_password']
 
             with transaction.manager:
-                user_model.update(user, password=new_password)
+                user_model.update_password(user_id=user.user_id, password=new_password)
 
             msg = _('Your password has been updated')
             request.add_flash(msg, 'success')

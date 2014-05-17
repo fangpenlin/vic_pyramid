@@ -37,7 +37,7 @@ class TestAdminView(ViewTestCase):
                 display_name='admin'
             )
             group_model.update(group, permissions=[permission])
-            user_model.update_groups(admin.user_id, groups=[group.group_id])
+            user_model.update_groups(user_id=admin.user_id, group_ids=[group.group_id])
 
     def get_csrf_token(self, res):
         input = res.html.find('input', dict(name='csrf_token'))
@@ -184,11 +184,11 @@ class TestAdminView(ViewTestCase):
                 group_name='group2', 
                 display_name='group2', 
             )
-            user_model.update(user, groups=[group1, group2])
+            user_model.update_groups(user_id=user.user_id, group_ids=[group1.group_id, group2.group_id])
 
         url = '/admin/user/edit/{}'.format(user.user_name)
         display_name = 'new name'
-        password = 'new_password'
+        password = 'foobarpass'
         email = 'new_email@example.com'
 
         self.login_user('admin', 'adminpass')
@@ -216,7 +216,7 @@ class TestAdminView(ViewTestCase):
         )
         self.assertEqual(user.display_name, display_name)
         self.assertEqual(user.email, email)
-        self.assertEqual(set(user.groups), set([group2]))
+        self.assertEqual(set(user.groups), set([group1, group2]))
 
         params = dict(
             name_or_email=user.user_name, 
