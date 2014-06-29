@@ -1,0 +1,32 @@
+doctype html
+- inherit file="master.plim"
+
+html
+  head
+    - block name="head"
+      title User list
+
+  body
+    h2 User list
+    a.btn.btn-default href="${ request.route_url('admin.user_create') }"
+      i.fa.fa-plus Create user
+      table.table
+        thead
+          tr
+            td Action
+            td ID
+            td Username
+            td Display name
+            td Email
+            td Created
+        tbody
+          - for user in users
+            tr
+              td
+                a.btn.btn-default href="${ request.route_url('admin.user_edit', user_name=user.user_name) }"
+                  i.fa.fa-edit Edit
+              td ${ user.guid }
+              td ${ user.user_name }
+              td ${ user.display_name }
+              td ${ user.email }
+              td ${ user.created_at }

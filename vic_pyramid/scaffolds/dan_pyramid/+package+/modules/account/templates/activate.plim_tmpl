@@ -1,0 +1,11 @@
+doctype html
+- inherit file="{{package}}:templates/master.plim"
+
+html
+  head
+    - block name="head"
+      title Activate
+
+  body
+    h2 Activate
+    p Thanks for registration! Your account has been activated.

@@ -1,0 +1,17 @@
+doctype html
+- inherit file="master.plim"
+- namespace name="widgets" file="{{package}}:templates/widgets/form.plim"
+
+html
+  head
+    - block name="head"
+      title Edit group
+
+  body
+    h2 Edit group
+      a.btn.btn-default href="${ request.route_url('admin.group_list') }"
+        i.fa.fa-chevron-left Back to group list
+      ${ widgets.standard_form(
+        form=form,
+        action=request.route_url('admin.group_edit', group_name=group.group_name),
+        submit=_('Modify')) }

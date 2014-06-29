@@ -1,0 +1,11 @@
+doctype html
+- inherit file="{{package}}:templates/master.plim"
+
+html
+  head
+    - block name="head"
+      title Terms of service
+
+  body
+    h2 Terms of service
+    p Terms of service goes here

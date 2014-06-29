@@ -1,0 +1,17 @@
+doctype html
+- inherit file="master.plim"
+- namespace name="widgets" file="{{package}}:templates/widgets/form.plim"
+
+html
+  head
+    - block name="head"
+      title Create user
+
+  body
+    h2 Create user
+    a.btn.btn-default href="${ request.route_url('admin.user_list') }"
+      i.fa.fa-chevron-left Back to user list
+    ${ widgets.standard_form(
+      form=form,
+      action=request.route_url('admin.user_create'),
+      submit=_('Create')) }

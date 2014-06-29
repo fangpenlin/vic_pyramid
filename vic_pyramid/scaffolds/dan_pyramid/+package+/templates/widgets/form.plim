@@ -1,0 +1,41 @@
+doctype html
+
+- def form_label(field)
+  label.col-lg-2.control-label for="${ field.label.field_id }"
+    ${ field.label.text }
+
+- def field_errors(field)
+  - for error in field.errors
+    span.field_error
+      span.label.label-danger
+        ${ error }
+
+- def form_field(field)
+  - if field.type != 'HiddenField'
+    - if field.errors
+      div.form-group.error
+        ${ form_label(field) }
+        div.col-lg-10
+          ${ field() }
+          ${ field_errors(field) }
+    - else
+      div.form-group
+        ${ form_label(field) }
+        div.col-lg-10
+          ${ field() }
+
+- def standard_form(form, action, submit=u'Submit', method='POST')
+  form.form-horizontal role="form" action=${ action } method=${ method }
+    - for field in form
+      - if field.type != 'HiddenField'
+        ${ form_field(field) }
+
+    div.from-group
+      div.col-lg-offset-2.col-lg-10
+        input.btn.btn-default type="submit" value="${ submit }"
+
+    - for field in form
+      - if field.type == 'HiddenField'
+        ${ form_field(field) }
+
+    input type="hidden" name="csrf_token" value="${ request.session.get_csrf_token() }"

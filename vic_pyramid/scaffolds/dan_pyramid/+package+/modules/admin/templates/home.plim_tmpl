@@ -1,0 +1,11 @@
+doctype html
+- inherit file="master.plim"
+
+html
+  head
+    - block name="head"
+      title Admin
+
+  body
+    h2 Admin
+
