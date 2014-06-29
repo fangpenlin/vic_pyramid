@@ -13,7 +13,7 @@ get_localizer = LocalizerFactory()
 
 
 @view_config(route_name='front.home', 
-             renderer='templates/home.genshi')
+             renderer='templates/home.plim')
 def home(request):
     return dict()
 
@@ -41,19 +41,19 @@ def set_lang(request):
 
 
 @view_config(route_name='front.terms_of_service', 
-             renderer='templates/terms_of_service.genshi')
+             renderer='templates/terms_of_service.plim')
 def terms_of_service(request):
     return dict()
 
 
 @view_config(route_name='front.contact_us_received', 
-             renderer='templates/contact_us_received.genshi')
+             renderer='templates/contact_us_received.plim')
 def contact_us_received(request):
     return dict()
 
 
 @view_config(route_name='front.contact_us', 
-             renderer='templates/contact_us.genshi')
+             renderer='templates/contact_us.plim')
 def contact_us(request):
     _ = get_localizer(request)
     

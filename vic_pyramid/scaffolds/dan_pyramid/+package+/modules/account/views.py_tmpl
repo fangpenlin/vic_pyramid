@@ -24,9 +24,9 @@ class AccountView(BaseView):
     FormFactory = FormFactory
 
     @view_config(route_name='account.login',
-                 renderer='templates/login.genshi')
+                 renderer='templates/login.plim')
     @view_config(context='pyramid.httpexceptions.HTTPForbidden',
-                 renderer='templates/login.genshi')
+                 renderer='templates/login.plim')
     def login(self):
         """Display login form or do login
         
@@ -117,7 +117,7 @@ class AccountView(BaseView):
                          headers=headers)
 
     @view_config(route_name='account.register',
-                 renderer='templates/register.genshi')
+                 renderer='templates/register.plim')
     def register(self):
         _ = self.localizer
         request = self.request
@@ -176,7 +176,7 @@ class AccountView(BaseView):
                     params = dict(link=link, user_name=user_name)
                     html = render_mail(
                         request, 
-                        '{{package}}:templates/mails/register_link.genshi', 
+                        '{{package}}:templates/mails/register_link.plim', 
                         params
                     )
                     
@@ -197,12 +197,12 @@ class AccountView(BaseView):
         return dict(form=form)
 
     @view_config(route_name='account.check_mailbox',
-                 renderer='templates/check_mailbox.genshi')
+                 renderer='templates/check_mailbox.plim')
     def check_mailbox(self):
         return dict()
 
     @view_config(route_name='account.activate',
-                 renderer='templates/activate.genshi')
+                 renderer='templates/activate.plim')
     def activate(self):
         _ = self.localizer
         request = self.request
@@ -236,7 +236,7 @@ class AccountView(BaseView):
         return dict()
 
     @view_config(route_name='account.forgot_password',
-                 renderer='templates/forgot_password.genshi')
+                 renderer='templates/forgot_password.plim')
     def forgot_password(self):
         """Display forgot password form or do the password recovery
         
@@ -273,7 +273,7 @@ class AccountView(BaseView):
             params = dict(link=link, user_name=user_name)
             html = render_mail(
                 request,
-                '{{package}}:templates/mails/password_recovery.genshi',
+                '{{package}}:templates/mails/password_recovery.plim',
                 params
             )
             
@@ -290,7 +290,7 @@ class AccountView(BaseView):
         return dict(form=form)
 
     @view_config(route_name='account.recovery_password',
-                 renderer='templates/recovery_password.genshi')
+                 renderer='templates/recovery_password.plim')
     def recovery_password(self):
         """Display password recovery form or do the password change
         
