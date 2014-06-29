@@ -1,0 +1,63 @@
+from __future__ import unicode_literals
+
+import transaction
+
+from {{package}}.models.group import GroupModel
+from {{package}}.models.permission import PermissionModel
+from .helper import ModelTestCase
+
+
+class TestGroupModel(ModelTestCase):
+        
+    def make_one(self):
+        return GroupModel(self.session)
+    
+    def make_permission_model(self):
+        return PermissionModel(self.session)
+    
+    def test_create(self):
+        model = self.make_one()
+        
+        group_name = 'tester'
+        display_name = group_name
+        
+        with transaction.manager:
+            group = model.create(
+                group_name=group_name,
+                display_name=display_name,
+            )
+        
+        self.assertEqual(group.group_name, group_name)
+        self.assertEqual(group.display_name, display_name)
+        
+    def test_update_permissions(self):
+        model = self.make_one()
+        permission_model = self.make_permission_model()
+        
+        group_name = 'tester'
+        display_name = group_name
+        
+        with transaction.manager:
+            group = model.create(
+                group_name=group_name,
+                display_name=display_name,
+            )
+            pm1 = permission_model.create('p1')
+            pm2 = permission_model.create('p2')
+            pm3 = permission_model.create('p3')
+            
+        pids = set([p.permission_id for p in group.permissions])
+        self.assertEqual(pids, set([]))
+            
+        def assert_update(new_permissions):
+            with transaction.manager:
+                model.update(group, permissions=new_permissions)
+            self.assertEqual(set(group.permissions), set(new_permissions))
+        
+        assert_update([pm1])
+        assert_update([pm1, pm2])
+        assert_update([pm1, pm2, pm3])
+        assert_update([pm1, pm3])
+        assert_update([pm1])
+        assert_update([])
+        assert_update([pm1])

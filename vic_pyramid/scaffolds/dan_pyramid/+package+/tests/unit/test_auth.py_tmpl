@@ -1,0 +1,127 @@
+from __future__ import unicode_literals
+
+import transaction
+from pyramid.testing import DummyRequest
+
+from {{package}}.models.user import UserModel
+from {{package}}.models.group import GroupModel 
+from {{package}}.models.permission import PermissionModel 
+from {{package}}.auth import get_group
+from .helper import ModelTestCase
+
+
+class TestAuth(ModelTestCase):
+
+    def make_user_model(self):
+        return UserModel(self.session)
+
+    def make_group_model(self):
+        return GroupModel(self.session)
+ 
+    def make_permission_model(self):
+        return PermissionModel(self.session)
+
+    def test_get_group(self):
+        user_model = self.make_user_model()
+        group_model = self.make_group_model()
+        permission_model = self.make_permission_model()
+        
+        with transaction.manager:
+            user1 = user_model.create(
+                user_name='tester1',
+                email='tester1@example.com',
+                display_name='tester1',
+                password='thepass',
+            )
+            user2 = user_model.create(
+                user_name='tester2',
+                email='tester2@example.com',
+                display_name='tester2',
+                password='thepass',
+            )
+            user3 = user_model.create(
+                user_name='tester3',
+                email='tester3@example.com',
+                display_name='tester3',
+                password='thepass',
+            )
+            group1 = group_model.create(
+                group_name='super_users',
+                display_name='Super user',
+            )
+            group2 = group_model.create(
+                group_name='guest',
+                display_name='Guest group',
+            )
+            permission1 = permission_model.create(
+                permission_name='admin',
+                display_name='Admin',
+            )
+            permission2 = permission_model.create(
+                permission_name='manager',
+                display_name='Manager',
+            )
+            permission3 = permission_model.create(
+                permission_name='guest',
+                display_name='Guest',
+            )
+
+            # + group1 super_users
+            #     + permission1 admin 
+            #     + permission2 manager 
+            group_model.update(
+                group1, 
+                permissions=[permission1, permission2]
+            )
+            # + group2 guest
+            #     + permission3 guest
+            group_model.update(group2, permissions=[permission3])
+
+            # user1
+            #     + group1 super_users
+            #         + permission1 admin 
+            #         + permission2 manager 
+            user_model.update_groups(user_id=user1.user_id, group_ids=[group1.group_id])
+            # user2
+            #     + group2 guest
+            #         + permission3 guest 
+            user_model.update_groups(user_id=user2.user_id, group_ids=[group2.group_id])
+            # user3
+            #     (nothing)
+
+        mock_request = DummyRequest()
+        mock_request.db_session = self.session
+
+        def assert_group(user_id, expected):
+            group = get_group(user_id, mock_request)
+            self.assertEqual(group, set(expected))
+
+        assert_group(
+            user1.user_id, 
+            [
+                'user', 
+                'user:tester1',
+                'group:super_users',
+                'permission:admin',
+                'permission:manager',
+            ]
+        )
+        assert_group(
+            user2.user_id, 
+            [
+                'user', 
+                'user:tester2',
+                'group:guest',
+                'permission:guest',
+            ]
+        )
+        assert_group(
+            user3.user_id, 
+            [
+                'user', 
+                'user:tester3',
+            ]
+        )
+        # not exist user
+        assert_group(999, [])
+        assert_group(None, [])
