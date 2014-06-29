@@ -38,8 +38,10 @@ def main(global_config, **settings):
     config.include('pyramid_mailer')
     if asbool(settings.get('use_dummy_mailer', False)):
         config.include('pyramid_mailer.testing')
-    # add Genshi renderer
-    config.include('pyramid_genshi')
+    # add Plim renderer
+    config.include('pyramid_mako')
+    config.include('plim.adapters.pyramid_renderer')
+    config.add_plim_renderer('.plim', mako_settings_prefix='mako.')
     # setup modules
     config.include('.modules')
     # add static view

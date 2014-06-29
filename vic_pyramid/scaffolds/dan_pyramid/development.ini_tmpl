@@ -1,6 +1,6 @@
 [app:main]
 use = egg:{{project}}
-
+mako.directories = {{project}}.templates
 pyramid.reload_templates = true
 pyramid.debug_authorization = false
 pyramid.debug_notfound = false
@@ -13,8 +13,6 @@ pyramid.includes =
 
 sqlalchemy.url = sqlite:///%(here)s/{{project}}.db
 sqlalchemy.pool_recycle = 3600
-
-genshi.default_domain = {{package}}
 
 mail.host = smtp.example.com
 mail.username = example_user
