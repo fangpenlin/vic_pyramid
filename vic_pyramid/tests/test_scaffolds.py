@@ -58,6 +58,7 @@ class TestScaffolds(unittest.TestCase):
             self.test_scripts_folder = os.path.join(self.test_env, 'bin')
         self.test_python = os.path.join(self.test_scripts_folder, 'python')
         self.test_pip = os.path.join(self.test_scripts_folder, 'pip')
+        self.test_easy_install = os.path.join(self.test_scripts_folder, 'easy_install')
         self.test_pcreate = os.path.join(self.test_scripts_folder, 'pcreate')
 
         # install vic_pyramid
@@ -72,6 +73,12 @@ class TestScaffolds(unittest.TestCase):
         self.check_call(
             [self.test_pip, 'install', self.pkg_filename], 
             shell=False, 
+            cwd=self.test_folder,
+        )
+
+        self.check_call(
+            [self.test_easy_install, '-U', 'setuptools'],
+            shell=False,
             cwd=self.test_folder,
         )
 
