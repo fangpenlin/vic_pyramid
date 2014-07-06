@@ -14,11 +14,13 @@ _ = TranslationStringFactory('{{package}}')
 
 default_domain = '{{package}}'
 
+
 @subscriber(BeforeRender)
 def add_renderer_globals(event):
     request = event['request']
     event['_'] = request.translate
     event['localizer'] = request.localizer
+
 
 @subscriber(NewRequest)
 def add_localizer(event):
@@ -29,6 +31,7 @@ def add_localizer(event):
         return localizer.translate(_(*args, **kwargs))
     request.localizer = localizer
     request.translate = auto_translate
+
 
 def normalize_locale_name(locale_name):
     """Normalize locale name, for example, zh_tw will be normalized as
