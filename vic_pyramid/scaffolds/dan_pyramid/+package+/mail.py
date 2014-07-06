@@ -89,7 +89,7 @@ def send_by_mailer(
         
     if source is None:
         settings = request.registry.settings
-        source = settings.get('mail.default_sender', 'noreply@now.in')
+        source = settings.get('mail.default_sender', 'noreply@example.com')
     
     to_addresses = force_to_list(to_addresses)
     cc_addresses = force_to_list(cc_addresses)

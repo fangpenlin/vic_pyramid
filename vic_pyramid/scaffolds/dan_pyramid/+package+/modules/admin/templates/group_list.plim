@@ -1,31 +1,28 @@
-doctype html
 - inherit file="master.plim"
 
-html
-  head
-    - block name="head"
-      title Group list
+- block name="head"
+  title Group list
 
-  body
-    h2 Group list
-    a.btn.btn-default href="${ request.route_url('admin.group_create') }"
-      i.fa.fa-plus
-        Create group
-      table.table
-        thead
-          tr
-            td Action
-            td ID
-            td Group name
-            td Display name
-            td Created
-        tbody
-          - for group in groups
-            tr
-              td
-                a.btn.btn-default href="${ request.route_url('admin.group_edit', group_name=group.group_name) }"
-                  i.fa.fa-edit Edit
-              td ${ group.guid }
-              td ${ group.group_name }
-              td ${ group.display_name }
-              td ${ group.created_at }
+
+h2 Group list
+a.btn.btn-default href="${ request.route_url('admin.group_create') }"
+  i.fa.fa-plus
+  Create group
+table.table
+  thead
+    tr
+      td Action
+      td ID
+      td Group name
+      td Display name
+      td Created
+  tbody
+    - for group in groups
+      tr
+        td
+          a.btn.btn-default href="${ request.route_url('admin.group_edit', group_name=group.group_name) }"
+            i.fa.fa-edit Edit
+        td ${ group.guid }
+        td ${ group.group_name }
+        td ${ group.display_name }
+        td ${ group.created_at }

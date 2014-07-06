@@ -60,7 +60,7 @@ def main(argv=sys.argv, input_func=raw_input, getpass_func=getpass.getpass):
                 password=password, 
                 verified=True, 
             )
-            print 'Created admin, user_id=%s' % admin.user_id
+            print 'Created admin, guid=%s' % admin.guid
             
         permission = permission_model.get_by_name('admin')
         if permission is None:
@@ -83,5 +83,5 @@ def main(argv=sys.argv, input_func=raw_input, getpass_func=getpass.getpass):
         session.flush()
             
         print 'Add admin to admin group'
-        user_model.update_groups(user_id=admin.user_id, group_ids=[group.group_id])
+        user_model.update(user=admin, groups=[group])
         session.flush()

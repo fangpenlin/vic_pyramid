@@ -1,11 +1,34 @@
 from __future__ import unicode_literals
 
-from pyramid.i18n import TranslationStringFactory
+from pyramid.events import (
+    subscriber,
+    BeforeRender,
+    NewRequest
+)
 
+from pyramid.i18n import (
+    TranslationStringFactory,
+    get_localizer
+)
 _ = TranslationStringFactory('{{package}}')
 
 default_domain = '{{package}}'
 
+@subscriber(BeforeRender)
+def add_renderer_globals(event):
+    request = event['request']
+    event['_'] = request.translate
+    event['localizer'] = request.localizer
+
+@subscriber(NewRequest)
+def add_localizer(event):
+    request = event.request
+    localizer = get_localizer(request)
+
+    def auto_translate(*args, **kwargs):
+        return localizer.translate(_(*args, **kwargs))
+    request.localizer = localizer
+    request.translate = auto_translate
 
 def normalize_locale_name(locale_name):
     """Normalize locale name, for example, zh_tw will be normalized as

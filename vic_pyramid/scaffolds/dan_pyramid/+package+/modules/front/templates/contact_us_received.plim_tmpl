@@ -1,12 +1,10 @@
-doctype html
 - inherit file="{{package}}:templates/master.plim"
 
-html
-  head
-    - block name="head"
-      title Contact us
 
-  body
-    h2 Contact us
-    div.content
-      We have received your message, thank you
+- block name="head"
+  title Contact us
+
+
+h2 Contact us
+div.content
+  We have received your message, thank you

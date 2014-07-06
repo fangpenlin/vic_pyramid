@@ -65,7 +65,7 @@ class AdminViews(BaseView):
         
         groups = group_model.get_list()
         form.groups.choices = [
-            (str(g.group_id), '%s - %s' % (g.group_name, g.display_name)) 
+            (str(g.guid), '%s - %s' % (g.group_name, g.display_name)) 
             for g in groups
         ]
         
@@ -77,7 +77,7 @@ class AdminViews(BaseView):
             display_name = request.params['display_name']
             password = request.params['password']
             email = request.params['email']
-            group_ids = request.params.getall('groups')
+            groups = request.params.getall('groups')
             
             by_name = user_model.get_by_name(user_name)
             if by_name is not None:
@@ -99,8 +99,8 @@ class AdminViews(BaseView):
                         password=password,
                         email=email,
                     )
-                    groups = map(group_model.get, group_ids)
-                    user_model.update_groups(user_id=user.user_id, group_ids=group_ids)
+                    groups = map(group_model.get, groups)
+                    user_model.update(user=user, groups=groups)
                 
                 msg = _("User ${user_name} has been created", 
                         mapping=dict(user_name=user_name))
@@ -123,7 +123,7 @@ class AdminViews(BaseView):
         if user is None:
             msg = _('User %s does not exists') % user_name
             return HTTPNotFound(msg)
-        user_groups = [str(g.group_id) for g in user.groups]
+        user_groups = [str(g.guid) for g in user.groups]
 
         form = self.form_factory.make_user_edit_form()(
             request.params, 
@@ -134,7 +134,7 @@ class AdminViews(BaseView):
         
         groups = group_model.get_list()
         form.groups.choices = [
-            (str(g.group_id), '%s - %s' % (g.group_name, g.display_name), ) 
+            (str(g.guid), '%s - %s' % (g.group_name, g.display_name), ) 
             for g in groups
         ]
         
@@ -159,8 +159,8 @@ class AdminViews(BaseView):
                     if password:
                         extra_kwargs['password'] = password
                     groups = map(group_model.get, groups)
-                    user_model.update_user(
-                        user_id=user.user_id,
+                    user_model.update(
+                        user=user,
                         display_name=display_name,
                         email=email,
                         password=password,
@@ -196,7 +196,7 @@ class AdminViews(BaseView):
         
         permissions = permission_model.get_list()
         form.permissions.choices = [
-            (str(p.permission_id), p.permission_name) 
+            (str(p.guid), p.permission_name) 
             for p in permissions
         ]
         
@@ -244,7 +244,7 @@ class AdminViews(BaseView):
         if group is None:
             msg = _('Group %s does not exist') % group_name
             return HTTPNotFound(msg)
-        group_permissions = [str(p.permission_id) for p in group.permissions]
+        group_permissions = [str(p.guid) for p in group.permissions]
 
         form = self.form_factory.make_group_edit_form()(
             request.params,
@@ -255,7 +255,7 @@ class AdminViews(BaseView):
         
         permissions = permission_model.get_list()
         form.permissions.choices = [
-            (str(p.permission_id), p.permission_name) 
+            (str(p.guid), p.permission_name) 
             for p in permissions
         ]
         
@@ -282,7 +282,7 @@ class AdminViews(BaseView):
                         display_name=display_name, 
                         permissions=permissions,
                     )
-                group = group_model.get(group.group_id)
+                group = group_model.get(group.guid)
                 msg = _("Group ${group_name} has been updated", 
                         mapping=dict(group_name=group.group_name))
                 request.add_flash(msg, 'success')

@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 
+from ..utils import GuidFactory
 from . import tables
 from .base import BaseTableModel
 from .base import NOT_SET
@@ -10,6 +11,8 @@ class PermissionModel(BaseTableModel):
     
     """
     TABLE = tables.Permission
+
+    guid_factory = GuidFactory('PM')
     
     def get_by_name(self, permission_name):
         """Get a permission by name
@@ -31,6 +34,7 @@ class PermissionModel(BaseTableModel):
         
         """
         permission = tables.Permission(
+            guid=self.guid_factory(),
             permission_name=unicode(permission_name), 
             display_name=unicode(display_name) if display_name is not None else None, 
         )

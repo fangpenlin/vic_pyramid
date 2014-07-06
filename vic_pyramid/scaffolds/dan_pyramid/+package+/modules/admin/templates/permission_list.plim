@@ -1,28 +1,29 @@
-doctype html
+
 - inherit file="master.plim"
 
-html
-  head
-    - block name="head"
-      title Permission list
 
-body
-    h2 Permission list
-    a.btn.btn-default href="${ request.route_url('admin.permission_create') }"
-      i.fa.fa-plus Create permission
-    table.table
-      thead
-        tr
-          td Action
-          td ID
-          td Permission name
-          td Display name
-      tbody
-        - for permission in permissions
-          tr
-            td
-              a.btn.btn-default href="${ request.route_url('admin.permission_edit', permission_name=permission.permission_name) }"
-                i.fa.fa-edit Edit
-            td ${ permission.guid }
-            td ${ permission.permission_name }
-            td ${ permission.display_name }
+- block name="head"
+  title Permission list
+
+
+h2 Permission list
+a.btn.btn-default href="${ request.route_url('admin.permission_create') }"
+  i.fa.fa-plus
+  Create permission
+table.table
+  thead
+    tr
+      td Action
+      td ID
+      td Permission name
+      td Display name
+  tbody
+    - for permission in permissions
+      tr
+        td
+          a.btn.btn-default href="${ request.route_url('admin.permission_edit', permission_name=permission.permission_name) }"
+            i.fa.fa-edit
+            Edit
+        td ${ permission.guid }
+        td ${ permission.permission_name }
+        td ${ permission.display_name }

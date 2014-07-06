@@ -13,5 +13,6 @@ html
             td
               h1 style="margin: 0;"
                 a href="${ request.route_url('front.home') }" {{package}}
+              =next.body()
 
 

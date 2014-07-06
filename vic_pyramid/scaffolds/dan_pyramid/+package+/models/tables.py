@@ -1,16 +1,22 @@
 from __future__ import unicode_literals
 
 from sqlalchemy import Column
-from sqlalchemy import Integer
 from sqlalchemy import Unicode
+from sqlalchemy import UnicodeText
+from sqlalchemy import Integer
 from sqlalchemy import String
 from sqlalchemy import Boolean
 from sqlalchemy import DateTime
 from sqlalchemy import Table
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.schema import ForeignKey
+from sqlalchemy.schema import UniqueConstraint
 from sqlalchemy.orm import relationship
+from sqlalchemy.orm import object_session
+from sqlalchemy.orm.collections import attribute_mapped_collection
 from sqlalchemy.sql.expression import func
+
+from .enum import DeclEnum
 
 
 DeclarativeBase = declarative_base()
@@ -46,22 +52,22 @@ def now_func():
 group_permission_table = Table(
     'group_permission', DeclarativeBase.metadata,
     Column(
-        'group_id', 
-        Integer, 
+        'group_guid', 
+        Unicode(64), 
         ForeignKey(
-            'group.group_id',
+            'group.guid',
             onupdate='CASCADE', 
             ondelete='CASCADE'
-        )
+        ),
     ),
     Column(
-        'permission_id', 
-        Integer, 
+        'permission_guid', 
+        Unicode(64), 
         ForeignKey(
-            'permission.permission_id',
+            'permission.guid',
             onupdate='CASCADE', 
             ondelete='CASCADE'
-        )
+        ),
     )
 )
 
@@ -71,19 +77,19 @@ user_group_table = Table(
     'user_group', 
     DeclarativeBase.metadata,
     Column(
-        'user_id', 
-        Integer, 
+        'user_guid', 
+        Unicode(64), 
         ForeignKey(
-            'user.user_id',
+            'user.guid',
             onupdate='CASCADE', 
             ondelete='CASCADE'
         )
     ),
     Column(
-        'group_id', 
-        Integer, 
+        'group_guid', 
+        Unicode(64), 
         ForeignKey(
-            'group.group_id',
+            'group.guid',
             onupdate='CASCADE', 
             ondelete='CASCADE'
         )
@@ -98,13 +104,13 @@ class Group(DeclarativeBase):
     
     __tablename__ = 'group'
     
-    group_id = Column(Integer, autoincrement=True, primary_key=True)
+    guid = Column(Unicode(64), primary_key=True)
     
     group_name = Column(Unicode(16), unique=True, nullable=False)
     
     display_name = Column(Unicode(255))
     
-    created = Column(DateTime, default=now_func)
+    created_at = Column(DateTime, default=now_func)
     
     users = relationship('User', secondary=user_group_table, backref='groups')
 
@@ -118,7 +124,7 @@ class User(DeclarativeBase):
     """
     __tablename__ = 'user'
 
-    user_id = Column(Integer, autoincrement=True, primary_key=True)
+    guid = Column(Unicode(64), primary_key=True)
     
     user_name = Column(Unicode(16), unique=True, nullable=False)
     
@@ -130,7 +136,7 @@ class User(DeclarativeBase):
 
     verified = Column(Boolean, default=False)
     
-    created = Column(DateTime, default=now_func)
+    created_at = Column(DateTime, default=now_func)
     
     def __unicode__(self):
         return self.display_name or self.user_name
@@ -151,7 +157,7 @@ class Permission(DeclarativeBase):
     
     __tablename__ = 'permission'
 
-    permission_id = Column(Integer, autoincrement=True, primary_key=True)
+    guid = Column(Unicode(64), primary_key=True)
     
     permission_name = Column(Unicode(16), unique=True, nullable=False)
     
@@ -165,3 +171,4 @@ class Permission(DeclarativeBase):
 
     def __unicode__(self):
         return self.permission_name
+

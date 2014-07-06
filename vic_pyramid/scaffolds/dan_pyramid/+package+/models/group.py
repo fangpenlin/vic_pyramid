@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 
+from ..utils import GuidFactory
 from . import tables
 from .base import BaseTableModel
 from .base import NOT_SET
@@ -10,6 +11,8 @@ class GroupModel(BaseTableModel):
     
     """
     TABLE = tables.Group
+
+    guid_factory = GuidFactory('GP')
 
     def get_by_name(self, group_name):
         """Get a group by name
@@ -32,14 +35,14 @@ class GroupModel(BaseTableModel):
         
         """
         group = tables.Group(
+            guid=self.guid_factory(),
             group_name=unicode(group_name), 
             display_name=unicode(display_name) if display_name is not None else None, 
-            created=tables.now_func()
+            created_at=tables.now_func()
         )
         if permissions is not None:
             group.permissions = permissions
         self.session.add(group)
-        # flush the change, so we can get real user id
         self.session.flush()
         return group
     
