@@ -116,7 +116,7 @@ class FormFactory(object):
             password = PasswordField(
                 _('Password'), 
                 [
-                    #similar('user_name', self.password_too_similar_msg),
+                    # similar('user_name', self.password_too_similar_msg),
                     # TODO: check is password similar to user_name here
                     # validators.Length(min=6)
                 ]

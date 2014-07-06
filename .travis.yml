@@ -4,8 +4,8 @@ python:
 # command to install dependencies
 install: 
   - "pip install flake8 --use-mirrors"
-  - "pip install pep8==1.4.6 --use-mirrors"
-  - "pip install pyflakes==0.7.3 --use-mirrors"
+  - "pip install pep8==1.5.7 --use-mirrors"
+  - "pip install pyflakes==0.8.1 --use-mirrors"
   - "pip install -r requirements.txt --use-mirrors"
   - "pip install -r test-requirements.txt --use-mirrors"
   - "python setup.py develop"

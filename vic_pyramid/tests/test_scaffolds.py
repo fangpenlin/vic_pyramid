@@ -81,7 +81,7 @@ class TestScaffolds(unittest.TestCase):
             shutil.rmtree(self.helloworld_folder)
         # create a helloworld project
         self.check_call(
-            [self.test_pcreate, '-s', 'vic_pyramid', 'helloworld'], 
+            [self.test_pcreate, '-s', 'vic_pyramid', 'helloworld'],
             shell=False, cwd=self.test_folder
         )
 
@@ -115,22 +115,22 @@ class TestScaffolds(unittest.TestCase):
             shell=False, 
             cwd=self.test_folder,
         )
-        # install pep8 == 1.4.6
+        # install pep8 == 1.5.7
         self.check_call(
-            [self.test_pip, 'install', 'pep8==1.4.6'],
+            [self.test_pip, 'install', 'pep8==1.5.7'],
             shell=False,
             cwd=self.test_folder,
         )
-        # install pyflakes==0.7.3
+        # install pyflakes==0.8.1
         self.check_call(
-            [self.test_pip, 'install', 'pyflakes==0.7.3'],
+            [self.test_pip, 'install', 'pyflakes==0.8.1'],
             shell=False,
             cwd=self.test_folder,
         )
 
         flake8 = os.path.join(self.test_scripts_folder, 'flake8')
         self.check_call(
-            [flake8, 'helloworld', '--ignore=W293,W291,E501', '--show-source'], 
+            [flake8, 'helloworld', '--ignore=W293,W291,E501', '--show-source', '--exclude=distribute_setup.py'],
             shell=False, 
             cwd=self.helloworld_folder,
         )

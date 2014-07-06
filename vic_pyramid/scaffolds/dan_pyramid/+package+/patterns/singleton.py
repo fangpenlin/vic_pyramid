@@ -20,7 +20,7 @@ def singleton(cls):
 
     """
     instances = {}
-    
+
     def getinstance(*kargs, **kwargs):
         if cls not in instances:
             instances[cls] = cls(*kargs, **kwargs)
