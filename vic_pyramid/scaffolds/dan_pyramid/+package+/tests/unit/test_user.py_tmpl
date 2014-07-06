@@ -18,8 +18,8 @@ class TestUserModel(ModelTestCase):
     def test_create_user(self):
         model = self.make_one()
         
-        user_name = 'victorlin'
-        email = 'bornstub@gmail.com'
+        user_name = 'danielhsieh'
+        email = 'a761007@gmail.com'
         display_name = user_name
         password = 'thepass'
         

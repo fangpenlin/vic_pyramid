@@ -46,7 +46,7 @@ class TestGroupModel(ModelTestCase):
             pm2 = permission_model.create('p2')
             pm3 = permission_model.create('p3')
             
-        pids = set([p.permission_id for p in group.permissions])
+        pids = set([p.guid for p in group.permissions])
         self.assertEqual(pids, set([]))
             
         def assert_update(new_permissions):

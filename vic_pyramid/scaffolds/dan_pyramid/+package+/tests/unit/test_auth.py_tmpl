@@ -81,11 +81,11 @@ class TestAuth(ModelTestCase):
             #     + group1 super_users
             #         + permission1 admin 
             #         + permission2 manager 
-            user_model.update_groups(user_id=user1.user_id, group_ids=[group1.group_id])
+            user_model.update(user=user1, groups=[group1])
             # user2
             #     + group2 guest
             #         + permission3 guest 
-            user_model.update_groups(user_id=user2.user_id, group_ids=[group2.group_id])
+            user_model.update(user=user2, groups=[group2])
             # user3
             #     (nothing)
 
@@ -97,7 +97,7 @@ class TestAuth(ModelTestCase):
             self.assertEqual(group, set(expected))
 
         assert_group(
-            user1.user_id, 
+            user1.guid,
             [
                 'user', 
                 'user:tester1',
@@ -107,7 +107,7 @@ class TestAuth(ModelTestCase):
             ]
         )
         assert_group(
-            user2.user_id, 
+            user2.guid,
             [
                 'user', 
                 'user:tester2',
@@ -116,7 +116,7 @@ class TestAuth(ModelTestCase):
             ]
         )
         assert_group(
-            user3.user_id, 
+            user3.guid,
             [
                 'user', 
                 'user:tester3',
