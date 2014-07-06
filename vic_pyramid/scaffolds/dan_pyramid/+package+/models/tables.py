@@ -2,21 +2,14 @@ from __future__ import unicode_literals
 
 from sqlalchemy import Column
 from sqlalchemy import Unicode
-from sqlalchemy import UnicodeText
-from sqlalchemy import Integer
 from sqlalchemy import String
 from sqlalchemy import Boolean
 from sqlalchemy import DateTime
 from sqlalchemy import Table
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.schema import ForeignKey
-from sqlalchemy.schema import UniqueConstraint
 from sqlalchemy.orm import relationship
-from sqlalchemy.orm import object_session
-from sqlalchemy.orm.collections import attribute_mapped_collection
 from sqlalchemy.sql.expression import func
-
-from .enum import DeclEnum
 
 
 DeclarativeBase = declarative_base()
@@ -171,4 +164,3 @@ class Permission(DeclarativeBase):
 
     def __unicode__(self):
         return self.permission_name
-
