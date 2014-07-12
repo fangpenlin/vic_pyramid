@@ -4,7 +4,8 @@ import hmac
 from sqlalchemy.sql.expression import or_
 from sqlalchemy.sql.expression import func
 
-from {{package}}.utils import salt_password
+from ..utils import salt_password
+from ..utils import GuidFactory
 from . import tables
 from .base import BaseTableModel
 from .base import NOT_SET
@@ -15,6 +16,8 @@ class UserModel(BaseTableModel):
     
     """
     TABLE = tables.User
+
+    guid_factory = GuidFactory('US')
         
     def get_by_name(self, user_name):
         """Get a user by name
@@ -76,11 +79,12 @@ class UserModel(BaseTableModel):
         
         # create user
         user = tables.User(
+            guid=self.guid_factory(),
             user_name=unicode(user_name), 
             email=unicode(email), 
             display_name=unicode(display_name), 
             password=salted_password,
-            created=tables.now_func(),
+            created_at=tables.now_func(),
             verified=verified, 
         )
         self.session.add(user)
@@ -125,7 +129,7 @@ class UserModel(BaseTableModel):
         """
         h = hmac.new(key)
         h.update('%s%s%s%s' % (
-            user.user_id, 
+            user.guid, 
             user.user_name, 
             user.email, 
             user.password
@@ -137,7 +141,7 @@ class UserModel(BaseTableModel):
         
         """
         code_hash = hmac.new(secret)
-        code_hash.update(str(user.user_id))
+        code_hash.update(str(user.guid))
         code_hash.update(str(user.user_name))
         code_hash.update(str(verify_type))
         return code_hash.hexdigest()

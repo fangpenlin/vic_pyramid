@@ -3,6 +3,9 @@ import os
 import hmac
 import hashlib
 
+from sqlalchemy.sql.expression import or_
+from sqlalchemy.sql.expression import func
+
 from . import tables
 from .base import BaseTableModel
 
@@ -54,6 +57,21 @@ class UserModel(BaseTableModel):
             .first()
         )
         return user
+
+    def get_by_name_or_email(self, name_or_email):
+        """Get a user by name or email
+
+        """
+        User = tables.User
+        user = (
+            self.session
+            .query(User)
+            .filter(or_(
+                func.lower(User.user_name) == name_or_email.lower(),
+                func.lower(User.email) == name_or_email.lower()
+            ))
+        )
+        return user.first()
     
     def create(
         self, 
@@ -83,10 +101,9 @@ class UserModel(BaseTableModel):
         # flush the change, so we can get real user id
         self.session.flush()
         assert user.user_id is not None, 'User id should not be none here'
-        user_id = user.user_id
         
         self.logger.info('Create user %s', user_name)
-        return user_id
+        return user
     
     def get_salt_hashedpassword(self, password):
         """Generate salt and hashed password, 

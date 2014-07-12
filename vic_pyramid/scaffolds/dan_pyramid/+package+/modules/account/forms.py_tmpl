@@ -1,0 +1,99 @@
+from __future__ import unicode_literals
+
+from wtforms import Form
+from wtforms import TextField
+from wtforms import PasswordField
+from wtforms import HiddenField
+from wtforms import BooleanField
+from wtforms import validators
+
+from {{package}}.modules.forms import similar
+from {{package}}.i18n import LocalizerFactory
+
+get_localizer = LocalizerFactory()
+
+
+class FormFactory(object):
+    
+    def __init__(self, localizer):
+        self.localizer = localizer
+        _ = self.localizer
+        self.required_msg = _('This field is required.')
+        self.invalid_email_msg = _('Invalid email address.')
+        self.password_not_match_msg = _('Password must match')
+        
+    def make_login_form(self):
+        _ = self.localizer
+        
+        class LoginForm(Form):
+            name_or_email = TextField(_('Username or Email'), [
+                validators.Required(self.required_msg),
+            ])
+            password = PasswordField(_('Password'), [
+                validators.Required(self.required_msg),
+            ])
+        return LoginForm
+
+    def make_forgot_password_form(self):
+        _ = self.localizer
+
+        class ForgotPasswordForm(Form):
+            email = TextField(_('Email'), [
+                validators.Required(self.required_msg),
+                validators.Email(self.invalid_email_msg)
+            ])
+        return ForgotPasswordForm
+    
+    def make_recovery_password_form(self):
+        _ = self.localizer
+
+        class RecoveryPasswordForm(Form):
+            new_password = PasswordField(_('Password'), [
+                validators.Required(self.required_msg),
+                validators.Length(min=6)
+            ])
+            new_password_confirm = PasswordField(_('Confirm Password'), [
+                validators.Required(self.required_msg),
+                validators.EqualTo('new_password', 
+                                   message=self.password_not_match_msg)
+            ])
+            user_name = HiddenField()
+            code = HiddenField()
+        return RecoveryPasswordForm
+
+    def make_register_form(self):
+        _ = self.localizer
+        
+        invalid_user_name_msg = _('Can only contain alphabets, numbers and '
+                                  'underscores, for example "john_1987"')
+        password_too_similar_msg = _('Password is too similar to user name.')
+        terms_msg = _('You must accept the Terms of Service to complete '
+                      'registration')
+        email_not_match_msg = _('Email must match')
+        
+        class RegisterForm(Form):
+            user_name = TextField(_('Username'), [
+                validators.Required(self.required_msg),
+                validators.Regexp('^([a-zA-Z0-9_])+$', 
+                                  message=invalid_user_name_msg),
+                validators.Length(min=2, max=16)
+            ])
+            email = TextField(_('Email'), [
+                validators.Required(self.required_msg),
+                validators.Email(self.invalid_email_msg),
+                validators.EqualTo('email_confirm', 
+                                   message=email_not_match_msg)
+            ])
+            email_confirm = TextField(_('Confirm Email'), [
+                validators.Required(self.required_msg),
+                validators.Email(self.invalid_email_msg)
+            ])
+            password = PasswordField(_('Password'), [
+                validators.Required(self.required_msg),
+                similar('user_name', password_too_similar_msg),
+                validators.Length(min=6)
+            ])
+            terms_of_service = BooleanField('', [
+                validators.Required(terms_msg)
+            ])
+        return RegisterForm

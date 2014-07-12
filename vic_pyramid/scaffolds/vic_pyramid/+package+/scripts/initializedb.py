@@ -83,5 +83,5 @@ def main(argv=sys.argv, input_func=raw_input, getpass_func=getpass.getpass):
         session.flush()
             
         print 'Add admin to admin group'
-        user_model.update(admin, groups=[group])
+        user_model.update_groups(user_id=admin.user_id, group_ids=[group.group_id])
         session.flush()

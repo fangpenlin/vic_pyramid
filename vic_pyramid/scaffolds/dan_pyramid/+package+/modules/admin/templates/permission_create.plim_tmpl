@@ -1,0 +1,16 @@
+- inherit file="master.plim"
+- namespace name="widgets" file="{{package}}:templates/widgets/form.plim"
+
+
+- block name="head"
+  title Create permission
+
+
+h2 Create permission
+a.btn.btn-default href="${ request.route_url('admin.permission_list') }"
+  i.fa.fa-chevron-left
+  Back to permission list
+${ widgets.standard_form(
+  form=form,
+  action=request.route_url('admin.permission_create'),
+  submit=_('Create')) }

@@ -1,0 +1,9 @@
+- inherit file="{{package}}:templates/master.plim"
+
+
+- block name="head"
+  title Activate
+
+
+h2 Activate
+p Thanks for registration! Your account has been activated.

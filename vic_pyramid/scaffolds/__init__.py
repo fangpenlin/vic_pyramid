@@ -18,3 +18,9 @@ class VictorPyramidTemplate(PyramidTemplate):
     _template_dir = 'vic_pyramid'
     summary = "Victor's Pyramid template"
     template_renderer = staticmethod(paste_script_template_renderer)
+
+
+class DanielPyramidTemplate(PyramidTemplate):
+    _template_dir = 'dan_pyramid'
+    summary = "Daniel's Pyramid template"
+    template_renderer = staticmethod(paste_script_template_renderer)

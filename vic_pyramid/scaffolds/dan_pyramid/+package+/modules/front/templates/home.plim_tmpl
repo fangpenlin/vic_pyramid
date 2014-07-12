@@ -1,0 +1,13 @@
+- inherit file="{{package}}:templates/master.plim"
+
+
+- block name="head"
+  title Hello world
+
+
+div.jumbotron
+  div.container
+    h1 Heading
+    p Tagline
+    p
+      a.btn.btn-primary.btn-large Learn more

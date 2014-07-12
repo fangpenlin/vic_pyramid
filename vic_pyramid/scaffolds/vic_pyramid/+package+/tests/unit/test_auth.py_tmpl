@@ -81,11 +81,11 @@ class TestAuth(ModelTestCase):
             #     + group1 super_users
             #         + permission1 admin 
             #         + permission2 manager 
-            user_model.update(user1, groups=[group1])
+            user_model.update_groups(user_id=user1.user_id, group_ids=[group1.group_id])
             # user2
             #     + group2 guest
             #         + permission3 guest 
-            user_model.update(user2, groups=[group2])
+            user_model.update_groups(user_id=user2.user_id, group_ids=[group2.group_id])
             # user3
             #     (nothing)
 

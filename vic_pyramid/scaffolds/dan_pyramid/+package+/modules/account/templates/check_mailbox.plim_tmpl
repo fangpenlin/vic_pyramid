@@ -1,0 +1,13 @@
+- inherit file="{{package}}:templates/master.plim"
+
+
+- block name="head"
+  title Check your mailbox
+
+
+h2 Check your mailbox
+
+p
+  We have already sent you a mail.
+  Please check your mailbox for activation email.
+  Click the activation link in the email to activate your account.
