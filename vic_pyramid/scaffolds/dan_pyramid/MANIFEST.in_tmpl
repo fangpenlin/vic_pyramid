@@ -1,0 +1,5 @@
+include requirements.txt 
+include test-requirements.txt 
+include CHANGES.rst
+include README.rst
+recursive-include {{package}} *.ico *.png *.css *.gif *.jpg *.pt *.txt *.mak *.mako *.js *.html *.xml *.genshi *.yaml *.eot *.svg *.ttf *.woff *.otf *.map

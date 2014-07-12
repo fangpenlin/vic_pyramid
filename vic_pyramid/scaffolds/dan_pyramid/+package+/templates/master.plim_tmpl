@@ -1,0 +1,95 @@
+doctype html
+
+html
+  head
+    meta content="text/html; charset=UTF-8" http-equiv="content-type"
+    link type="text/css" rel="stylesheet" href="${ request.static_url('{{package}}:static/bootstrap/css/bootstrap.min.css') }"
+    <!-- Font Awesome - http://fortawesome.github.com/Font-Awesome -->
+    link type="text/css" rel="stylesheet" href="${ request.static_url('{{package}}:static/font-awesome/css/font-awesome.css') }"
+    <!--[if IE 7]>
+      <link> type="text/css" rel="stylesheet" href="${ request.static_url('{{package}}:static/font-awesome/css/font-awesome-ie7.css') }" </link>
+    <![endif]-->
+    link type="text/css" rel="stylesheet" href="${ request.static_url('{{package}}:static/css/style.css') }"
+
+    script type="text/javascript" src="${ request.static_url('{{package}}:static/js/jquery-1.11.0.min.js') }"
+    script type="text/javascript" src="${ request.static_url('{{package}}:static/js/bootstrap.min.js') }"
+
+    - block name="head"
+
+  body
+
+    ---
+      from {{package}} import flash
+      msgs = request.session.pop_flash()
+      flash_msgs = []
+      for msg in msgs:
+        type_ = flash.DEFAULT_TYPE
+        content = msg
+        for t in flash.MSG_TYPES:
+          if msg.startswith(t + ' '):
+            type_ = t
+            content = msg[len(t)+1:]
+            break
+          flash_msgs.append((type_, content))
+    ---
+
+    nav.navbar.navbar-default role="navigation"
+      div.container
+        <!-- Brand and toggle get grouped for better mobile display -->
+        div.navbar-header
+          button.navbar-toggle type="button" data-toggle="collapse" data-target=".navbar-ex1-collapse"
+            span.sr-only Toggle navigation
+            span.fa.fa-bar
+            span.fa.fa-bar
+            span.fa.fa-bar
+          a.navbar-brand href="${ request.route_url('front.home') }" {{package}}
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        div.collapse.navbar-collapse.navbar-ex1-collapse
+          ul.nav.navbar-nav
+            li.${ 'active' if request.route_name == 'front.contact_us' else '' }
+              a href="${ request.route_url('front.contact_us') }"
+                i.fa.fa-comments
+                Contact us
+          ul.nav.navbar-nav.navbar-right
+            - if request.user_id == None
+              li.${ 'active' if request.route_name == 'account.register' else '' }
+                a href="${ request.route_url('account.register') }"
+                  i.fa.fa-check
+                  Register
+              li.${ 'active' if request.route_name == 'account.login' else '' }
+                a href="${ request.route_url('account.login') }"
+                  i.fa.fa-sign-in
+                  Login
+            - else
+              - if 'permission:admin' in request.effective_principals
+                li.${ 'active' if request.route_name.startswith('admin') else '' }
+                  a href="${ request.route_url('admin.home') }"
+                    i.fa.fa-lock Admin
+                li
+                  a href="${ request.route_url('account.logout') }"
+                    i.fa.fa-sign-out Logout ${ request.user.display_name or request.user.user_name }
+
+    section#container.container
+      - if flash_msgs
+        div#flash-msgs
+          - for type_, msg in flash_msgs
+            div.alert.alert-${ type_ }
+              ${ msg }
+      = next.body()
+
+    hr
+
+    footer.container
+      div#langs
+        form.form-inline#lang_form role="form" name="lang_form" action="/"
+          ---
+            from pyramid.i18n import get_locale_name
+            langs=request.registry.settings['available_langs']
+            current_lang=get_locale_name(request)
+          ---
+          div.form-group
+            label for="lang_menu" Language:
+            select#lang_menu name="lang_menu" onchange="window.location = this.options[this.selectedIndex].value;"
+              - for lang, lang_name in langs
+                option selected="${ 'selected' if lang.lower() == current_lang.lower() else '' }" value="${ request.route_url('front.set_lang', lang=lang) }"
+                  ${ lang_name }

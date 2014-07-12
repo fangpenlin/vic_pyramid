@@ -1,0 +1,15 @@
+
+- inherit file="{{package}}:templates/master.plim"
+- namespace name="widgets" file="{{package}}:templates/widgets/form.plim"
+
+
+- block name="head"
+  title Contact us
+
+
+h2 Contact us
+p If you have any idea or question, fell free to contact us :D
+${ widgets.standard_form(
+    form=form,
+    action=request.route_url('front.contact_us'),
+    submit=_('Send')) }

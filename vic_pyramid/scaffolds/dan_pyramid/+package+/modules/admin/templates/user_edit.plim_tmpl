@@ -1,0 +1,16 @@
+- inherit file="master.plim"
+- namespace name="widgets" file="{{package}}:templates/widgets/form.plim"
+
+
+- block name="head"
+  title Edit user
+
+
+h2 Edit user
+a.btn.btn-default href="${ request.route_url('admin.user_list') }"
+  i.fa.fa-chevron-left
+  Back to user list
+${ widgets.standard_form(
+  form=form,
+  action=request.route_url('admin.user_edit', user_name=user.user_name),
+  submit=_('Modify')) }

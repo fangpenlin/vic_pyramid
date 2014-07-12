@@ -39,7 +39,9 @@ setup(
     entry_points=""" \
     [paste.paster_create_template]
     vic_pyramid=vic_pyramid.scaffolds:VictorPyramidTemplate
+    dan_pyramid=vic_pyramid.scaffolds:DanielPyramidTemplate
     [pyramid.scaffold]
     vic_pyramid=vic_pyramid.scaffolds:VictorPyramidTemplate
+    dan_pyramid=vic_pyramid.scaffolds:DanielPyramidTemplate
     """
 )

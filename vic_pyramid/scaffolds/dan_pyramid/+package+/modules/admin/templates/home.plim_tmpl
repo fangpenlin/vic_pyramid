@@ -1,0 +1,9 @@
+- inherit file="master.plim"
+
+
+- block name="head"
+  title Admin
+
+
+h2 Admin
+

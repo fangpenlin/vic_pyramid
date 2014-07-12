@@ -1,0 +1,18 @@
+- inherit file="{{package}}:templates/master.plim"
+- namespace name="widgets" file="{{package}}:templates/widgets/form.plim"
+
+
+- block name="head"
+  title Login
+
+
+h2 Login
+form.form-horizontal role="form" action="${ request.route_url('account.login') }" method="POST"
+  ${ widgets.form_field(form.name_or_email) }
+  ${ widgets.form_field(form.password) }
+  div.form-group
+    div.col-lg-offset-2.col-lg-10
+      input.btn.btn-default type="submit" value="${ _('Login') }"
+      a href="${ request.route_url('account.forgot_password') }" Forgot password?
+      input name="came_from" type="hidden" value="${ came_from }"
+      input name="csrf_token" type="hidden" value="${ request.session.get_csrf_token() }"
